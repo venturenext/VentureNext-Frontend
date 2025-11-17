@@ -1,0 +1,71 @@
+import type { Actions, PageServerLoad } from './$types';
+import { adminListCategories, adminCreateCategory, adminUpdateCategory, adminDeleteCategory } from '$lib/api/admin';
+import { fail, redirect } from '@sveltejs/kit';
+
+export const load: PageServerLoad = async ({ locals, fetch, url }) => {
+  const token = locals.token;
+  if (!token) throw redirect(302, '/admin/login');
+  const page = Number(url.searchParams.get('page') || 1);
+  const per_page = Number(url.searchParams.get('per_page') || 10);
+  const search = url.searchParams.get('search') || '';
+  const res = await adminListCategories(token, fetch, { page, per_page, search });
+  return { items: res.data, meta: res.meta, query: { page, per_page, search } };
+};
+
+export const actions: Actions = {
+  create: async ({ locals, request, fetch }) => {
+    try {
+      const token = locals.token!;
+      const fd = await request.formData();
+      const body = {
+        name: String(fd.get('name') || ''),
+        slug: String(fd.get('slug') || '')
+      };
+      await adminCreateCategory(token, body, fetch);
+      return { success: true };
+    } catch (error: any) {
+      console.error('Error creating category:', error);
+      let errorMessage = 'Failed to create category';
+      if (error?.message) {
+        errorMessage = error.message;
+      }
+      return fail(400, { error: errorMessage });
+    }
+  },
+  update: async ({ locals, request, fetch }) => {
+    try {
+      const token = locals.token!;
+      const fd = await request.formData();
+      const id = String(fd.get('id'));
+      const body = {
+        name: String(fd.get('name') || ''),
+        slug: String(fd.get('slug') || '')
+      };
+      await adminUpdateCategory(token, id, body, fetch);
+      return { success: true };
+    } catch (error: any) {
+      console.error('Error updating category:', error);
+      let errorMessage = 'Failed to update category';
+      if (error?.message) {
+        errorMessage = error.message;
+      }
+      return fail(400, { error: errorMessage });
+    }
+  },
+  delete: async ({ locals, request, fetch }) => {
+    try {
+      const token = locals.token!;
+      const fd = await request.formData();
+      const id = String(fd.get('id'));
+      await adminDeleteCategory(token, id, fetch);
+      return { success: true };
+    } catch (error: any) {
+      console.error('Error deleting category:', error);
+      let errorMessage = 'Failed to delete category';
+      if (error?.message) {
+        errorMessage = error.message;
+      }
+      return fail(400, { error: errorMessage });
+    }
+  }
+};

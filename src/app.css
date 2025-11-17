@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-bg: #F7F9FA;
+  --brand-text: #0F1115;
+}
+
+html, body, #app {
+  height: 100%;
+}
+
+body {
+  background: theme('colors.brand.offWhite');
+  color: theme('colors.brand.slateGray');
+}
+
+.container-w {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+

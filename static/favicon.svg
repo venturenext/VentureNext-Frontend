@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#facc15"/>
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-family="Inter, system-ui, Arial, sans-serif" font-weight="700" font-size="32" fill="#0f172a">P</text>
+  <!-- Simple SVG favicon to avoid /favicon.ico 404; linked via <link rel="icon" href="/favicon.svg"/> -->
+</svg>
+

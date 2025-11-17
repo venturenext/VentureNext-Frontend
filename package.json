@@ -1,0 +1,43 @@
+{
+  "name": "perkpal-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
+  },
+  "dependencies": {
+    "@sveltejs/kit": "^2.0.0",
+    "@tiptap/core": "^3.10.4",
+    "@tiptap/extension-color": "^3.10.4",
+    "@tiptap/extension-highlight": "^3.10.4",
+    "@tiptap/extension-image": "^3.10.4",
+    "@tiptap/extension-link": "^3.10.4",
+    "@tiptap/extension-table": "^3.10.4",
+    "@tiptap/extension-table-cell": "^3.10.4",
+    "@tiptap/extension-table-header": "^3.10.4",
+    "@tiptap/extension-table-row": "^3.10.4",
+    "@tiptap/extension-text-align": "^3.10.4",
+    "@tiptap/extension-text-style": "^3.10.4",
+    "@tiptap/extension-underline": "^3.10.4",
+    "@tiptap/pm": "^3.10.4",
+    "@tiptap/starter-kit": "^3.10.4",
+    "axios": "^1.7.7",
+    "svelte": "^5.0.0"
+  },
+  "devDependencies": {
+    "@opentelemetry/api": "^1.0.0",
+    "@sveltejs/adapter-auto": "^3.2.0",
+    "@sveltejs/vite-plugin-svelte": "^6.0.0",
+    "@types/node": "^22.0.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.38",
+    "svelte-check": "^4.0.0",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.2",
+    "vite": "^6.3.0"
+  }
+}
