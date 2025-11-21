@@ -27,7 +27,7 @@
 </script>
 
 <article class="bg-white rounded-2xl shadow-card overflow-hidden ring-1 ring-gray-100 hover:shadow-lg transition" data-location={location}>
-  <a href={href} class="block focus:outline-none focus:ring-2 focus:ring-brand-darkGreen">
+  <a href={href} class="block focus:outline-none">
     <div class="relative aspect-[16/9] bg-gray-100">
       <img
         src={bannerImage}
