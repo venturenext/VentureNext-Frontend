@@ -2,7 +2,7 @@
   import SEOHead from '$lib/components/seo/SEOHead.svelte';
   import Pagination from '$lib/components/ui/Pagination.svelte';
   import { SITE_NAME, PERK_PLACEHOLDER } from '$lib/config';
-  import { env } from '$env/dynamic/public';
+  import { withAsset } from '$lib/utils/assets';
   export let data;
   const posts = data.posts || [];
   const meta = data.meta || null;
@@ -11,14 +11,6 @@
   const sections = data.sections || [];
   const hero = sections.find((s) => s.section_key === 'journal_hero');
   $: currentCategory = current?.category ?? '';
-
-  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
-  const withAsset = (path) => {
-    if (!path) return '';
-    if (/^https?:\/\//i.test(path)) return path;
-    const suffix = path.startsWith('/') ? path : `/${path}`;
-    return `${assetBase}${suffix}`;
-  };
 
   function setCategory(c) {
     const qs = new URLSearchParams();

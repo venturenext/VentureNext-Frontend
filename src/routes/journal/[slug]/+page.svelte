@@ -2,21 +2,13 @@
   import SEOHead from '$lib/components/seo/SEOHead.svelte';
   import ShareButtons from '$lib/components/perks/ShareButtons.svelte';
   import { SITE_NAME } from '$lib/config';
-  import { env } from '$env/dynamic/public';
+  import { withAsset } from '$lib/utils/assets';
   export let data;
   const p = data.post;
   const title = p?.meta_title || p?.title || 'Article';
   const desc = p?.meta_description || p?.excerpt || '';
   function initial(name) { return (name || '?').trim().charAt(0).toUpperCase(); }
   const url = typeof window !== 'undefined' ? window.location.href : undefined;
-
-  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
-  const withAsset = (path) => {
-    if (!path) return '';
-    if (/^https?:\/\//i.test(path)) return path;
-    const suffix = path.startsWith('/') ? path : `/${path}`;
-    return `${assetBase}${suffix}`;
-  };
 </script>
 
 <SEOHead title={`${title} | ${SITE_NAME}`} description={desc} url={url} image={withAsset(p?.og_image)} />

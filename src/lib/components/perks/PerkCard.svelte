@@ -2,6 +2,7 @@
   import Modal from '$lib/components/ui/Modal.svelte';
   import ClaimForm from '$lib/components/forms/ClaimForm.svelte';
   import { PERK_PLACEHOLDER } from '$lib/config';
+  import { withAsset } from '$lib/utils/assets';
   import type { RedeemType } from '$lib/types/perk';
   export let title = 'Sample Perk';
   export let partner = 'Partner';
@@ -13,7 +14,6 @@
   export let validUntil: string | undefined = undefined;
   export let perkId: number | undefined = undefined;
   export let redeemType: RedeemType | undefined = undefined;
-  export let partnerUrl: string | undefined = undefined;
   export let externalUrl: string | undefined = undefined;
   export let couponCode: string | undefined = undefined;
 
@@ -23,7 +23,7 @@
   }
 
   // Fallback image jika tidak ada atau kosong
-  $: bannerImage = (image && typeof image === 'string' && image.trim().length > 0) ? image : PERK_PLACEHOLDER;
+  $: bannerImage = (image && typeof image === 'string' && image.trim().length > 0) ? withAsset(image) : PERK_PLACEHOLDER;
 
   // Handle error loading image
   function handleImageError(e: Event) {
@@ -72,7 +72,7 @@
       <div class="absolute top-2 left-2 flex items-center gap-2">
         {#if logo}
           <div class="w-9 h-9 rounded-full bg-white ring-2 ring-white overflow-hidden flex items-center justify-center">
-            <img src={logo} alt={`${partner} logo`} class="w-8 h-8 object-cover rounded-full" loading="lazy" />
+            <img src={withAsset(logo)} alt={`${partner} logo`} class="w-8 h-8 object-cover rounded-full" loading="lazy" />
           </div>
         {:else}
           <div class="w-9 h-9 rounded-full bg-white/90 ring-2 ring-white flex items-center justify-center text-sm font-semibold text-brand-richBlack">

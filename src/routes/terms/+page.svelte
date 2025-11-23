@@ -1,7 +1,7 @@
 <script lang="ts">
   import SEOHead from '$lib/components/seo/SEOHead.svelte';
   import { SITE_NAME, CONTACT_EMAIL, HERO_IMAGE } from '$lib/config';
-  import { env } from '$env/dynamic/public';
+  import { withAsset } from '$lib/utils/assets';
 
   export let data;
   const sections = data?.sections || [];
@@ -46,14 +46,6 @@
     new Date().toISOString().slice(0, 10);
 
   let currentId: string = termsItems[0]?.id ?? '';
-
-  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
-  const withAsset = (path: string | undefined) => {
-    if (!path) return '';
-    if (/^https?:\/\//i.test(path)) return path;
-    const suffix = path.startsWith('/') ? path : `/${path}`;
-    return `${assetBase}${suffix}`;
-  };
 
   function slugify(value: string) {
     return (

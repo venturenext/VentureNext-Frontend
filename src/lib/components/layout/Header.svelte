@@ -2,7 +2,7 @@
   import { SITE_NAME, CTA_BROWSE_LABEL } from '$lib/config';
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
-  import { env } from '$env/dynamic/public';
+  import { withAsset } from '$lib/utils/assets';
   let mobileOpen = false;
   let pathname = '';
   let prevPathname = '';
@@ -15,14 +15,6 @@
   const topbarLogo = sections?.find?.((s) => s.section_key === 'topbar_logo');
   const topbarLinks = sections?.find?.((s) => s.section_key === 'topbar_links');
   const topbarCta = sections?.find?.((s) => s.section_key === 'topbar_cta');
-
-  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
-  const withAsset = (path?: string | null) => {
-    if (!path) return '';
-    if (/^https?:\/\//i.test(path)) return path;
-    const suffix = path.startsWith('/') ? path : `/${path}`;
-    return `${assetBase}${suffix}`;
-  };
 
   const brandTitle = topbarLogo?.title || siteName;
   const brandLogo = withAsset(topbarLogo?.content?.logo_url || null);

@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import type { LocationOption } from '$lib/types/location';
   import { browser } from '$app/environment';
-  import { env } from '$env/dynamic/public';
+  import { withAsset } from '$lib/utils/assets';
 
   interface Category {
     id: number;
@@ -88,13 +88,6 @@
   let isFeatured = perk?.is_featured ?? false;
   let isInitialLoad = true;
   let mounted = false;
-  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
-  const withAsset = (path?: string | null) => {
-    if (!path) return '';
-    if (/^https?:\/\//i.test(path)) return path;
-    const suffix = path.startsWith('/') ? path : `/${path}`;
-    return `${assetBase}${suffix}`;
-  };
 
   // Initialize category and subcategory on mount
   $: if (perk) {

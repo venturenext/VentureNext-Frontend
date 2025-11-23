@@ -3,7 +3,7 @@ import { createEventDispatcher } from 'svelte';
 import { toastStore } from '$lib/stores/toast';
 import { browser } from '$app/environment';
 import { deserialize } from '$app/forms';
-import { env } from '$env/dynamic/public';
+import { withAsset } from '$lib/utils/assets';
 
 	export let section: any;
 
@@ -11,14 +11,6 @@ const dispatch = createEventDispatcher();
 let uploading = false;
 let fileInput: HTMLInputElement;
 const isTopbarLogo = section?.section_key === 'topbar_logo';
-
-const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
-const withAsset = (path?: string | null) => {
-	if (!path) return '';
-	if (/^https?:\/\//i.test(path)) return path;
-	const suffix = path.startsWith('/') ? path : `/${path}`;
-	return `${assetBase}${suffix}`;
-};
 
 // Ensure content is object with proper properties
 if (!section.content || typeof section.content !== 'object') {

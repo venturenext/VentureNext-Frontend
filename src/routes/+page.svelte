@@ -8,15 +8,7 @@
   import Button from '$lib/components/ui/Button.svelte';
   import PerkCard from '$lib/components/perks/PerkCard.svelte';
   import { HERO_IMAGE, SITE_NAME, PERK_PLACEHOLDER } from '$lib/config';
-  import { env } from '$env/dynamic/public';
-
-  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
-  const withAsset = (path) => {
-    if (!path) return '';
-    if (/^https?:\/\//i.test(path)) return path;
-    const suffix = path.startsWith('/') ? path : `/${path}`;
-    return `${assetBase}${suffix}`;
-  };
+  import { withAsset } from '$lib/utils/assets';
 
   const getSection = (key) => cmsSections.find((s) => s.section_key === key && s.is_active !== false);
 
@@ -124,7 +116,6 @@
         description={p.short_description}
         cta={p.redeem_type === 'external_link' ? 'Secure my spot' : 'Claim this perk'}
         redeemType={p.redeem_type}
-        partnerUrl={p.partner_url}
         externalUrl={p.external_url}
         couponCode={p.coupon_code}
         validUntil={p.valid_until ? p.valid_until.slice(0, 10) : undefined}

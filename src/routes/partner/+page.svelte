@@ -4,7 +4,7 @@
   import PartnerOfferModal from '$lib/components/forms/PartnerOfferModal.svelte';
   import CMSIcon from '$lib/components/CMSIcon.svelte';
   import { SITE_NAME, HERO_IMAGE } from '$lib/config';
-  import { env } from '$env/dynamic/public';
+  import { withAsset } from '$lib/utils/assets';
   export let data;
   const sections = data?.sections || [];
 
@@ -15,14 +15,6 @@
   const faq = getSection('partner_faq');
 
   let open = false;
-
-  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
-  const withAsset = (path) => {
-    if (!path) return '';
-    if (/^https?:\/\//i.test(path)) return path;
-    const suffix = path.startsWith('/') ? path : `/${path}`;
-    return `${assetBase}${suffix}`;
-  };
 
   const whyPartnerCards = Array.isArray(whyPartner?.content) ? whyPartner.content : [];
   const howItWorksCards = Array.isArray(howItWorks?.content) ? howItWorks.content : [];

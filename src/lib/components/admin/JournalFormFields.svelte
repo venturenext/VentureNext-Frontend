@@ -1,6 +1,6 @@
 <script>
   import RichTextEditor from '$lib/components/ui/RichTextEditor.svelte';
-  import { env } from '$env/dynamic/public';
+  import { withAsset } from '$lib/utils/assets';
 
   export let categories = [];
   export let post = null;
@@ -21,14 +21,6 @@
   let ogDescription = post?.og_description ?? '';
   let twitterTitle = post?.twitter_title ?? '';
   let twitterDescription = post?.twitter_description ?? '';
-
-  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
-  const withAsset = (path) => {
-    if (!path) return '';
-    if (/^https?:\/\//i.test(path)) return path;
-    const suffix = path.startsWith('/') ? path : `/${path}`;
-    return `${assetBase}${suffix}`;
-  };
 
   function generateSlug(text) {
     return text
