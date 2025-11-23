@@ -426,66 +426,6 @@ export async function adminBulkDeleteInbox(token: string, ids: number[], fetcher
 }
 
 
-// User Management Functions - Commented out as Users menu has been removed
-// export async function adminListUsers(token: string, fetcher = fetch, params: Record<string, string | number> = {}) {
-//   const qs = new URLSearchParams();
-//   Object.entries(params).forEach(([k, v]) => {
-//     if (v !== undefined && v !== null && v !== '') qs.set(k, String(v));
-//   });
-//   const res = await fetcher(`${API_BASE}/admin/users${qs.size ? `?${qs}` : ''}`, { headers: bearerHeaders(token) });
-//   if (!res.ok) throw new Error('Failed to fetch users');
-//   return res.json() as Promise<ApiListResponse<any>>;
-// }
-
-// export async function adminGetUser(token: string, id: number | string, fetcher = fetch) {
-//   const res = await fetcher(`${API_BASE}/admin/users/${id}`, { headers: bearerHeaders(token) });
-//   if (!res.ok) throw new Error('Failed to fetch user');
-//   return res.json() as Promise<ApiItemResponse<any>>;
-// }
-
-// export async function adminCreateUser(token: string, body: Record<string, any>, fetcher = fetch) {
-//   const res = await fetcher(`${API_BASE}/admin/users`, {
-//     method: 'POST',
-//     headers: jsonHeaders(token),
-//     body: JSON.stringify(body)
-//   });
-//   if (!res.ok) {
-//     const errorData = await res.json().catch(() => ({ message: 'Failed to create user' }));
-//     const error = new Error(errorData.message || 'Failed to create user');
-//     (error as any).status = res.status;
-//     (error as any).details = errorData;
-//     throw error;
-//   }
-//   return res.json() as Promise<ApiItemResponse<any>>;
-// }
-
-// export async function adminUpdateUser(token: string, id: number | string, body: Record<string, any>, fetcher = fetch) {
-//   const res = await fetcher(`${API_BASE}/admin/users/${id}`, {
-//     method: 'PUT',
-//     headers: jsonHeaders(token),
-//     body: JSON.stringify(body)
-//   });
-//   if (!res.ok) {
-//     const errorData = await res.json().catch(() => ({ message: 'Failed to update user' }));
-//     const error = new Error(errorData.message || 'Failed to update user');
-//     (error as any).status = res.status;
-//     (error as any).details = errorData;
-//     throw error;
-//   }
-//   return res.json() as Promise<ApiItemResponse<any>>;
-// }
-
-// export async function adminDeleteUser(token: string, id: number | string, fetcher = fetch) {
-//   const res = await fetcher(`${API_BASE}/admin/users/${id}`, { method: 'DELETE', headers: bearerHeaders(token) });
-//   if (!res.ok) {
-//     const errorData = await res.json().catch(() => ({ message: 'Failed to delete user' }));
-//     const error = new Error(errorData.message || 'Failed to delete user');
-//     (error as any).status = res.status;
-//     (error as any).details = errorData;
-//     throw error;
-//   }
-// }
-
 
 export async function adminGetAllPageContents(token: string, fetcher = fetch) {
   const res = await fetcher(`${API_BASE}/admin/page-content`, { headers: bearerHeaders(token) });
