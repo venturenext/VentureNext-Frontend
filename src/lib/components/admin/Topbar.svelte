@@ -5,7 +5,7 @@
 </script>
 
 <header class="h-16 border-b border-admin-border bg-white flex items-center justify-between px-4">
-  <!-- Mobile menu toggle -->
+ 
   <button
     id="mobile-menu-toggle"
     type="button"
@@ -18,12 +18,12 @@
     }}
   >
     {#if sidebarOpen}
-      <!-- Close Icon (X) -->
+    
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
       </svg>
     {:else}
-      <!-- Hamburger Icon -->
+    
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
       </svg>
@@ -44,7 +44,7 @@
         {initial(user?.name)}
       </div>
     </div>
-    <!-- <a href="/admin/logout" class="hidden sm:inline-flex px-3 py-1.5 rounded-lg bg-admin-blue text-white text-sm">Logout</a> -->
+ 
   </div>
 </header>
 

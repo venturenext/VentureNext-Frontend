@@ -15,11 +15,11 @@ export const load: PageServerLoad = async ({ fetch, params, url }) => {
     listCategories(fetch)
   ]);
 
-  // Expecting data shape containing category and perks
+
   const payload = catRes.data || {};
 
   return {
-    category: payload.category || payload, // support either nested or flat
+    category: payload.category || payload, 
     perks: payload.perks || payload.data || [],
     meta: payload.meta || payload.pagination || null,
     categories: catsRes.data,

@@ -3,13 +3,13 @@ import { redirect, fail } from '@sveltejs/kit';
 import { apiLogin, apiMe } from '$lib/api/auth';
 
 export const load: PageServerLoad = async ({ locals, fetch, cookies }) => {
-  // Validate token before redirecting to prevent redirect loop
+  
   if (locals.token) {
     try {
       await apiMe(locals.token, fetch);
       throw redirect(302, '/admin');
     } catch {
-      // Token is invalid, clear it and continue to login page
+    
       cookies.delete('auth_token', { path: '/' });
     }
   }

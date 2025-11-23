@@ -1,5 +1,4 @@
 <script>
-  // Simple skeleton for loading state
 </script>
 
 <section class="container-w py-8 animate-pulse">

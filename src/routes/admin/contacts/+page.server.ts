@@ -10,7 +10,6 @@ export const load: PageServerLoad = async ({ locals, fetch, url }) => {
   const per_page = Number(url.searchParams.get('per_page') || 20);
   const search = url.searchParams.get('search') || '';
 
-  // Fetch inbox messages
   const res = await adminListInbox(token, fetch, {
     page,
     per_page,

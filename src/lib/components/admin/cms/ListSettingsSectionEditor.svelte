@@ -5,7 +5,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	// Ensure content is object with proper properties
+	
 	if (!section.content || typeof section.content !== 'object') {
 		section.content = { show_published: true, show_draft: false, limit: 6 };
 	}

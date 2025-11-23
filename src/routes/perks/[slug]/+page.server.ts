@@ -6,7 +6,7 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
   const slug = params.slug as string;
   try {
     const res = await getPerk(slug, fetch);
-    // Fire and forget view increment
+   
     incrementPerkView(slug, fetch).catch(() => {});
     let related: any[] = [];
     try {
@@ -16,12 +16,11 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
         related = (list.data || []).filter((p: any) => p.slug !== slug).slice(0, 3);
       }
     } catch {
-      // ignore related errors
+   
     }
     return { perk: res.data, related };
   } catch (e: any) {
     const message = typeof e?.message === 'string' ? e.message : 'Failed to load perk';
-    // Normalize 404 vs others
     if (message.includes('404')) {
       throw error(404, 'Perk not found');
     }

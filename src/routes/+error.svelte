@@ -13,7 +13,7 @@
 
 <SEOHead title={`${title} | ${SITE_NAME}`} description={desc} />
 
-<!-- Unified modern error page (404 and others) -->
+
 <section class="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
     <div class="absolute inset-0 bg-gradient-to-b from-pink-100 via-yellow-50 to-white"></div>
     <div class="absolute -top-28 -right-24 w-[420px] h-[420px] rounded-full bg-gradient-to-br from-yellow-300/60 to-pink-300/40 blur-3xl animate-drift" aria-hidden="true"></div>
@@ -22,7 +22,7 @@
     <div class="relative container-w">
       <div class="mx-auto max-w-5xl rounded-[28px] bg-white ring-1 ring-black/5 shadow-2xl p-6 sm:p-10">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <!-- Left copy -->
+         
           <div>
             <div class="inline-flex items-center gap-2 text-brand-darkGreen font-semibold">
               <span class="w-2 h-2 rounded-full bg-yellow-400"></span>
@@ -35,7 +35,7 @@
             </div>
           </div>
 
-          <!-- Right illustration (abstract, brand colors) -->
+         
           <div class="relative mx-auto w-full max-w-md">
             <svg viewBox="0 0 360 240" class="w-full h-auto text-brand-darkGreen" role="img" aria-label="Decorative illustration">
               <defs>

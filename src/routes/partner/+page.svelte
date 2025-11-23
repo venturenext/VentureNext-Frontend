@@ -27,7 +27,7 @@
 />
 
 {#if hero && hero.title}
-<!-- Hero -->
+
 <section class="relative text-white overflow-hidden">
   {#if hero.image_url}
     <div class="absolute inset-0 bg-center bg-cover" style={`background-image: url('${withAsset(hero.image_url) || HERO_IMAGE}')`} aria-hidden="true"></div>
@@ -44,7 +44,7 @@
 {/if}
 
 {#if whyPartner && whyPartnerCards.length > 0}
-<!-- Why partner -->
+
 <section class="container-w py-16">
   {#if whyPartner.title}
     <h2 class="text-3xl font-bold text-center text-brand-richBlack">{whyPartner.title}</h2>
@@ -76,7 +76,6 @@
 {/if}
 
 {#if howItWorks && howItWorksCards.length > 0}
-<!-- How it works -->
 <section class="container-w py-12">
   {#if howItWorks.title}
     <h2 class="text-3xl font-bold text-center text-brand-richBlack">{howItWorks.title}</h2>
@@ -98,7 +97,7 @@
 {/if}
 
 {#if faq && faqItems.length > 0}
-<!-- FAQ -->
+
 <section class="bg-yellow-50 py-12">
   <div class="container-w max-w-3xl">
     {#if faq.title}

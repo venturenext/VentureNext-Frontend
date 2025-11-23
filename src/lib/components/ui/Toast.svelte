@@ -4,7 +4,7 @@
   let items: ToastItem[] = [];
   const unsub = toastStore.subscribe((v) => (items = v));
   $: items;
-  // Cleanup handled by Svelte unmount (no-op here)
+
 </script>
 
 <div class="fixed z-50 top-4 right-4 space-y-2">

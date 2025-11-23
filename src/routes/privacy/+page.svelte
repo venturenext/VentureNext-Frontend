@@ -62,7 +62,7 @@
 
 <SEOHead title={pageTitle} description={pageDescription} />
 
-<!-- Hero -->
+
 <section class="relative text-white overflow-hidden">
   <div
     class="absolute inset-0 bg-center bg-cover"

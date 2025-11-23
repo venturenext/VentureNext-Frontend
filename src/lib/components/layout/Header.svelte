@@ -39,14 +39,14 @@
 
   $: pathname = $page.url.pathname;
 
-  // Close mobile menu when navigating to a new route
+  
   $: if (pathname !== prevPathname) {
     if (mobileOpen) mobileOpen = false;
     prevPathname = pathname;
   }
   const isActive = (path: string) => pathname === path || pathname.startsWith(path + '/');
 
-  // Close mobile menu when clicking outside
+  
   onMount(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (mobileOpen && headerElement && !headerElement.contains(event.target as Node)) {
@@ -54,7 +54,7 @@
       }
     };
 
-    // Add delay to prevent immediate closure on toggle click
+  
     setTimeout(() => {
       document.addEventListener('click', handleClickOutside);
     }, 0);
@@ -106,12 +106,12 @@
       }}
     >
       {#if mobileOpen}
-        <!-- Close Icon (X) -->
+      
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
       {:else}
-        <!-- Hamburger Icon -->
+ 
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
         </svg>

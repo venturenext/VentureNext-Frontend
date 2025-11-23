@@ -20,7 +20,7 @@
 		{ label: 'Calendar', value: 'calendar' }
 	];
 
-	// Ensure content is array
+
 	if (!Array.isArray(section.content)) {
 		section.content = [];
 	}

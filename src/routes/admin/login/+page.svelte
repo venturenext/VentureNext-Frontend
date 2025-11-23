@@ -33,7 +33,7 @@
 <section class="min-h-screen bg-admin-white text-admin-text grid place-items-center">
   <div class="w-full max-w-5xl px-4 sm:px-6 lg:px-8">
     <div class="bg-white rounded-[28px] shadow-card border border-admin-border overflow-hidden grid grid-cols-1 md:grid-cols-2">
-      <!-- Left: Hero inside the same card -->
+  
       <div class="relative min-h-[220px] md:min-h-[520px]">
         <img src={HERO_IMAGE} alt="Hero" class="absolute inset-0 w-full h-full object-cover" />
         <div class="absolute inset-0 bg-brand-darkGreen/70"></div>
@@ -49,7 +49,7 @@
         </div>
       </div>
 
-      <!-- Right: Form inside the same card -->
+    
       <div class="flex items-center">
         <div class="w-full p-6 sm:p-10">
           <div class="mb-6">

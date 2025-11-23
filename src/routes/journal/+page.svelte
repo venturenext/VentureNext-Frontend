@@ -22,7 +22,7 @@
 
 <SEOHead title={hero?.title || `Journal | ${SITE_NAME}`} description={hero?.subtitle || "Insights, news, and tips for founders and remote workers in MY & SG."} />
 
-<!-- Hero banner -->
+
 <section class="bg-pink-100">
   <div class="container-w py-16 text-center">
     <h1 class="text-5xl font-extrabold text-brand-richBlack">{hero?.title || 'Journal'}</h1>
@@ -32,7 +32,7 @@
   </div>
 </section>
 
-<!-- Filters -->
+
 <section class="container-w pt-10">
   <div class="flex flex-wrap gap-2 justify-center">
     <button class="px-4 py-2 rounded-full border text-sm"
@@ -52,7 +52,7 @@
   </div>
 </section>
 
-<!-- Featured + grid -->
+
 <section class="container-w py-12">
   {#if posts.length}
     <div class="max-w-none">
@@ -97,7 +97,6 @@
       {/each}
     </div>
 
-    <!-- Pagination -->
     <div class="mt-8">
       <Pagination {meta} current={{ category: currentCategory }} basePath={'/journal'} />
     </div>

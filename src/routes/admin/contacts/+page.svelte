@@ -110,7 +110,7 @@
 </div>
 <Pagination meta={data.meta} current={data.query} basePath="/admin/contacts" />
 
-<!-- Detail Modal -->
+
 {#if showDetailModal && selectedContact}
   <Modal bind:open={showDetailModal} title="Contact Details" on:close={() => (showDetailModal = false)}>
     <div class="space-y-4">

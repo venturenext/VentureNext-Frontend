@@ -10,12 +10,12 @@
   let openClaim = false;
   const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
 
-  // Reactive fallback untuk banner image
+ 
   $: bannerImage = (perk?.media?.banner && typeof perk.media.banner === 'string' && perk.media.banner.trim().length > 0)
     ? withAsset(perk.media.banner)
     : PERK_PLACEHOLDER;
 
-  // Handle error loading image
+ 
   function handleImageError(e: Event) {
     const img = e.target as HTMLImageElement;
     if (img.src !== PERK_PLACEHOLDER) {

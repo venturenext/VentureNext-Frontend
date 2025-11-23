@@ -89,32 +89,32 @@
   let isInitialLoad = true;
   let mounted = false;
 
-  // Initialize category and subcategory on mount
+  
   $: if (perk) {
     selectedCategory = perk?.category?.id ? String(perk.category.id) : (perk?.category_id ? String(perk.category_id) : '');
     selectedSubcategory = perk?.subcategory?.id ? String(perk.subcategory.id) : (perk?.subcategory_id ? String(perk.subcategory_id) : '');
   }
 
-  // Form fields for validation
+
   let title = perk?.title ?? '';
   let slug = perk?.slug ?? '';
   let partnerName = perk?.partner_name ?? '';
   let shortDescription = perk?.short_description ?? '';
 
-  // File upload states
+  
   let selectedLogoFile: string | null = null;
   let selectedBannerFile: string | null = null;
   let selectedOgImageFile: string | null = null;
 
-  // Auto-save functionality
+ 
   let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
   let lastSavedTime: Date | null = null;
   let isSaving = false;
   const AUTO_SAVE_DELAY = 3000; // 3 seconds
 
-  // Watch for form field changes and trigger auto-save
+
   $: if (browser && perk?.id && mounted && !isInitialLoad) {
-    // Trigger auto-save when key fields change
+   
     const fieldsToWatch = [title, shortDescription, partnerName, selectedCategory, selectedSubcategory, location, redeemType, isActive, isFeatured];
     triggerAutoSave();
   }
@@ -138,7 +138,7 @@
       if (!form) return;
 
       const formData = new FormData(form);
-      // Ensure status is draft for auto-save
+     
       formData.set('status', 'draft');
       formData.set('intent', 'save');
 
@@ -157,7 +157,7 @@
     }
   }
 
-  // Auto-generate slug from title
+
   function generateSlug(text: string): string {
     return text
       .toLowerCase()
@@ -171,14 +171,14 @@
     slug = generateSlug(title);
   }
 
-  // Validate form
+ 
   $: isFormValid =
     title.trim() !== '' &&
     slug.trim() !== '' &&
     partnerName.trim() !== '' &&
     selectedCategory !== '';
 
-  // Handle file input changes
+ 
   function handleLogoChange(event: Event) {
     const target = event.target as HTMLInputElement;
     const file = target.files?.[0];
@@ -210,7 +210,7 @@
       .sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  // Only reset subcategory after component is mounted and category changes
+
   $: if (mounted && !isInitialLoad && selectedCategory && !filteredSubcategories.some((sub) => String(sub.id) === selectedSubcategory)) {
     selectedSubcategory = '';
   }
@@ -218,16 +218,15 @@
     selectedSubcategory = '';
   }
 
-  // Mark as loaded after first render
+  
   onMount(() => {
     mounted = true;
-    // Give enough time for the component to render with initial values
     setTimeout(() => {
       isInitialLoad = false;
     }, 200);
   });
 
-  // Cleanup on destroy
+
   onDestroy(() => {
     if (autoSaveTimer) {
       clearTimeout(autoSaveTimer);
@@ -236,7 +235,7 @@
 </script>
 
 <div class="space-y-8">
-  <!-- Auto-save indicator -->
+
   {#if perk?.id}
     <div class="rounded-lg border border-admin-border bg-blue-50 px-4 py-2 text-xs text-admin-muted">
       {#if isSaving}
@@ -260,7 +259,7 @@
     </div>
   {/if}
 
-  <!-- General details -->
+ 
   <section class="space-y-6 rounded-2xl border border-admin-border bg-white p-6 shadow-sm">
     <header>
       <p class="text-xs font-semibold uppercase tracking-[0.2em] text-admin-muted">Perk Details</p>
@@ -268,7 +267,6 @@
       <p class="text-sm text-admin-muted">Match the values to the database fields so listing stays consistent.</p>
     </header>
 
-    <!-- Method spoofing for Laravel PUT with FormData -->
     {#if perk}
       <input type="hidden" name="_method" value="PUT" />
     {/if}
@@ -369,7 +367,6 @@
     </div>
   </section>
 
-  <!-- Location & Redemption -->
   <section class="space-y-6 rounded-2xl border border-admin-border bg-white p-6 shadow-sm">
     <div>
       <p class="text-xs font-semibold uppercase tracking-[0.2em] text-admin-muted">Location & Validity</p>
@@ -429,7 +426,7 @@
     </div>
   </section>
 
-  <!-- Tags & SEO -->
+ 
   <section class="space-y-6 rounded-2xl border border-admin-border bg-white p-6 shadow-sm">
     <div>
       <p class="text-xs font-semibold uppercase tracking-[0.2em] text-admin-muted">Tags & SEO</p>

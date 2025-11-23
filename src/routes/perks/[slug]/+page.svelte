@@ -6,7 +6,7 @@
   export let data: any;
   const p = data.perk;
 
-  // Handle image error untuk related perks
+ 
   function handleImageError(e: Event) {
     const img = e.target as HTMLImageElement;
     if (img.src !== PERK_PLACEHOLDER) {
@@ -14,7 +14,7 @@
     }
   }
 
-  // Get banner image dengan fallback ke placeholder
+
   function getBannerImage(perk: any): string {
     const banner = perk?.media?.banner;
     return (banner && typeof banner === 'string' && banner.trim().length > 0)

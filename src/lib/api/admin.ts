@@ -27,7 +27,7 @@ async function throwAdminApiError(res: Response, fallbackMessage: string): Promi
   throw error;
 }
 
-// Perks
+
 export async function adminListPerks(token: string, fetcher = fetch, params: Record<string, string | number> = {}) {
   const qs = new URLSearchParams();
   Object.entries(params).forEach(([k, v]) => {
@@ -58,7 +58,7 @@ export async function adminCreatePerk(token: string, body: FormData | Record<str
 export async function adminUpdatePerk(token: string, id: number | string, body: FormData | Record<string, any>, fetcher = fetch) {
   const isFormData = body instanceof FormData;
 
-  // For FormData with file uploads, use POST with _method=PUT (Laravel method spoofing)
+
   if (isFormData) {
     const res = await fetcher(`${API_BASE}/admin/perks/${id}`, {
       method: 'POST',
@@ -75,7 +75,7 @@ export async function adminUpdatePerk(token: string, id: number | string, body: 
     return res.json() as Promise<ApiItemResponse<any>>;
   }
 
-  // For JSON body, use regular PUT
+
   const res = await fetcher(`${API_BASE}/admin/perks/${id}`, {
     method: 'PUT',
     headers: jsonHeaders(token),
@@ -191,10 +191,9 @@ export async function adminCreateJournalPost(token: string, body: FormData | Rec
 export async function adminUpdateJournalPost(token: string, id: number | string, body: FormData | Record<string, any>, fetcher = fetch) {
   const isFormData = body instanceof FormData;
 
-  // For FormData with file uploads, use POST with _method=PUT (Laravel method spoofing)
-  // This is because Laravel doesn't support multipart/form-data with PUT natively
+ 
   if (isFormData) {
-    // _method field should already be added in the form component
+    
     const res = await fetcher(`${API_BASE}/admin/journal/${id}`, {
       method: 'POST',
       headers: bearerHeaders(token),
@@ -210,7 +209,7 @@ export async function adminUpdateJournalPost(token: string, id: number | string,
     return res.json() as Promise<ApiItemResponse<any>>;
   }
 
-  // For JSON body, use regular PUT
+ 
   const res = await fetcher(`${API_BASE}/admin/journal/${id}`, {
     method: 'PUT',
     headers: jsonHeaders(token),
@@ -238,7 +237,7 @@ export async function adminDeleteJournalPost(token: string, id: number | string,
 }
 
 
-// Categories
+
 export async function adminListCategories(token: string, fetcher = fetch, params: Record<string, string | number> = {}) {
   const qs = new URLSearchParams();
   Object.entries(params).forEach(([k, v]) => {
@@ -292,7 +291,7 @@ export async function adminDeleteCategory(token: string, id: number | string, fe
   }
 }
 
-// Locations
+
 export async function adminListLocations(token: string, fetcher = fetch, params: Record<string, string | number> = {}) {
   const qs = new URLSearchParams();
   Object.entries(params).forEach(([k, v]) => {
@@ -334,7 +333,6 @@ export async function adminDeleteLocation(token: string, id: number | string, fe
   }
 }
 
-// Settings (admin)
 export async function adminGetSettings(token: string, fetcher = fetch) {
   const res = await fetcher(`${API_BASE}/admin/settings`, { headers: bearerHeaders(token) });
   if (!res.ok) throw new Error('Failed to fetch settings');
@@ -351,7 +349,7 @@ export async function adminUpdateSettings(token: string, body: any, fetcher = fe
   return res.json() as Promise<ApiItemResponse<any>>;
 }
 
-// Leads
+
 export async function adminListLeads(token: string, fetcher = fetch, params: Record<string, string | number> = {}) {
   const qs = new URLSearchParams();
   Object.entries(params).forEach(([k, v]) => {
@@ -367,7 +365,7 @@ export async function adminDeleteLead(token: string, id: number | string, fetche
   if (!res.ok) throw new Error('Failed to delete lead');
 }
 
-// Inbox
+
 export async function adminListInbox(token: string, fetcher = fetch, params: Record<string, string | number | boolean> = {}) {
   const qs = new URLSearchParams();
   Object.entries(params).forEach(([k, v]) => {
@@ -427,7 +425,7 @@ export async function adminBulkDeleteInbox(token: string, ids: number[], fetcher
   return res.json() as Promise<ApiItemResponse<any>>;
 }
 
-// User Management
+
 export async function adminListUsers(token: string, fetcher = fetch, params: Record<string, string | number> = {}) {
   const qs = new URLSearchParams();
   Object.entries(params).forEach(([k, v]) => {
@@ -487,7 +485,7 @@ export async function adminDeleteUser(token: string, id: number | string, fetche
   }
 }
 
-// Page Content Management (CMS)
+
 export async function adminGetAllPageContents(token: string, fetcher = fetch) {
   const res = await fetcher(`${API_BASE}/admin/page-content`, { headers: bearerHeaders(token) });
   if (!res.ok) throw new Error('Failed to fetch page contents');

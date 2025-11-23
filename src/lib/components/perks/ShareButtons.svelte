@@ -23,7 +23,6 @@
         await navigator.share({ title, url });
       } catch {}
     } else {
-      // Fallback to opening Twitter share when Web Share API is unavailable
       openShare(twitter);
     }
   }
@@ -31,7 +30,7 @@
   async function copyLink() {
     try {
       await navigator.clipboard.writeText(url);
-      // Optionally emit event; keep simple
+      
     } catch {}
   }
 </script>

@@ -33,7 +33,7 @@
 <SEOHead title={`${SITE_NAME} — Exclusive Perks`} description={heroSubtitle} />
 
 {#if hero && heroTitle}
-<!-- Hero: split layout with circle image and floating chips -->
+
 <section class="bg-[#F1F4E9]">
   <div class="container-w py-16 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
     <div>
@@ -51,7 +51,7 @@
         <div class="w-72 h-72 sm:w-96 sm:h-96 rounded-full overflow-hidden ring-8 ring-white/60 shadow-card">
       <img src={heroImage} alt="Hero" class="w-full h-full object-cover" loading="lazy" />
         </div>
-        <!-- floating chips -->
+  
         {#each heroChips as chip, i}
           <div class={`hidden sm:block absolute bg-white rounded-xl shadow-card px-3 py-2 text-xs ${i === 0 ? '-top-3 left-6' : i === 1 ? 'top-8 -right-3' : '-bottom-4 left-10'}`}>
             <div class="font-semibold">{chip.title}</div>
@@ -66,7 +66,7 @@
 {/if}
 
 {#if howItWorks && howItWorksCards.length > 0}
-<!-- How It Works -->
+
 <section class="container-w py-16">
   {#if howItWorks.title}
     <h2 class="text-3xl font-bold text-center text-brand-richBlack">{howItWorks.title}</h2>
@@ -91,7 +91,7 @@
 {/if}
 
 {#if latestPerksSection && latestPerks.length > 0}
-<!-- Latest Perks -->
+
 <section class="container-w py-12">
   <div class="text-center">
     {#if latestPerksTitle}
@@ -126,7 +126,7 @@
 {/if}
 
 {#if journalSection && journal.length > 0}
-<!-- Journal -->
+
 <section class="container-w py-12">
   <div class="text-center">
     {#if journalTitle}

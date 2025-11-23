@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ request, fetch, cookies }) => {
   const remember = Boolean(body.remember);
 
   try {
-    // Handle Laravel Sanctum stateful CSRF when enabled
+   
     const base = API_BASE.replace(/\/api\/v\d+$/, '');
     const csrfRes = await fetch(`${base}/sanctum/csrf-cookie`, {
       headers: { Accept: 'application/json' }

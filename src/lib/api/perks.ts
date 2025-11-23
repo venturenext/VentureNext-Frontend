@@ -30,7 +30,7 @@ export async function incrementPerkView(slug: string, fetcher?: typeof fetch) {
   try {
     await apiPost(`/perks/${slug}/view`, {}, fetcher);
   } catch (e) {
-    // Non-blocking
+    
   }
 }
 

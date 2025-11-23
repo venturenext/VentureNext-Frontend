@@ -5,7 +5,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	// Ensure content is object with html property
+
 	if (!section.content || typeof section.content !== 'object') {
 		section.content = { html: '' };
 	}

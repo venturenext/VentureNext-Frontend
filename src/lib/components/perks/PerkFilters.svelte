@@ -16,7 +16,6 @@
   let locationOptions: LocationOption[] = [];
   let autoSelected = false;
 
-  // Keep local state in sync when `current` changes (e.g., after reset)
   $: if (current) {
     selectedCategory = current.category || '';
     selectedSubcategory = current.subcategory || '';

@@ -13,7 +13,6 @@
 
 <SEOHead title={`Contact Us | ${SITE_NAME}`} description={`Get in touch with the ${SITE_NAME} team.`} />
 
-<!-- Hero banner -->
 <section class="bg-pink-100">
   <div class="container-w py-16 text-center">
     <h1 class="text-4xl font-extrabold text-brand-richBlack">{title}</h1>
@@ -22,7 +21,6 @@
   <div class="sr-only" aria-hidden="true"></div>
 </section>
 
-<!-- Form section on subtle background -->
 <section class="bg-gray-50 py-12">
   <div class="container-w flex justify-center">
     <div class="w-full max-w-2xl bg-white rounded-2xl shadow-card p-6 sm:p-8">

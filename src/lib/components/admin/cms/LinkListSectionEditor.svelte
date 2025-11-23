@@ -4,7 +4,7 @@
   export let section: any;
   const dispatch = createEventDispatcher();
 
-  // Check if this is the topbar links section (no icon needed)
+  
   const isTopbarLinks = section?.section_key === 'topbar_links';
 
   if (!Array.isArray(section.content)) {

@@ -3,7 +3,6 @@ import { redirect } from '@sveltejs/kit';
 import { apiMe } from '$lib/api/auth';
 
 export const load: LayoutServerLoad = async ({ locals, fetch, url }) => {
-  // Allow unauthenticated access to admin auth routes
   if (url.pathname === '/admin/login') {
     return { user: null } as any;
   }

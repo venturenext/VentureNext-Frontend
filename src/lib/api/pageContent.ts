@@ -4,9 +4,7 @@ import type { ApiItemResponse } from '$lib/types/api';
 
 const API_BASE = privateEnv.PRIVATE_API_BASE || publicEnv.PUBLIC_API_BASE;
 
-/**
- * Get content for a specific page (public endpoint)
- */
+
 export async function getPageContent(pageName: string, fetcher = fetch) {
 	const res = await fetcher(`${API_BASE}/page-content/${pageName}`);
 	if (!res.ok) {
@@ -17,9 +15,7 @@ export async function getPageContent(pageName: string, fetcher = fetch) {
 	return response.data || [];
 }
 
-/**
- * Get specific section by key (public endpoint)
- */
+
 export async function getPageSection(sectionKey: string, fetcher = fetch) {
 	const res = await fetcher(`${API_BASE}/page-content/section/${sectionKey}`);
 	if (!res.ok) {

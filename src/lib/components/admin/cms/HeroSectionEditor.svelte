@@ -11,7 +11,7 @@ const dispatch = createEventDispatcher();
 let uploading = false;
 let fileInput: HTMLInputElement;
 
-// Ensure content object exists for extra fields like contact email
+
 if (!section.content || typeof section.content !== 'object') {
 	section.content = {};
 }
@@ -31,13 +31,13 @@ if (section.section_key === 'contact_hero' && section.content.email === undefine
 
 		if (!file) return;
 
-		// Validate file size (max 15MB)
+	
 		if (file.size > 15 * 1024 * 1024) {
 			toastStore.push('Image size must be less than 15MB', 'error');
 			return;
 		}
 
-		// Validate file type
+		
 		if (!file.type.startsWith('image/')) {
 			toastStore.push('Please upload an image file', 'error');
 			return;
@@ -50,7 +50,7 @@ if (section.section_key === 'contact_hero' && section.content.email === undefine
 			formData.append('image', file);
 			formData.append('section_key', section.section_key);
 
-			// Use SvelteKit form action instead of direct API call
+	
 			const response = await fetch('/admin/content?/uploadImage', {
 				method: 'POST',
 				body: formData
@@ -61,16 +61,15 @@ if (section.section_key === 'contact_hero' && section.content.email === undefine
 				throw new Error('Upload failed');
 			}
 
-			// Use SvelteKit's deserialize to properly parse the form action response
+			
 			const responseText = await response.text();
 			const result = deserialize(responseText);
 
-			// SvelteKit form action response format
+			
 			if (result.type === 'success' && result.data) {
 				const uploadData = result.data as any;
 
-				// The response.data contains the Laravel API response
-				// which has { url: '...', path: '...' }
+				
 				const imageUrl = uploadData.url || uploadData.data?.url;
 				if (imageUrl) {
 					section.image_url = imageUrl;
@@ -87,7 +86,7 @@ if (section.section_key === 'contact_hero' && section.content.email === undefine
 			toastStore.push('Failed to upload image', 'error');
 		} finally {
 			uploading = false;
-			// Reset file input
+			
 			if (fileInput) fileInput.value = '';
 		}
 	}

@@ -21,7 +21,7 @@
 <SEOHead title={`About | ${SITE_NAME}`} description={hero?.subtitle || ''} />
 
 {#if hero && hero.title}
-<!-- Hero -->
+
 <section class="relative">
   {#if hero.image_url}
     <div class="absolute inset-0 bg-cover bg-center" style={`background-image: url('${withAsset(hero.image_url) || HERO_IMAGE}')`} aria-hidden="true"></div>
@@ -38,7 +38,7 @@
 {/if}
 
 {#if whatWeDo && whatWeDoCards.length > 0}
-<!-- What We Do -->
+
 <section class="container-w py-16">
   {#if whatWeDo.title}
     <h2 class="text-2xl sm:text-3xl font-bold text-center text-brand-richBlack">{whatWeDo.title}</h2>
@@ -62,7 +62,7 @@
 {/if}
 
 {#if whoWeServe && whoWeServeCards.length > 0}
-<!-- Who We Serve -->
+
 <section class="py-16 bg-gray-50">
   <div class="container-w">
     {#if whoWeServe.title}
@@ -88,7 +88,7 @@
 {/if}
 
 {#if faq && faqItems.length > 0}
-<!-- FAQ -->
+
 <section class="container-w py-16">
   {#if faq.title}
     <h2 class="text-2xl sm:text-3xl font-bold text-center text-brand-richBlack">{faq.title}</h2>

@@ -13,13 +13,13 @@
 
   $: pathname = $page.url.pathname;
 
-  // Close sidebar when navigating on mobile
+  
   $: if (pathname !== prevPathname) {
     if (sidebarOpen) sidebarOpen = false;
     prevPathname = pathname;
   }
 
-  // Close sidebar when clicking outside on mobile
+ 
   onMount(() => {
     const handleClickOutside = (event) => {
       if (!sidebarOpen) return;
@@ -44,12 +44,11 @@
   <slot />
 {:else}
   <div class="min-h-screen bg-admin-sidebar text-admin-text lg:grid lg:grid-cols-[16rem_1fr]">
-    <!-- Mobile sidebar overlay -->
+   
     {#if sidebarOpen}
       <div class="fixed inset-0 bg-black/50 z-40 lg:hidden" on:click={() => sidebarOpen = false}></div>
     {/if}
 
-    <!-- Sidebar -->
     <div id="mobile-sidebar" class="fixed inset-y-0 left-0 z-50 lg:relative lg:z-auto transform transition-transform duration-300 {sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}">
       <Sidebar user={data.user} />
     </div>

@@ -19,7 +19,7 @@
 	let saving = false;
 	let baseline = '';
 
-	// Reactive variables that update when data changes
+	
 	$: pages = data.pages || [];
 	let selectedPageName = data.selectedPage || 'homepage';
 	$: if (data.selectedPage && data.selectedPage !== selectedPageName) {
@@ -27,11 +27,10 @@
 	}
 	$: selectedPage = pages.find((p: any) => p.name === selectedPageName);
 
-	// Deep clone sections when data changes and reset hasChanges
+	
 	let sections: any[] = [];
 	let lastDataSections: any[] = [];
 	$: {
-		// Only rebuild sections if the actual data from server has changed (not from user edits)
 		const currentDataSections = data.sections || [];
 		const dataChanged = JSON.stringify(currentDataSections) !== JSON.stringify(lastDataSections);
 
@@ -44,7 +43,6 @@
 		}
 	}
 
-	// Handle form submission result
 	$: if (form?.success) {
 		toastStore.push('Content saved successfully', 'success');
 		hasChanges = false;
@@ -53,7 +51,7 @@
 	}
 
 	function handleSectionChange() {
-		// Force a shallow array update so Svelte tracks mutations
+		
 		sections = [...sections];
 		hasChanges = true;
 	}
@@ -69,7 +67,6 @@
 		formData.append('sections', JSON.stringify(sections));
 
 		try {
-			// Use SvelteKit action endpoint on the same route
 			const response = await fetch('?/bulkUpdate', {
 				method: 'POST',
 				body: formData
@@ -134,7 +131,7 @@
 </svelte:head>
 
 <div class="max-w-7xl mx-auto page-grid">
-	<!-- Header -->
+
 	<div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 		<div>
 			<h1 class="text-3xl font-bold text-gray-900">Content Management</h1>
@@ -151,7 +148,6 @@
 		</button>
 	</div>
 
-	<!-- Main Content - Section Editors -->
 	<div class="space-y-4">
 		{#if selectedPage}
 			<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -243,7 +239,7 @@
 </div>
 
 <style>
-	/* Add spacing at the bottom for mobile save button */
+
 	.page-grid {
 		padding-bottom: 80px;
 	}

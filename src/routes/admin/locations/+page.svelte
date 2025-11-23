@@ -198,7 +198,6 @@
   </div>
 </div>
 
-<!-- Create Modal -->
 <Modal bind:open={openCreate} title="Add Location" size="md">
   <form method="POST" action="?/create" use:enhance={createEnhance} class="space-y-4">
     <div>
@@ -229,7 +228,7 @@
   </form>
 </Modal>
 
-<!-- Edit Modal -->
+
 <Modal bind:open={openEdit} title="Edit Location" size="md">
   {#if editItem}
     <form method="POST" action="?/update" use:enhance={editEnhance} class="space-y-4">
@@ -263,7 +262,7 @@
   {/if}
 </Modal>
 
-<!-- Delete Modal -->
+
 <Modal bind:open={deleteModalOpen} title="Delete location" size="sm" on:close={() => (deleteModalOpen = false)}>
   {#if deleteTarget}
     <form method="POST" action="?/delete" use:enhance={deleteEnhance} class="space-y-4">
@@ -284,7 +283,7 @@
   {/if}
 </Modal>
 
-<!-- Success Modal -->
+
 <Modal bind:open={successModalOpen} title={successTitle || 'Success'} size="sm" on:close={handleSuccessRedirect}>
   <div class="flex items-start gap-3">
     <div class="mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-600">

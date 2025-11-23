@@ -10,29 +10,29 @@
   $: chartHeight = height - padding.top - padding.bottom;
   $: chartWidth = width - padding.left - padding.right;
 
-  // Calculate min and max values
+ 
   $: maxValue = Math.max(...data.map(d => d.value), 0);
   $: minValue = Math.min(...data.map(d => d.value), 0);
   $: valueRange = maxValue - minValue || 1;
 
-  // Generate points for the line
+ 
   $: points = data.map((d, i) => {
     const x = (i / (data.length - 1 || 1)) * chartWidth;
     const y = chartHeight - ((d.value - minValue) / valueRange) * chartHeight;
     return { x, y, value: d.value, label: d.label };
   }).filter(p => !isNaN(p.x) && !isNaN(p.y));
 
-  // Create path for the line
+
   $: linePath = points.length > 0
     ? points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x + padding.left} ${p.y + padding.top}`).join(' ')
     : '';
 
-  // Create area path for gradient fill
+  
   $: areaPath = points.length > 0
     ? linePath + ` L ${points[points.length - 1].x + padding.left} ${chartHeight + padding.top} L ${padding.left} ${chartHeight + padding.top} Z`
     : '';
 
-  // Y-axis ticks
+ 
   $: yTicks = [0, 0.25, 0.5, 0.75, 1].map(ratio => ({
     value: Math.round(minValue + valueRange * ratio),
     y: chartHeight - (ratio * chartHeight) + padding.top
@@ -45,7 +45,7 @@
   </div>
 
   <svg viewBox="0 0 {width} {height}" class="w-full" style="max-height: {height}px;">
-    <!-- Define gradient -->
+
     <defs>
       <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" style="stop-color:{color};stop-opacity:0.3" />
@@ -53,7 +53,7 @@
       </linearGradient>
     </defs>
 
-    <!-- Y-axis -->
+    
     <line
       x1={padding.left}
       y1={padding.top}
@@ -63,7 +63,7 @@
       stroke-width="1"
     />
 
-    <!-- X-axis -->
+    
     <line
       x1={padding.left}
       y1={chartHeight + padding.top}
@@ -73,7 +73,7 @@
       stroke-width="1"
     />
 
-    <!-- Y-axis ticks and labels -->
+  
     {#each yTicks as tick}
       <line
         x1={padding.left - 5}
@@ -95,7 +95,7 @@
       </text>
     {/each}
 
-    <!-- Area fill -->
+
     {#if areaPath}
       <path
         d={areaPath}
@@ -103,7 +103,7 @@
       />
     {/if}
 
-    <!-- Line -->
+   
     {#if linePath}
       <path
         d={linePath}
@@ -115,7 +115,6 @@
       />
     {/if}
 
-    <!-- Data points -->
     {#each points as point}
       <circle
         cx={point.x + padding.left}
@@ -127,7 +126,7 @@
       />
     {/each}
 
-    <!-- X-axis labels -->
+
     {#each points as point, i}
       <text
         x={point.x + padding.left}

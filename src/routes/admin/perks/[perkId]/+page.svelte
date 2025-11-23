@@ -11,7 +11,7 @@
   const formError = data?.form?.error;
   const publishedInfo = perk?.published_at ? new Date(perk.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Not published yet';
 
-  let isFormValid = true; // Default to true for edit mode
+  let isFormValid = true;
   let successModalOpen = false;
   let successTitle = '';
   let successDescription = '';

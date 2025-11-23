@@ -35,7 +35,7 @@ export const actions: Actions = {
         fd.set('published_at', new Date().toISOString());
       }
 
-      // Log form data for debugging
+  
       console.log('Form data being sent:');
       for (const [key, value] of fd.entries()) {
         if (value instanceof File) {
@@ -54,14 +54,14 @@ export const actions: Actions = {
     } catch (error) {
       console.error('Error creating perk:', error);
 
-      // Extract detailed error message
+   
       let errorMessage = 'Failed to save perk. Please review the inputs before proceeding.';
       if (error instanceof Error) {
         const details = (error as any).details;
         if (details) {
           console.error('Error details:', details);
 
-          // Check for Laravel validation errors
+         
           if (details.errors) {
             const validationErrors = Object.entries(details.errors)
               .map(([field, messages]) => `${field}: ${(messages as string[]).join(', ')}`)
