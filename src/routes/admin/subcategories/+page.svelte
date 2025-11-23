@@ -141,7 +141,7 @@
   <section class="rounded-2xl border border-admin-border bg-white p-6">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div>
-        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-admin-muted">PerkPal CMS</p>
+        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-admin-muted">VENTURE NEXT CMS</p>
         <h1 class="mt-1 text-2xl font-semibold text-brand-richBlack">Subcategories</h1>
         <p class="text-sm text-admin-muted">Manage subcategories for perks organization.</p>
       </div>

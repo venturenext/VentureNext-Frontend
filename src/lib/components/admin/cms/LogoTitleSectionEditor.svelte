@@ -1,20 +1,29 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import { toastStore } from '$lib/stores/toast';
-	import { browser } from '$app/environment';
-	import { deserialize } from '$app/forms';
+import { createEventDispatcher } from 'svelte';
+import { toastStore } from '$lib/stores/toast';
+import { browser } from '$app/environment';
+import { deserialize } from '$app/forms';
+import { env } from '$env/dynamic/public';
 
 	export let section: any;
 
-	const dispatch = createEventDispatcher();
-	let uploading = false;
-	let fileInput: HTMLInputElement;
-	const isTopbarLogo = section?.section_key === 'topbar_logo';
+const dispatch = createEventDispatcher();
+let uploading = false;
+let fileInput: HTMLInputElement;
+const isTopbarLogo = section?.section_key === 'topbar_logo';
 
-	// Ensure content is object with proper properties
-	if (!section.content || typeof section.content !== 'object') {
-		section.content = { logo_url: '', logo_alt: '' };
-	}
+const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
+const withAsset = (path?: string | null) => {
+	if (!path) return '';
+	if (/^https?:\/\//i.test(path)) return path;
+	const suffix = path.startsWith('/') ? path : `/${path}`;
+	return `${assetBase}${suffix}`;
+};
+
+// Ensure content is object with proper properties
+if (!section.content || typeof section.content !== 'object') {
+	section.content = { logo_url: '', logo_alt: '' };
+}
 
 	function handleChange() {
 		dispatch('change', section);
@@ -133,7 +142,7 @@
 		{#if !isTopbarLogo && (section.content.logo_url || section.image_url)}
 			<div class="mb-2 relative inline-block">
 				<img
-					src={section.content.logo_url || section.image_url}
+					src={withAsset(section.content.logo_url || section.image_url)}
 					alt={section.content.logo_alt || 'Logo'}
 					class="h-16 object-contain border border-gray-200 rounded-md p-2"
 				/>

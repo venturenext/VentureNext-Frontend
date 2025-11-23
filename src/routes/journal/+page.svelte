@@ -2,6 +2,7 @@
   import SEOHead from '$lib/components/seo/SEOHead.svelte';
   import Pagination from '$lib/components/ui/Pagination.svelte';
   import { SITE_NAME, PERK_PLACEHOLDER } from '$lib/config';
+  import { env } from '$env/dynamic/public';
   export let data;
   const posts = data.posts || [];
   const meta = data.meta || null;
@@ -10,6 +11,14 @@
   const sections = data.sections || [];
   const hero = sections.find((s) => s.section_key === 'journal_hero');
   $: currentCategory = current?.category ?? '';
+
+  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
+  const withAsset = (path) => {
+    if (!path) return '';
+    if (/^https?:\/\//i.test(path)) return path;
+    const suffix = path.startsWith('/') ? path : `/${path}`;
+    return `${assetBase}${suffix}`;
+  };
 
   function setCategory(c) {
     const qs = new URLSearchParams();
@@ -60,7 +69,7 @@
         <a class="block" href={`/journal/${posts[0].slug}`}>
           <div class="grid grid-cols-1 md:grid-cols-2">
             <div class="relative bg-gray-100 h-56 md:h-80 md:rounded-l-2xl rounded-t-2xl md:rounded-tr-none">
-              <img src={posts[0].og_image || PERK_PLACEHOLDER} alt={posts[0].title} class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+              <img src={withAsset(posts[0].og_image) || PERK_PLACEHOLDER} alt={posts[0].title} class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
             </div>
             <div class="p-6 md:p-8 flex flex-col justify-center">
               <div class="inline-flex px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-semibold w-max">Featured</div>
@@ -80,7 +89,7 @@
         <article class="bg-white rounded-2xl shadow-card overflow-hidden">
           <a href={`/journal/${p.slug}`} class="block">
             <div class="relative aspect-[16/10] bg-gray-100">
-              <img src={p.og_image || PERK_PLACEHOLDER} alt={p.title} class="w-full h-full object-cover" loading="lazy" />
+              <img src={withAsset(p.og_image) || PERK_PLACEHOLDER} alt={p.title} class="w-full h-full object-cover" loading="lazy" />
               <div class="absolute top-3 left-3 inline-flex px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-semibold">Article</div>
             </div>
             <div class="p-6">

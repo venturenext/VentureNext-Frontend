@@ -1,5 +1,6 @@
 <script>
   import RichTextEditor from '$lib/components/ui/RichTextEditor.svelte';
+  import { env } from '$env/dynamic/public';
 
   export let categories = [];
   export let post = null;
@@ -20,6 +21,14 @@
   let ogDescription = post?.og_description ?? '';
   let twitterTitle = post?.twitter_title ?? '';
   let twitterDescription = post?.twitter_description ?? '';
+
+  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
+  const withAsset = (path) => {
+    if (!path) return '';
+    if (/^https?:\/\//i.test(path)) return path;
+    const suffix = path.startsWith('/') ? path : `/${path}`;
+    return `${assetBase}${suffix}`;
+  };
 
   function generateSlug(text) {
     return text
@@ -124,7 +133,7 @@
         </span>
       </div>
       {#if post?.cover_image}
-        <img src={post.cover_image} alt="Cover" class="mt-2 max-h-28 w-full rounded-xl border border-admin-border object-cover" />
+        <img src={withAsset(post.cover_image)} alt="Cover" class="mt-2 max-h-28 w-full rounded-xl border border-admin-border object-cover" />
       {/if}
     </div>
 
@@ -154,7 +163,7 @@
         </span>
       </div>
       {#if post?.author?.avatar ?? post?.author_avatar}
-        <img src={post.author?.avatar ?? post.author_avatar} alt="Author Avatar" class="mt-2 h-16 w-16 rounded-full border border-admin-border object-cover" />
+        <img src={withAsset(post.author?.avatar ?? post.author_avatar)} alt="Author Avatar" class="mt-2 h-16 w-16 rounded-full border border-admin-border object-cover" />
       {/if}
     </div>
   </div>

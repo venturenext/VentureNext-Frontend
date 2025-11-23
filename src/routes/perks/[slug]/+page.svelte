@@ -2,8 +2,17 @@
   import SEOHead from '$lib/components/seo/SEOHead.svelte';
   import PerkDetail from '$lib/components/perks/PerkDetail.svelte';
   import { PERK_PLACEHOLDER } from '$lib/config';
+  import { env } from '$env/dynamic/public';
   export let data: any;
   const p = data.perk;
+
+  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
+  const withAsset = (path: string | undefined) => {
+    if (!path) return '';
+    if (/^https?:\/\//i.test(path)) return path;
+    const suffix = path.startsWith('/') ? path : `/${path}`;
+    return `${assetBase}${suffix}`;
+  };
 
   // Handle image error untuk related perks
   function handleImageError(e: Event) {
@@ -17,7 +26,7 @@
   function getBannerImage(perk: any): string {
     const banner = perk?.media?.banner;
     return (banner && typeof banner === 'string' && banner.trim().length > 0)
-      ? banner
+      ? withAsset(banner)
       : PERK_PLACEHOLDER;
   }
 </script>
@@ -26,7 +35,7 @@
   title={p?.meta?.meta_title || p?.title || 'Perk'}
   description={p?.meta?.meta_description || p?.short_description || ''}
   url={p?.meta?.canonical_url}
-  image={p?.meta?.og_image || p?.media?.banner}
+  image={withAsset(p?.meta?.og_image || p?.media?.banner)}
 />
 
 <section class="container-w py-8">

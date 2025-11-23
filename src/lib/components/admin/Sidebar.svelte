@@ -61,8 +61,8 @@
 <aside class="bg-admin-sidebar h-full w-64 border-r border-admin-border">
   <div class="h-16 flex items-center justify-between px-4">
     <a href="/admin" class="inline-flex items-center gap-2 font-semibold text-admin-text">
-      <img src="/logo.svg" alt="PerkPal" class="h-6 w-6" />
-      <span>PerkPal CMS</span>
+      <img src="/logo.png" alt="PerkPal" class="h-6 w-6" />
+      <span>VENTURE NEXT CMS</span>
     </a>
   </div>
   <nav class="px-3 pt-3 pb-6 text-sm space-y-4">

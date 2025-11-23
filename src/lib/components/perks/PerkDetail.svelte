@@ -5,13 +5,22 @@
   import Modal from '$lib/components/ui/Modal.svelte';
   import { toastStore } from '$lib/stores/toast';
   import { PERK_PLACEHOLDER } from '$lib/config';
+  import { env } from '$env/dynamic/public';
   export let perk: any;
   let openClaim = false;
   const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
 
+  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
+  const withAsset = (path?: string | null) => {
+    if (!path) return '';
+    if (/^https?:\/\//i.test(path)) return path;
+    const suffix = path.startsWith('/') ? path : `/${path}`;
+    return `${assetBase}${suffix}`;
+  };
+
   // Reactive fallback untuk banner image
   $: bannerImage = (perk?.media?.banner && typeof perk.media.banner === 'string' && perk.media.banner.trim().length > 0)
-    ? perk.media.banner
+    ? withAsset(perk.media.banner)
     : PERK_PLACEHOLDER;
 
   // Handle error loading image
@@ -59,7 +68,7 @@
     <div class="flex items-center gap-2 text-sm text-gray-500">
       {#if perk?.partner_logo || perk?.media?.logo}
         <img
-          src={perk?.partner_logo || perk?.media?.logo}
+          src={withAsset(perk?.partner_logo || perk?.media?.logo)}
           alt={`${perk.partner_name} logo`}
           class="w-8 h-8 rounded-full object-cover border border-gray-200"
           loading="lazy"

@@ -4,6 +4,7 @@
   import PartnerOfferModal from '$lib/components/forms/PartnerOfferModal.svelte';
   import CMSIcon from '$lib/components/CMSIcon.svelte';
   import { SITE_NAME, HERO_IMAGE } from '$lib/config';
+  import { env } from '$env/dynamic/public';
   export let data;
   const sections = data?.sections || [];
 
@@ -14,6 +15,14 @@
   const faq = getSection('partner_faq');
 
   let open = false;
+
+  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
+  const withAsset = (path) => {
+    if (!path) return '';
+    if (/^https?:\/\//i.test(path)) return path;
+    const suffix = path.startsWith('/') ? path : `/${path}`;
+    return `${assetBase}${suffix}`;
+  };
 
   const whyPartnerCards = Array.isArray(whyPartner?.content) ? whyPartner.content : [];
   const howItWorksCards = Array.isArray(howItWorks?.content) ? howItWorks.content : [];
@@ -29,7 +38,7 @@
 <!-- Hero -->
 <section class="relative text-white overflow-hidden">
   {#if hero.image_url}
-    <div class="absolute inset-0 bg-center bg-cover" style="background-image: url('{hero.image_url}')" aria-hidden="true"></div>
+    <div class="absolute inset-0 bg-center bg-cover" style={`background-image: url('${withAsset(hero.image_url) || HERO_IMAGE}')`} aria-hidden="true"></div>
   {/if}
   <div class="absolute inset-0 bg-brand-darkGreen/80"></div>
   <div class="container-w py-20 relative">

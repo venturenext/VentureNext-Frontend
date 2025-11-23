@@ -1,6 +1,7 @@
 <script lang="ts">
   import SEOHead from '$lib/components/seo/SEOHead.svelte';
   import { SITE_NAME, HERO_IMAGE } from '$lib/config';
+  import { env } from '$env/dynamic/public';
 
   export let data;
   const sections = data?.sections || [];
@@ -15,6 +16,14 @@
   const whatWeDoCards = Array.isArray(whatWeDo?.content) ? whatWeDo.content : [];
   const whoWeServeCards = Array.isArray(whoWeServe?.content) ? whoWeServe.content : [];
   const faqItems = Array.isArray(faq?.content) ? faq.content : [];
+
+  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
+  const withAsset = (path: string | undefined) => {
+    if (!path) return '';
+    if (/^https?:\/\//i.test(path)) return path;
+    const suffix = path.startsWith('/') ? path : `/${path}`;
+    return `${assetBase}${suffix}`;
+  };
 </script>
 
 <SEOHead title={`About | ${SITE_NAME}`} description={hero?.subtitle || ''} />
@@ -23,7 +32,7 @@
 <!-- Hero -->
 <section class="relative">
   {#if hero.image_url}
-    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{hero.image_url}')" aria-hidden="true"></div>
+    <div class="absolute inset-0 bg-cover bg-center" style={`background-image: url('${withAsset(hero.image_url) || HERO_IMAGE}')`} aria-hidden="true"></div>
   {/if}
   <div class="absolute inset-0 bg-brand-darkGreen/80"></div>
   <div class="relative container-w py-24 text-white">

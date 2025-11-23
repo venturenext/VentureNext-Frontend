@@ -1,6 +1,7 @@
 <script lang="ts">
   import SEOHead from '$lib/components/seo/SEOHead.svelte';
   import { SITE_NAME, CONTACT_EMAIL, HERO_IMAGE } from '$lib/config';
+  import { env } from '$env/dynamic/public';
 
   export let data;
   const sections = data?.sections || [];
@@ -47,6 +48,14 @@
 
   let currentId: string = privacyItems[0]?.id ?? '';
 
+  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
+  const withAsset = (path: string | undefined) => {
+    if (!path) return '';
+    if (/^https?:\/\//i.test(path)) return path;
+    const suffix = path.startsWith('/') ? path : `/${path}`;
+    return `${assetBase}${suffix}`;
+  };
+
   function slugify(value: string) {
     return (
       value
@@ -65,7 +74,7 @@
 <section class="relative text-white overflow-hidden">
   <div
     class="absolute inset-0 bg-center bg-cover"
-    style="background-image: url('{hero?.image_url || HERO_IMAGE}')"
+    style={`background-image: url('${withAsset(hero?.image_url) || HERO_IMAGE}')`}
     aria-hidden="true"
   ></div>
   <div class="absolute inset-0 bg-brand-darkGreen/85"></div>

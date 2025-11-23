@@ -2,6 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import type { LocationOption } from '$lib/types/location';
   import { browser } from '$app/environment';
+  import { env } from '$env/dynamic/public';
 
   interface Category {
     id: number;
@@ -87,6 +88,13 @@
   let isFeatured = perk?.is_featured ?? false;
   let isInitialLoad = true;
   let mounted = false;
+  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
+  const withAsset = (path?: string | null) => {
+    if (!path) return '';
+    if (/^https?:\/\//i.test(path)) return path;
+    const suffix = path.startsWith('/') ? path : `/${path}`;
+    return `${assetBase}${suffix}`;
+  };
 
   // Initialize category and subcategory on mount
   $: if (perk) {
@@ -334,7 +342,7 @@
         {#if perk?.partner_logo || perk?.media?.logo}
           <div class="mt-2">
             <p class="text-xs text-admin-muted">Current logo</p>
-            <img src={perk?.partner_logo || perk?.media?.logo} alt="Perk logo" class="mt-2 max-h-14 w-auto rounded-lg border border-admin-border object-contain" />
+            <img src={withAsset(perk?.partner_logo || perk?.media?.logo)} alt="Perk logo" class="mt-2 max-h-14 w-auto rounded-lg border border-admin-border object-contain" />
           </div>
         {/if}
       </div>
@@ -348,7 +356,7 @@
         {#if perk?.media?.banner}
           <div class="mt-2">
             <p class="text-xs text-admin-muted">Current banner</p>
-            <img src={perk.media.banner} alt="Perk banner" class="mt-2 max-h-32 w-full rounded-2xl border border-admin-border object-cover" />
+            <img src={withAsset(perk.media.banner)} alt="Perk banner" class="mt-2 max-h-32 w-full rounded-2xl border border-admin-border object-cover" />
           </div>
         {/if}
       </div>
@@ -492,7 +500,7 @@
         {#if perk?.meta?.og_image}
           <div class="mt-2">
             <p class="text-xs text-admin-muted">Current OG image</p>
-            <img src={perk?.meta?.og_image} alt="Open Graph preview" class="mt-2 max-h-40 w-full rounded-2xl border border-admin-border object-cover" />
+            <img src={withAsset(perk?.meta?.og_image)} alt="Open Graph preview" class="mt-2 max-h-40 w-full rounded-2xl border border-admin-border object-cover" />
           </div>
         {/if}
       </div>

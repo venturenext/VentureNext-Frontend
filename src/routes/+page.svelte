@@ -8,6 +8,15 @@
   import Button from '$lib/components/ui/Button.svelte';
   import PerkCard from '$lib/components/perks/PerkCard.svelte';
   import { HERO_IMAGE, SITE_NAME, PERK_PLACEHOLDER } from '$lib/config';
+  import { env } from '$env/dynamic/public';
+
+  const assetBase = (env.PUBLIC_ASSET_BASE || '').replace(/\/$/, '');
+  const withAsset = (path) => {
+    if (!path) return '';
+    if (/^https?:\/\//i.test(path)) return path;
+    const suffix = path.startsWith('/') ? path : `/${path}`;
+    return `${assetBase}${suffix}`;
+  };
 
   const getSection = (key) => cmsSections.find((s) => s.section_key === key && s.is_active !== false);
 
@@ -18,7 +27,7 @@
 
   const heroTitle = hero?.title || '';
   const heroSubtitle = hero?.subtitle || '';
-  const heroImage = hero?.image_url || '';
+  const heroImage = withAsset(hero?.image_url) || HERO_IMAGE;
   const heroChips = Array.isArray(hero?.content) ? hero.content : [];
 
   const howItWorksCards = Array.isArray(howItWorks?.content) ? howItWorks.content : [];
@@ -48,7 +57,7 @@
     {#if heroImage}
       <div class="relative flex justify-center">
         <div class="w-72 h-72 sm:w-96 sm:h-96 rounded-full overflow-hidden ring-8 ring-white/60 shadow-card">
-          <img src={heroImage} alt="Hero" class="w-full h-full object-cover" loading="lazy" />
+      <img src={heroImage} alt="Hero" class="w-full h-full object-cover" loading="lazy" />
         </div>
         <!-- floating chips -->
         {#each heroChips as chip, i}
@@ -110,8 +119,8 @@
         perkId={p.id}
         partner={p.partner_name}
         location={p.location}
-        image={p.media?.banner}
-        logo={p.partner_logo}
+        image={withAsset(p.media?.banner)}
+        logo={withAsset(p.partner_logo)}
         description={p.short_description}
         cta={p.redeem_type === 'external_link' ? 'Secure my spot' : 'Claim this perk'}
         redeemType={p.redeem_type}
@@ -144,7 +153,7 @@
       <article class="bg-white rounded-xl shadow-card overflow-hidden">
         <a href={`/journal/${p.slug}`} class="block">
           <div class="relative aspect-[16/10] bg-gray-100">
-            <img src={p.og_image || PERK_PLACEHOLDER} alt={p.title} class="w-full h-full object-cover" loading="lazy" />
+            <img src={withAsset(p.og_image) || PERK_PLACEHOLDER} alt={p.title} class="w-full h-full object-cover" loading="lazy" />
             {#if p.category || p.category_data}
               <div class="absolute top-3 left-3 inline-flex px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-semibold">
                 {p.category || p.category_data?.name}
