@@ -7,4 +7,4 @@ export const HERO_IMAGE = withAsset(env.PUBLIC_HERO_IMAGE || '/images/hero.svg')
 export const TWITTER_URL = env.PUBLIC_TWITTER_URL || 'https://twitter.com';
 export const LINKEDIN_URL = env.PUBLIC_LINKEDIN_URL || 'https://www.linkedin.com';
 export const CTA_BROWSE_LABEL = env.PUBLIC_CTA_BROWSE_LABEL || 'Browse Perks';
-export const PERK_PLACEHOLDER = withAsset(env.PUBLIC_PERK_PLACEHOLDER || '/images/perk-placeholder.svg');
+export const PERK_PLACEHOLDER = env.PUBLIC_PERK_PLACEHOLDER || '/images/perk-placeholder.svg';
