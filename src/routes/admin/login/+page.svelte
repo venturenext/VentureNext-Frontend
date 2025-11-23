@@ -1,6 +1,9 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { HERO_IMAGE, SITE_NAME } from '$lib/config';
+  import { SITE_NAME } from '$lib/config';
+  import { env } from '$env/dynamic/public';
+  const HERO_IMAGE = env.PUBLIC_HERO_IMAGE || '/images/hero.svg';
+
   let showPassword = false;
   let email = '';
   let password = '';
