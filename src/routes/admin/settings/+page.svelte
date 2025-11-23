@@ -14,6 +14,10 @@
 
   let message = '';
   let messageType = '';
+  let passwordMessage = '';
+  let passwordMessageType = '';
+  let emailMessage = '';
+  let emailMessageType = '';
 
   const enhanceSettings = () => {
     message = 'Saving settings...';
@@ -42,6 +46,57 @@
     };
   };
 
+  const enhancePassword = () => {
+    passwordMessage = 'Changing password...';
+    passwordMessageType = 'info';
+
+    return async ({ result, update, formElement }) => {
+      await update();
+
+      if (result.type === 'success') {
+        passwordMessage = 'Password changed successfully!';
+        passwordMessageType = 'success';
+        formElement.reset();
+
+        setTimeout(() => {
+          passwordMessage = '';
+        }, 3000);
+      } else if (result.type === 'failure') {
+        passwordMessage = result.data?.error || 'Failed to change password.';
+        passwordMessageType = 'error';
+      }
+    };
+  };
+
+  const enhanceEmail = () => {
+    emailMessage = 'Changing email...';
+    emailMessageType = 'info';
+
+    return async ({ result, update, formElement }) => {
+      if (result.type === 'success') {
+        // Update local user data jika ada
+        if (result.data?.email && data.user) {
+          data.user.email = result.data.email;
+        }
+
+        emailMessage = 'Email changed successfully!';
+        emailMessageType = 'success';
+        formElement.reset();
+
+        await update();
+
+        setTimeout(() => {
+          emailMessage = '';
+        }, 3000);
+      } else if (result.type === 'failure') {
+        emailMessage = result.data?.error || 'Failed to change email.';
+        emailMessageType = 'error';
+      }
+
+      await update();
+    };
+  };
+
   const formatLabel = (key) => key
     .replace(/_/g, ' ')
     .replace(/-/g, ' ')
@@ -66,7 +121,74 @@
     </div>
   {/if}
 
-    <form method="POST" use:enhance={enhanceSettings} class="space-y-8 rounded-2xl border border-admin-border bg-white p-6">
+  <section class="rounded-2xl border border-admin-border bg-white p-6 space-y-6">
+    <div>
+      <h2 class="text-lg font-semibold text-brand-richBlack">Account Security</h2>
+      <p class="text-sm text-admin-muted">Update your password and email address</p>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      <div class="space-y-4">
+        <h3 class="text-base font-medium text-brand-richBlack">Change Password</h3>
+        {#if passwordMessage}
+          <div class={`rounded-lg border px-3 py-2 text-sm ${passwordMessageType === 'success' ? 'border-green-200 bg-green-50 text-green-700' : passwordMessageType === 'error' ? 'border-red-200 bg-red-50 text-red-700' : 'border-blue-200 bg-blue-50 text-blue-700'}`}>
+            {passwordMessage}
+          </div>
+        {/if}
+        <form method="POST" action="?/changePassword" use:enhance={enhancePassword} class="space-y-3">
+          <div>
+            <label for="pwd_current" class="text-sm font-medium text-admin-muted block mb-1">Current Password</label>
+            <input id="pwd_current" type="password" name="current_password" required placeholder="Enter your current password"
+                   class="w-full rounded-lg border border-admin-border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue" />
+          </div>
+          <div>
+            <label for="pwd_new" class="text-sm font-medium text-admin-muted block mb-1">New Password</label>
+            <input id="pwd_new" type="password" name="new_password" required placeholder="Min 8 characters, mixed case, numbers, symbols"
+                   class="w-full rounded-lg border border-admin-border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue" />
+          </div>
+          <div>
+            <label for="pwd_confirm" class="text-sm font-medium text-admin-muted block mb-1">Confirm New Password</label>
+            <input id="pwd_confirm" type="password" name="new_password_confirmation" required placeholder="Re-enter new password"
+                   class="w-full rounded-lg border border-admin-border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue" />
+          </div>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-admin-blue text-sm font-semibold text-white w-full">
+            Change Password
+          </button>
+        </form>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-base font-medium text-brand-richBlack">Change Email</h3>
+        {#if emailMessage}
+          <div class={`rounded-lg border px-3 py-2 text-sm ${emailMessageType === 'success' ? 'border-green-200 bg-green-50 text-green-700' : emailMessageType === 'error' ? 'border-red-200 bg-red-50 text-red-700' : 'border-blue-200 bg-blue-50 text-blue-700'}`}>
+            {emailMessage}
+          </div>
+        {/if}
+        <form method="POST" action="?/changeEmail" use:enhance={enhanceEmail} class="space-y-3">
+          <div>
+            <label for="current_email" class="text-sm font-medium text-admin-muted block mb-1">Current Email</label>
+            <input id="current_email" type="email" value={data.user?.email || ''} disabled
+                   class="w-full rounded-lg border border-admin-border bg-gray-50 px-3 py-2 text-gray-600 cursor-not-allowed" />
+          </div>
+          <div>
+            <label for="email_pwd_current" class="text-sm font-medium text-admin-muted block mb-1">Current Password</label>
+            <input id="email_pwd_current" type="password" name="current_password" required placeholder="Enter your current password for verification"
+                   class="w-full rounded-lg border border-admin-border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue" />
+          </div>
+          <div>
+            <label for="new_email" class="text-sm font-medium text-admin-muted block mb-1">New Email Address</label>
+            <input id="new_email" type="email" name="new_email" required placeholder="Enter your new email address"
+                   class="w-full rounded-lg border border-admin-border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue" />
+          </div>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-admin-blue text-sm font-semibold text-white w-full">
+            Change Email
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+    <form method="POST" action="?/updateSettings" use:enhance={enhanceSettings} class="space-y-8 rounded-2xl border border-admin-border bg-white p-6">
     {#each grouped as section}
       <section class="space-y-4">
         <div class="flex items-center justify-between">

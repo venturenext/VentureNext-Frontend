@@ -12,9 +12,6 @@ export const GET: RequestHandler = async ({ locals, url, fetch }) => {
   const range = url.searchParams.get('range') || '30';
   const API_BASE = privateEnv.PRIVATE_API_BASE || publicEnv.PUBLIC_API_BASE;
 
-  console.log('Analytics API_BASE:', API_BASE);
-  console.log('Fetching:', `${API_BASE}/admin/analytics/dashboard?range=${range}`);
-
   try {
     const res = await fetch(`${API_BASE}/admin/analytics/dashboard?range=${range}`, {
       headers: {
@@ -23,11 +20,8 @@ export const GET: RequestHandler = async ({ locals, url, fetch }) => {
       }
     });
 
-    console.log('Analytics response status:', res.status);
-
     if (!res.ok) {
       const errorText = await res.text();
-      console.error('Analytics error response:', errorText);
       return json({ error: 'Failed to fetch analytics dashboard', details: errorText }, { status: res.status });
     }
 

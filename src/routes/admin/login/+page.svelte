@@ -38,7 +38,7 @@
         <img src={HERO_IMAGE} alt="Hero" class="absolute inset-0 w-full h-full object-cover" />
         <div class="absolute inset-0 bg-brand-darkGreen/70"></div>
         <div class="relative h-full p-8 lg:p-10 flex flex-col justify-end text-white">
-          <img src="/logo.svg" alt={SITE_NAME} class="h-8 w-auto mb-8 opacity-95" />
+         
           <h2 class="text-3xl md:text-4xl leading-tight font-extrabold tracking-tight">
             Your next adventure awaits!
           </h2>

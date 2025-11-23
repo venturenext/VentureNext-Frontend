@@ -479,3 +479,35 @@ export async function adminDeletePageContent(token: string, id: number | string,
   const res = await fetcher(`${API_BASE}/admin/page-content/${id}`, { method: 'DELETE', headers: bearerHeaders(token) });
   if (!res.ok) throw new Error('Failed to delete page content');
 }
+
+export async function adminChangePassword(token: string, body: { current_password: string; new_password: string; new_password_confirmation: string }, fetcher = fetch) {
+  const res = await fetcher(`${API_BASE}/admin/settings/change-password`, {
+    method: 'POST',
+    headers: jsonHeaders(token),
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({ message: 'Failed to change password' }));
+    const error = new Error(errorData.message || 'Failed to change password');
+    (error as any).status = res.status;
+    (error as any).details = errorData;
+    throw error;
+  }
+  return res.json() as Promise<ApiItemResponse<any>>;
+}
+
+export async function adminChangeEmail(token: string, body: { current_password: string; new_email: string }, fetcher = fetch) {
+  const res = await fetcher(`${API_BASE}/admin/settings/change-email`, {
+    method: 'POST',
+    headers: jsonHeaders(token),
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({ message: 'Failed to change email' }));
+    const error = new Error(errorData.message || 'Failed to change email');
+    (error as any).status = res.status;
+    (error as any).details = errorData;
+    throw error;
+  }
+  return res.json() as Promise<ApiItemResponse<any>>;
+}

@@ -1,5 +1,5 @@
 import type { Actions, PageServerLoad } from './$types';
-import { adminGetSettings, adminUpdateSettings } from '$lib/api/admin';
+import { adminGetSettings, adminUpdateSettings, adminChangePassword, adminChangeEmail } from '$lib/api/admin';
 import { fail, redirect } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ locals, fetch }) => {
@@ -9,12 +9,13 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
   const res = await adminGetSettings(token, fetch);
   return {
     settings: res.data || [],
-    grouped: res.grouped || {}
+    grouped: res.grouped || {},
+    user: locals.user
   };
 };
 
 export const actions: Actions = {
-  default: async ({ locals, request, fetch }) => {
+  updateSettings: async ({ locals, request, fetch }) => {
     try {
       const token = locals.token!;
       const form = await request.formData();
@@ -32,6 +33,36 @@ export const actions: Actions = {
       return { success: true };
     } catch (error) {
       return fail(400, { error: 'Failed to update settings' });
+    }
+  },
+
+  changePassword: async ({ locals, request, fetch }) => {
+    try {
+      const token = locals.token!;
+      const form = await request.formData();
+      const current_password = form.get('current_password') as string;
+      const new_password = form.get('new_password') as string;
+      const new_password_confirmation = form.get('new_password_confirmation') as string;
+
+      await adminChangePassword(token, { current_password, new_password, new_password_confirmation }, fetch);
+      return { success: true, type: 'password' };
+    } catch (error: any) {
+      return fail(400, { error: error.message || 'Failed to change password', type: 'password' });
+    }
+  },
+
+  changeEmail: async ({ locals, request, fetch }) => {
+    try {
+      const token = locals.token!;
+      const form = await request.formData();
+      const current_password = form.get('current_password') as string;
+      const new_email = form.get('new_email') as string;
+
+      const result = await adminChangeEmail(token, { current_password, new_email }, fetch);
+
+      return { success: true, type: 'email', email: result.data?.email };
+    } catch (error: any) {
+      return fail(400, { error: error.message || 'Failed to change email', type: 'email' });
     }
   }
 };
