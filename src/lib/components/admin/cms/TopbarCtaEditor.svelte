@@ -19,8 +19,9 @@
 <div class="space-y-4">
   <div class="border-t pt-3 space-y-3">
     <div>
-      <label class="block text-xs font-medium text-gray-600 mb-1">CTA Label</label>
+      <label for="cta-label" class="block text-xs font-medium text-gray-600 mb-1">CTA Label</label>
       <input
+        id="cta-label"
         type="text"
         bind:value={cta.label}
         on:input={emitChange}
@@ -29,8 +30,9 @@
       />
     </div>
     <div>
-      <label class="block text-xs font-medium text-gray-600 mb-1">CTA URL</label>
+      <label for="cta-url" class="block text-xs font-medium text-gray-600 mb-1">CTA URL</label>
       <input
+        id="cta-url"
         type="text"
         bind:value={cta.href}
         on:input={emitChange}

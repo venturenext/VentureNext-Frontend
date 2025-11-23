@@ -5,7 +5,7 @@ declare global {
     // interface Error {}
     interface Locals {
       token: string | null;
-      user: { id: number; name: string; email: string; role: 'superadmin' | 'editor' | string } | null;
+      user: { id: number; name: string; email: string; role: 'superadmin' | string } | null;
     }
     // interface PageData {}
     // interface Platform {}

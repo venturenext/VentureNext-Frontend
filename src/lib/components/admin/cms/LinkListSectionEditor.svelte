@@ -41,8 +41,9 @@
 <div class="space-y-4">
   {#if !isTopbarLinks}
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Section Title</label>
+      <label for="section-title" class="block text-sm font-medium text-gray-700 mb-1">Section Title</label>
       <input
+        id="section-title"
         type="text"
         bind:value={section.title}
         on:input={handleChange}
@@ -82,8 +83,9 @@
         </div>
         <div class="grid grid-cols-1 {isTopbarLinks ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-3">
           <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Label</label>
+            <label for="link-label-{index}" class="block text-xs font-medium text-gray-600 mb-1">Label</label>
             <input
+              id="link-label-{index}"
               type="text"
               bind:value={link.label}
               on:input={handleChange}
@@ -92,8 +94,9 @@
             />
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">URL</label>
+            <label for="link-url-{index}" class="block text-xs font-medium text-gray-600 mb-1">URL</label>
             <input
+              id="link-url-{index}"
               type="text"
               bind:value={link.href}
               on:input={handleChange}
@@ -103,8 +106,9 @@
           </div>
           {#if !isTopbarLinks}
             <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1">Icon (optional)</label>
+              <label for="link-icon-{index}" class="block text-xs font-medium text-gray-600 mb-1">Icon (optional)</label>
               <input
+                id="link-icon-{index}"
                 type="text"
                 bind:value={link.icon}
                 on:input={handleChange}

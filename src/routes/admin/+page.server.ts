@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
   const d = json.data || {};
   return {
     stats: d.stats || {},
-    recent_leads: d.recent_leads || [],
+    recent_activities: d.recent_activities || [],
     top_perks: d.top_perks || []
   };
 };

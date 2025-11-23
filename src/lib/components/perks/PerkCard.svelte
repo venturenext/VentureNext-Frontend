@@ -3,7 +3,10 @@
   import ClaimForm from '$lib/components/forms/ClaimForm.svelte';
   import { PERK_PLACEHOLDER } from '$lib/config';
   import { withAsset } from '$lib/utils/assets';
+  import { trackImpression, trackClick, trackAffiliateClick } from '$lib/utils/analytics';
+  import { onMount } from 'svelte';
   import type { RedeemType } from '$lib/types/perk';
+
   export let title = 'Sample Perk';
   export let partner = 'Partner';
   export let location = 'global';
@@ -16,6 +19,13 @@
   export let redeemType: RedeemType | undefined = undefined;
   export let externalUrl: string | undefined = undefined;
   export let couponCode: string | undefined = undefined;
+
+  // Track impression when card is mounted
+  onMount(() => {
+    if (perkId) {
+      trackImpression(perkId);
+    }
+  });
 
   function partnerInitial(name: string) {
     const n = (name || '').trim();
@@ -37,11 +47,19 @@
   let copied = false;
 
   function handleCta() {
+    // Track click when user clicks CTA button
+    if (perkId) {
+      trackClick(perkId);
+    }
     openClaim = true;
   }
 
   function handleClaimAction() {
     if (redeemType === 'external_link' && externalUrl) {
+      // Track affiliate click when opening external link
+      if (perkId) {
+        trackAffiliateClick(perkId);
+      }
       window.open(externalUrl, '_blank', 'noopener');
       openClaim = false;
     }

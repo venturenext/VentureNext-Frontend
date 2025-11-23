@@ -1,6 +1,7 @@
 <script lang="ts">
   import { submitPerkClaim } from '$lib/api/leads';
   import { isEmail, required } from '$lib/utils/validators';
+  import { trackFormSubmission } from '$lib/utils/analytics';
   import FormInput from './FormInput.svelte';
   import FormTextarea from './FormTextarea.svelte';
   import FormButton from './FormButton.svelte';
@@ -26,6 +27,10 @@
     success = '';
     try {
       await submitPerkClaim({ perk_id: perkId, name, email, company, phone, message });
+
+      // Track form submission after successful submit
+      trackFormSubmission(perkId);
+
       success = 'Thanks! We\'ve received your claim.';
       name = email = company = phone = message = '';
     } catch (e) {

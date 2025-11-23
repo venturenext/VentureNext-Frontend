@@ -1,9 +1,10 @@
 <script>
   import ActivityFeed from '$lib/components/admin/ActivityFeed.svelte';
+  import DashboardStats from '$lib/components/admin/DashboardStats.svelte';
 
   export let data;
   const stats = data?.stats || {};
-  const activities = data?.recent_leads || [];
+  const activities = data?.recent_activities || [];
 
   const getStat = (...keys) => {
     for (const key of keys) {
@@ -47,13 +48,6 @@
     </div>
 
     <div class="mt-6">
-      <h2 class="text-lg font-semibold text-admin-text">Recent Activities</h2>
-      <div class="mt-3 bg-white rounded-xl border border-admin-border shadow-card p-4">
-        <ActivityFeed items={activities} />
-      </div>
-    </div>
-
-    <div class="mt-6">
       <h2 class="text-lg font-semibold text-admin-text">Quick Actions</h2>
       <div class="mt-3 flex flex-wrap gap-3">
         {#each quickActions as action, i}
@@ -66,6 +60,19 @@
           </a>
         {/each}
       </div>
+    </div>
+  </div>
+
+  <!-- Analytics Dashboard -->
+  <div class="bg-admin-surface rounded-2xl border border-admin-border p-6 shadow-sm">
+    <DashboardStats />
+  </div>
+
+  <!-- Recent Activities -->
+  <div class="bg-admin-surface rounded-2xl border border-admin-border p-6 shadow-sm">
+    <h2 class="text-lg font-semibold text-admin-text mb-4">Recent Activities</h2>
+    <div class="bg-white rounded-xl border border-admin-border shadow-card p-4">
+      <ActivityFeed items={activities} />
     </div>
   </div>
 </section>

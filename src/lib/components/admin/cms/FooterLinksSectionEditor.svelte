@@ -81,8 +81,9 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-{isSocial ? 3 : 2} gap-3">
           <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Label</label>
+            <label for="footer-link-label-{index}" class="block text-xs font-medium text-gray-600 mb-1">Label</label>
             <input
+              id="footer-link-label-{index}"
               type="text"
               bind:value={link.label}
               on:input={emitChange}
@@ -91,8 +92,9 @@
             />
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">URL</label>
+            <label for="footer-link-url-{index}" class="block text-xs font-medium text-gray-600 mb-1">URL</label>
             <input
+              id="footer-link-url-{index}"
               type="text"
               bind:value={link.href}
               on:input={emitChange}
@@ -102,8 +104,9 @@
           </div>
           {#if isSocial}
             <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1">Icon</label>
+              <label for="footer-link-icon-{index}" class="block text-xs font-medium text-gray-600 mb-1">Icon</label>
               <select
+                id="footer-link-icon-{index}"
                 bind:value={link.icon}
                 on:change={emitChange}
                 class="w-full px-2 py-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 text-sm"

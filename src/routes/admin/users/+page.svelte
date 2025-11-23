@@ -88,7 +88,7 @@
   const successCopy = {
     create: {
       title: 'User created successfully',
-      description: 'The new content editor has been added to the CMS.'
+      description: 'The new user has been added to the CMS.'
     },
     update: {
       title: 'User updated successfully',
@@ -223,7 +223,7 @@
       <label class="block text-sm text-admin-muted" for="create_password">Password</label>
       <input id="create_password" name="password" type="password" required class="mt-1 w-full rounded-lg border border-admin-border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue" />
     </div>
-    <input type="hidden" name="role" value="content_editor" />
+    <input type="hidden" name="role" value="super_admin" />
     <div class="flex justify-end gap-2">
       <button type="button" class="px-4 py-2 rounded-lg border border-admin-border" on:click={() => { openCreate = false; createError = ''; }}>Cancel</button>
       <button type="submit" class="px-4 py-2 rounded-lg bg-admin-blue text-white">Create</button>
@@ -252,8 +252,7 @@
         <label class="block text-sm text-admin-muted" for="edit_password">Password (leave blank to keep current)</label>
         <input id="edit_password" name="password" type="password" class="mt-1 w-full rounded-lg border border-admin-border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue" />
       </div>
-      <input type="hidden" name="role" value="content_editor" />
-      <p class="text-xs text-admin-muted">Only content editors can be managed here.</p>
+      <input type="hidden" name="role" value="super_admin" />
       <div class="flex justify-end gap-2">
         <button type="button" class="px-4 py-2 rounded-lg border border-admin-border" on:click={() => { openEdit = false; editError = ''; }}>Cancel</button>
         <button type="submit" class="px-4 py-2 rounded-lg bg-admin-blue text-white">Save</button>

@@ -29,7 +29,7 @@ export const actions: Actions = {
         name: String(fd.get('name') || ''),
         email: String(fd.get('email') || ''),
         password: String(fd.get('password') || ''),
-        role: String(fd.get('role') || 'content_editor')
+        role: String(fd.get('role') || 'super_admin')
       }, fetch);
       return { success: true };
     } catch (e: any) {
@@ -44,7 +44,7 @@ export const actions: Actions = {
       const body: Record<string, any> = {
         name: String(fd.get('name') || ''),
         email: String(fd.get('email') || ''),
-        role: String(fd.get('role') || 'content_editor')
+        role: String(fd.get('role') || 'super_admin')
       };
       const password = String(fd.get('password') || '');
       if (password) {

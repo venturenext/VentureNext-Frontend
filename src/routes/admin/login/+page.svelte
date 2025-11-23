@@ -97,7 +97,7 @@
           </form>
 
           <div class="mt-6 text-center text-xs text-admin-muted">
-            Superadmin and Content Editor access
+            Superadmin access
           </div>
         </div>
       </div>

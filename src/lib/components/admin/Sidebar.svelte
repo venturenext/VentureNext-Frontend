@@ -1,13 +1,17 @@
 <script lang="ts">
   import { page } from '$app/stores';
   export let user: { role?: string; name?: string } | undefined;
+
   $: path = $page.url.pathname;
-  const active = (p: string) => p !== '/admin'
-    ? path === p || path.startsWith(p + '/')
-    : path === '/admin';
+  $: active = (p: string) => {
+    if (p === '/admin') {
+      return path === '/admin';
+    }
+    return path === p || path.startsWith(p + '/');
+  };
+
   const norm = (r?: string) => (r || '').toLowerCase().replace(/\s+/g, '').replace(/-/g, '').replace(/_/g, '');
   const isSuper = ['superadmin'].includes(norm(user?.role));
-  const isContentEditor = ['contenteditor'].includes(norm(user?.role));
   const initial = (n?: string) => (n || '?').trim().charAt(0).toUpperCase();
 
   const managementLinks = [
@@ -18,8 +22,7 @@
     { href: '/admin/locations', label: 'Locations', icon: 'pin' },
     { href: '/admin/journal', label: 'Journal', icon: 'book' },
     { href: '/admin/leads', label: 'Leads', icon: 'users' },
-    { href: '/admin/contacts', label: 'Inbox', icon: 'mail' },
-    { href: '/admin/users', label: 'Users', icon: 'user' }
+    { href: '/admin/contacts', label: 'Inbox', icon: 'mail' }
   ];
 
   const frontendLinks = [
@@ -84,7 +87,7 @@
       {/each}
     </div>
 
-    {#if isContentEditor}
+    {#if isSuper}
       <div class="pt-2 border-t border-admin-border">
         <div class="text-xs uppercase tracking-wide text-admin-muted px-2 mb-2">Frontend</div>
         {#each frontendLinks as item (item.href)}
