@@ -19,12 +19,12 @@
 
   const successCopy = {
     save: {
-      title: 'Perk updated',
-      description: 'Your changes have been saved. You will be returned to the listing with the latest data.'
+      title: 'Draft saved',
+      description: 'Your changes have been saved as draft. Click "Publish" when ready to make it live.'
     },
     publish: {
       title: 'Perk published',
-      description: 'The perk is now visible to users. You will be returned to the listing with the latest data.'
+      description: 'The perk is now live and visible to users. You will be returned to the listing with the latest data.'
     }
   };
 
@@ -70,10 +70,10 @@
       <button
         type="submit"
         name="intent"
-        value="save"
+        value="publish"
         disabled={!isFormValid}
-        class="rounded-lg bg-admin-blue px-5 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">
-        Save
+        class="rounded-lg bg-green-600 px-5 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50">
+        Publish
       </button>
     </div>
   </form>

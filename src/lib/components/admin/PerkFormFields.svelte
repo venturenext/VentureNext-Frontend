@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import type { LocationOption } from '$lib/types/location';
+  import { browser } from '$app/environment';
 
   interface Category {
     id: number;
@@ -84,7 +85,6 @@
   let selectedSubcategory = '';
   let isActive = perk?.is_active ?? true;
   let isFeatured = perk?.is_featured ?? false;
-  let status = perk?.status ?? 'draft';
   let isInitialLoad = true;
   let mounted = false;
 
@@ -97,13 +97,64 @@
   // Form fields for validation
   let title = perk?.title ?? '';
   let slug = perk?.slug ?? '';
-  let description = perk?.description ?? '';
   let partnerName = perk?.partner_name ?? '';
+  let shortDescription = perk?.short_description ?? '';
 
   // File upload states
   let selectedLogoFile: string | null = null;
   let selectedBannerFile: string | null = null;
   let selectedOgImageFile: string | null = null;
+
+  // Auto-save functionality
+  let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
+  let lastSavedTime: Date | null = null;
+  let isSaving = false;
+  const AUTO_SAVE_DELAY = 3000; // 3 seconds
+
+  // Watch for form field changes and trigger auto-save
+  $: if (browser && perk?.id && mounted && !isInitialLoad) {
+    // Trigger auto-save when key fields change
+    const fieldsToWatch = [title, shortDescription, partnerName, selectedCategory, selectedSubcategory, location, redeemType, isActive, isFeatured];
+    triggerAutoSave();
+  }
+
+  function triggerAutoSave() {
+    if (autoSaveTimer) {
+      clearTimeout(autoSaveTimer);
+    }
+
+    autoSaveTimer = setTimeout(() => {
+      autoSave();
+    }, AUTO_SAVE_DELAY);
+  }
+
+  async function autoSave() {
+    if (!perk?.id || isSaving) return;
+
+    try {
+      isSaving = true;
+      const form = document.querySelector('form');
+      if (!form) return;
+
+      const formData = new FormData(form);
+      // Ensure status is draft for auto-save
+      formData.set('status', 'draft');
+      formData.set('intent', 'save');
+
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        lastSavedTime = new Date();
+      }
+    } catch (error) {
+      console.error('Auto-save failed:', error);
+    } finally {
+      isSaving = false;
+    }
+  }
 
   // Auto-generate slug from title
   function generateSlug(text: string): string {
@@ -123,7 +174,6 @@
   $: isFormValid =
     title.trim() !== '' &&
     slug.trim() !== '' &&
-    description.trim() !== '' &&
     partnerName.trim() !== '' &&
     selectedCategory !== '';
 
@@ -175,9 +225,40 @@
       isInitialLoad = false;
     }, 200);
   });
+
+  // Cleanup on destroy
+  onDestroy(() => {
+    if (autoSaveTimer) {
+      clearTimeout(autoSaveTimer);
+    }
+  });
 </script>
 
 <div class="space-y-8">
+  <!-- Auto-save indicator -->
+  {#if perk?.id}
+    <div class="rounded-lg border border-admin-border bg-blue-50 px-4 py-2 text-xs text-admin-muted">
+      {#if isSaving}
+        <span class="flex items-center gap-2">
+          <svg class="h-4 w-4 animate-spin text-admin-blue" viewBox="0 0 24 24" fill="none">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Saving draft...
+        </span>
+      {:else if lastSavedTime}
+        <span class="flex items-center gap-2">
+          <svg class="h-4 w-4 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Draft saved at {lastSavedTime.toLocaleTimeString()}
+        </span>
+      {:else}
+        <span>Auto-save enabled - Changes will be saved automatically as draft</span>
+      {/if}
+    </div>
+  {/if}
+
   <!-- General details -->
   <section class="space-y-6 rounded-2xl border border-admin-border bg-white p-6 shadow-sm">
     <header>
@@ -204,11 +285,14 @@
       </div>
       <div class="lg:col-span-2">
         <label class="text-sm font-medium text-admin-muted" for="short_description">Short Description</label>
-        <textarea id="short_description" name="short_description" rows="3" value={perk?.short_description ?? ''} class="mt-1 w-full rounded-lg border border-admin-border bg-admin-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue"></textarea>
-      </div>
-      <div class="lg:col-span-2">
-        <label class="text-sm font-medium text-admin-muted" for="description">Description <span class="text-red-500">*</span></label>
-        <textarea id="description" name="description" rows="5" bind:value={description} required class="mt-1 w-full rounded-lg border border-admin-border bg-admin-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue"></textarea>
+        <textarea
+          id="short_description"
+          name="short_description"
+          rows="3"
+          bind:value={shortDescription}
+          class="mt-1 w-full rounded-lg border border-admin-border bg-admin-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue"
+        ></textarea>
+        <input type="hidden" name="description" value={shortDescription} />
       </div>
       <div class="lg:col-span-2">
         <label class="text-sm font-medium text-admin-muted" for="partner_name">Vendor / Brand Name <span class="text-red-500">*</span></label>
@@ -357,13 +441,15 @@
                placeholder="Enter tags, comma separated"
                class="mt-1 w-full rounded-lg border border-admin-border bg-admin-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue" />
       </div>
-      <div>
-        <label class="text-sm font-medium text-admin-muted" for="status">Status</label>
-        <select id="status" name="status" bind:value={status}
-                class="mt-1 w-full rounded-lg border border-admin-border bg-admin-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue">
-          <option value="draft">Draft</option>
-          <option value="published">Published</option>
-        </select>
+      <div class="rounded-lg border border-admin-border bg-gray-50 px-4 py-3">
+        <p class="text-sm font-medium text-admin-muted">Status: <span class="font-semibold text-brand-richBlack">{perk?.status ?? 'draft'}</span></p>
+        <p class="mt-1 text-xs text-admin-muted">
+          {#if perk?.status === 'published'}
+            This perk is published and visible to users. Click "Publish" to update.
+          {:else}
+            This perk is saved as draft. Click "Publish" to make it live.
+          {/if}
+        </p>
       </div>
     </div>
 

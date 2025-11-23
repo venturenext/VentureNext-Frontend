@@ -47,53 +47,6 @@
 		></textarea>
 	</div>
 
-	<div class="border-t pt-4">
-		<h4 class="font-medium text-gray-900 mb-3">Display Settings</h4>
-
-		<div class="space-y-3">
-			<div class="flex items-center">
-				<input
-					type="checkbox"
-					id="show_published"
-					bind:checked={section.content.show_published}
-					on:change={handleChange}
-					class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-				/>
-				<label for="show_published" class="ml-2 block text-sm text-gray-700">
-					Show Published Items
-				</label>
-			</div>
-
-			<div class="flex items-center">
-				<input
-					type="checkbox"
-					id="show_draft"
-					bind:checked={section.content.show_draft}
-					on:change={handleChange}
-					class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-				/>
-				<label for="show_draft" class="ml-2 block text-sm text-gray-700">
-					Show Draft Items
-				</label>
-			</div>
-
-			<div>
-				<label for="limit" class="block text-sm font-medium text-gray-700 mb-1">
-					Number of Items to Display
-				</label>
-				<input
-					type="number"
-					id="limit"
-					bind:value={section.content.limit}
-					on:input={handleChange}
-					min="1"
-					max="20"
-					class="w-32 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-				/>
-			</div>
-		</div>
-	</div>
-
 	<div class="flex items-center">
 		<input
 			type="checkbox"

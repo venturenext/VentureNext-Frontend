@@ -7,6 +7,7 @@
   const categories = data.categories ?? [];
   let error = '';
   let successModalOpen = false;
+  let isPublished = false;
 
   const createEnhance = () => {
     return async ({ result, update }) => {
@@ -47,10 +48,15 @@
         <p class="text-sm text-red-800">{error}</p>
       </div>
     {/if}
-    <JournalFormFields {categories} />
+    <JournalFormFields {categories} bind:isPublished />
     <div class="flex justify-end gap-3">
       <a href="/admin/journal" class="px-4 py-2 rounded-lg border border-admin-border text-sm font-semibold text-admin-muted">Back</a>
-      <button type="submit" class="px-5 py-2 rounded-lg bg-admin-blue text-sm font-semibold text-white">Create</button>
+      <button type="submit" class="px-5 py-2 rounded-lg border border-admin-border text-sm font-semibold text-admin-muted" on:click={() => (isPublished = false)}>
+        Save Draft
+      </button>
+      <button type="submit" class="px-5 py-2 rounded-lg bg-admin-blue text-sm font-semibold text-white" on:click={() => (isPublished = true)}>
+        Publish
+      </button>
     </div>
   </form>
 </div>

@@ -22,6 +22,19 @@
   let hiddenInput;
   let showLinkModal = false;
   let linkUrl = '';
+  let blockType = 'p';
+  let colorValue = '#000000';
+
+  function refreshBlockType() {
+    if (!editor) return;
+    for (let level = 1; level <= 6; level++) {
+      if (editor.isActive('heading', { level })) {
+        blockType = String(level);
+        return;
+      }
+    }
+    blockType = 'p';
+  }
 
   function handleModalKeydown(e, closeModal) {
     if (e.key === 'Escape') {
@@ -33,7 +46,10 @@
     editor = new Editor({
       element: element,
       extensions: [
-        StarterKit,
+        StarterKit.configure({
+          link: false,
+          underline: false
+        }),
         Underline,
         Link.configure({
           openOnClick: false,
@@ -67,8 +83,14 @@
         if (hiddenInput) {
           hiddenInput.value = html;
         }
+        refreshBlockType();
+      },
+      onSelectionUpdate: () => {
+        refreshBlockType();
       }
     });
+
+    refreshBlockType();
   });
 
   onDestroy(() => {
@@ -155,6 +177,7 @@
   }
 
   function setColor(color) {
+    colorValue = color;
     editor.chain().focus().setColor(color).run();
   }
 
@@ -167,12 +190,16 @@
   <!-- Toolbar -->
   <div class="flex flex-wrap gap-1 p-2 bg-gray-50 border-b border-admin-border">
     <!-- Format dropdown -->
-    <select on:change={(e) => {
-      const val = e.target.value;
-      if (val === 'p') setParagraph();
-      else toggleHeading(parseInt(val));
-      e.target.value = 'p';
-    }} class="px-2 py-1 text-sm border border-admin-border rounded bg-white">
+    <select
+      bind:value={blockType}
+      on:change={(e) => {
+        const val = e.target.value;
+        if (val === 'p') setParagraph();
+        else toggleHeading(parseInt(val));
+        blockType = val;
+      }}
+      class="px-2 py-1 text-sm border border-admin-border rounded bg-white"
+    >
       <option value="p">Paragraph</option>
       <option value="1">Heading 1</option>
       <option value="2">Heading 2</option>
@@ -244,7 +271,13 @@
     <div class="w-px h-6 bg-admin-border"></div>
 
     <!-- Text Color -->
-    <input type="color" on:input={(e) => setColor(e.target.value)} class="w-8 h-6 border border-admin-border rounded cursor-pointer" title="Text Color" />
+    <input
+      type="color"
+      bind:value={colorValue}
+      on:input={(e) => setColor(e.target.value)}
+      class="w-8 h-6 border border-admin-border rounded cursor-pointer"
+      title="Text Color"
+    />
 
     <div class="w-px h-6 bg-admin-border"></div>
 

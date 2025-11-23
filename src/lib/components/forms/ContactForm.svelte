@@ -8,6 +8,7 @@
   let name = '';
   let email = '';
   let subject = '';
+  let contact = '';
   let message = '';
   let loading = false;
   let success = '';
@@ -25,9 +26,9 @@
     loading = true;
     success = '';
     try {
-      await submitContact({ name, email, subject, message });
+      await submitContact({ name, email, contact, subject, message });
       success = 'Thanks! Your message has been sent.';
-      name = email = subject = message = '';
+      name = email = subject = message = contact = '';
     } catch (e) {
       errors.form = 'Failed to submit. Please try again later.';
     } finally {
@@ -45,8 +46,8 @@
   {/if}
   <FormInput label="Name" name="name" bind:value={name} required error={errors.name} />
   <FormInput label="Email" name="email" type="email" bind:value={email} required error={errors.email} />
+  <FormInput label="Contact (optional)" name="contact" bind:value={contact} placeholder="WhatsApp/Telegram/LinkedIn" />
   <FormInput label="Subject" name="subject" bind:value={subject} required error={errors.subject} />
   <FormTextarea label="Message" name="message" bind:value={message} required error={errors.message} />
   <FormButton {loading} label="Send Message" />
 </form>
-

@@ -46,7 +46,7 @@
   <FormInput label="Name" name="name" bind:value={name} required error={errors.name} />
   <FormInput label="Email" name="email" type="email" bind:value={email} required error={errors.email} />
   <FormInput label="Company" name="company" bind:value={company} />
-  <FormInput label="Phone" name="phone" bind:value={phone} />
+  <FormInput label="Phone" name="phone" type="number" bind:value={phone} />
   <FormTextarea label="Message" name="message" bind:value={message} />
   <FormButton {loading} label="Submit Claim" />
   </form>

@@ -7,8 +7,11 @@
   import Pagination from '$lib/components/ui/Pagination.svelte';
   export let data: any;
   import { SITE_NAME } from '$lib/config';
-  const pageTitle = `Perks | ${SITE_NAME}`;
-  const pageDesc = 'Browse and claim exclusive perks curated for startups and builders.';
+
+  const sections = data.sections || [];
+  const hero = sections.find((s: any) => s.section_key === 'perks_hero');
+  const pageTitle = hero?.title || `Perks | ${SITE_NAME}`;
+  const pageDesc = hero?.subtitle || 'Browse and claim exclusive perks curated for startups and builders.';
 </script>
 
 <SEOHead title={pageTitle} description={pageDesc} />
@@ -23,8 +26,8 @@
 
 <section class="container-w py-8">
   <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Perks' }]} />
-  <h1 class="mt-2 text-3xl font-bold text-brand-richBlack">Perks</h1>
-  <p class="text-sm text-brand-slateGray mt-1">Find and redeem the best perks for your needs.</p>
+  <h1 class="mt-2 text-3xl font-bold text-brand-richBlack">{hero?.title || 'Perks'}</h1>
+  <p class="text-sm text-brand-slateGray mt-1">{hero?.subtitle || 'Find and redeem the best perks for your needs.'}</p>
 
   <div class="mt-6">
     <PerkFilters categories={data.categories} locations={data.locations} current={data.current} />

@@ -26,6 +26,7 @@
     "@tiptap/pm": "^3.10.4",
     "@tiptap/starter-kit": "^3.10.4",
     "axios": "^1.7.7",
+    "lucide-svelte": "^0.451.0",
     "svelte": "^5.0.0"
   },
   "devDependencies": {

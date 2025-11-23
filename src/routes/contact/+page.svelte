@@ -2,9 +2,12 @@
   import SEOHead from '$lib/components/seo/SEOHead.svelte';
   import ContactForm from '$lib/components/forms/ContactForm.svelte';
   import { CONTACT_EMAIL, SITE_NAME } from '$lib/config';
-  const title = 'Get in Touch';
-  const blurb = "We're here to help! Whether you have questions, feedback, or need assistance, we're all ears. Use the form below or drop us an email.";
-  const email = CONTACT_EMAIL;
+  export let data;
+  const sections = data?.sections || [];
+  const hero = sections.find((s) => s.section_key === 'contact_hero');
+  const title = hero?.title || 'Get in Touch';
+  const blurb = hero?.subtitle || "We're here to help! Whether you have questions, feedback, or need assistance, we're all ears. Use the form below or drop us an email.";
+  const email = hero?.content?.email || CONTACT_EMAIL;
   const mailHref = `mailto:${email}`;
 </script>
 

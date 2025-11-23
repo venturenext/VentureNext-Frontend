@@ -17,12 +17,12 @@
 
   const successCopy = {
     save: {
-      title: 'Perk saved successfully',
-      description: 'Your perk has been saved. You can continue editing later from the listing page.'
+      title: 'Draft saved successfully',
+      description: 'Your perk has been saved as draft. Click "Publish" when ready to make it live.'
     },
     publish: {
       title: 'Perk published successfully',
-      description: 'Your perk is now live. You can review it any time from the listing page.'
+      description: 'Your perk is now live and visible to users. You can review it any time from the listing page.'
     }
   };
 
@@ -70,8 +70,16 @@
         name="intent"
         value="save"
         disabled={!isFormValid}
-        class="rounded-lg bg-admin-blue px-5 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">
-        Save
+        class="rounded-lg border border-admin-border bg-white px-5 py-2 text-sm font-semibold text-admin-muted hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
+        Save as Draft
+      </button>
+      <button
+        type="submit"
+        name="intent"
+        value="publish"
+        disabled={!isFormValid}
+        class="rounded-lg bg-green-600 px-5 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50">
+        Publish
       </button>
     </div>
   </form>

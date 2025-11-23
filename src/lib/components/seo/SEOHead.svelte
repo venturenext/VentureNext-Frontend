@@ -11,19 +11,18 @@
 <svelte:head>
   <title>{title}</title>
   <meta name="description" content={description} />
-  {#if keywords}<meta name="keywords" content={keywords} />{/if}
-  {#if noindex}<meta name="robots" content="noindex, nofollow" />{/if}
-  {#if url}<link rel="canonical" href={url} />{/if}
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta name="keywords" content={keywords || ''} />
+  <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+  <link rel="canonical" href={url || ''} />
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
-  {#if image}<meta property="og:image" content={image} />{/if}
-  {#if url}<meta property="og:url" content={url} />{/if}
+  <meta property="og:image" content={image || ''} />
+  <meta property="og:url" content={url || ''} />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
-  {#if image}<meta name="twitter:image" content={image} />{/if}
+  <meta name="twitter:image" content={image || ''} />
 </svelte:head>

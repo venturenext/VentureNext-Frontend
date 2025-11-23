@@ -7,6 +7,8 @@
   const meta = data.meta || null;
   const categories = data.categories || [];
   const current = data.current || { category: '' };
+  const sections = data.sections || [];
+  const hero = sections.find((s) => s.section_key === 'journal_hero');
   $: currentCategory = current?.category ?? '';
 
   function setCategory(c) {
@@ -17,13 +19,15 @@
   }
 </script>
 
-<SEOHead title={`Journal | ${SITE_NAME}`} description="Insights, news, and tips for founders and remote workers in MY & SG." />
+<SEOHead title={hero?.title || `Journal | ${SITE_NAME}`} description={hero?.subtitle || "Insights, news, and tips for founders and remote workers in MY & SG."} />
 
 <!-- Hero banner -->
 <section class="bg-pink-100">
   <div class="container-w py-16 text-center">
-    <h1 class="text-5xl font-extrabold text-brand-richBlack">Journal</h1>
-    <p class="mt-3 max-w-2xl mx-auto text-brand-slateGray">Stay up-to-date with the latest news, tips and insights for founders, freelancers, solopreneurs and remote workers in Malaysia and Singapore.</p>
+    <h1 class="text-5xl font-extrabold text-brand-richBlack">{hero?.title || 'Journal'}</h1>
+    <p class="mt-3 max-w-2xl mx-auto text-brand-slateGray">
+      {hero?.subtitle || 'Stay up-to-date with the latest news, tips and insights for founders, freelancers, solopreneurs and remote workers in Malaysia and Singapore.'}
+    </p>
   </div>
 </section>
 

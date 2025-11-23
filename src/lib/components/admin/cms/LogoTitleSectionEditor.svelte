@@ -2,12 +2,14 @@
 	import { createEventDispatcher } from 'svelte';
 	import { toastStore } from '$lib/stores/toast';
 	import { browser } from '$app/environment';
+	import { deserialize } from '$app/forms';
 
 	export let section: any;
 
 	const dispatch = createEventDispatcher();
 	let uploading = false;
 	let fileInput: HTMLInputElement;
+	const isTopbarLogo = section?.section_key === 'topbar_logo';
 
 	// Ensure content is object with proper properties
 	if (!section.content || typeof section.content !== 'object') {
@@ -18,6 +20,16 @@
 		dispatch('change', section);
 	}
 
+	function handleLogoUrlInput(event: Event) {
+		const value = (event.target as HTMLInputElement).value?.trim();
+		if (isTopbarLogo && value && !value.toLowerCase().endsWith('.svg')) {
+			toastStore.push('Top bar logo must be an SVG URL', 'error');
+			return;
+		}
+		section.content.logo_url = value;
+		handleChange();
+	}
+
 	async function handleFileUpload(event: Event) {
 		if (!browser) return;
 
@@ -26,37 +38,36 @@
 
 		if (!file) return;
 
-		// Validate file size (max 2MB)
-		if (file.size > 2 * 1024 * 1024) {
-			toastStore.push('Image size must be less than 2MB', 'error');
+		// Validate file size (max 15MB)
+		if (file.size > 15 * 1024 * 1024) {
+			toastStore.push('Image size must be less than 15MB', 'error');
 			return;
 		}
 
 		// Validate file type
-		if (!file.type.startsWith('image/')) {
-			toastStore.push('Please upload an image file', 'error');
-			return;
+		if (isTopbarLogo) {
+			const isSvg = file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg');
+			if (!isSvg) {
+				toastStore.push('Top bar logo must be an SVG file', 'error');
+				return;
+			}
+		} else {
+			if (!file.type.startsWith('image/')) {
+				toastStore.push('Please upload an image file', 'error');
+				return;
+			}
 		}
 
 		uploading = true;
 
 		try {
-			// Get token from localStorage
-			const token = localStorage.getItem('auth_token');
-			if (!token) {
-				throw new Error('Not authenticated');
-			}
-
 			const formData = new FormData();
 			formData.append('image', file);
 			formData.append('section_key', section.section_key);
 
-			const response = await fetch('http://localhost:8000/api/v1/admin/page-content/upload-image', {
+			// Use SvelteKit form action instead of direct API call
+			const response = await fetch('?/uploadImage', {
 				method: 'POST',
-				headers: {
-					'Authorization': `Bearer ${token}`,
-					'Accept': 'application/json',
-				},
 				body: formData
 			});
 
@@ -64,18 +75,33 @@
 				throw new Error('Upload failed');
 			}
 
-			const data = await response.json();
+			// Use SvelteKit's deserialize to properly parse the form action response
+			const responseText = await response.text();
+			const result = deserialize(responseText);
 
-			if (data.success && data.data.url) {
-				section.content.logo_url = data.data.url;
-				handleChange();
-				toastStore.push('Logo uploaded successfully', 'success');
+			// SvelteKit form action response format
+			if (result.type === 'success' && result.data) {
+				const uploadData = result.data as any;
+
+				// The form action returns { success: true, data: { url: '...', path: '...' } }
+				const imageUrl = uploadData.data?.url || uploadData.url;
+				if (imageUrl) {
+					section.content.logo_url = imageUrl;
+					handleChange();
+					toastStore.push('Logo uploaded successfully', 'success');
+				} else {
+					throw new Error('No URL in response');
+				}
+			} else if (result.type === 'failure') {
+				const errorMessage = (result.data as any)?.error || 'Upload failed';
+				throw new Error(errorMessage);
 			} else {
-				throw new Error('Invalid response');
+				throw new Error('Upload failed');
 			}
 		} catch (error) {
 			console.error('Upload error:', error);
-			toastStore.push('Failed to upload logo', 'error');
+			const errorMessage = error instanceof Error ? error.message : 'Failed to upload logo';
+			toastStore.push(errorMessage, 'error');
 		} finally {
 			uploading = false;
 			// Reset file input
@@ -104,7 +130,7 @@
 			Logo
 		</label>
 
-		{#if section.content.logo_url || section.image_url}
+		{#if !isTopbarLogo && (section.content.logo_url || section.image_url)}
 			<div class="mb-2 relative inline-block">
 				<img
 					src={section.content.logo_url || section.image_url}
@@ -129,7 +155,7 @@
 				type="button"
 				on:click={() => fileInput.click()}
 				disabled={uploading}
-				class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+				class="px-4 py-2 bg-brand-darkGreen text-white rounded-md hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
 			>
 				{uploading ? 'Uploading...' : 'Upload Logo'}
 			</button>
@@ -137,27 +163,32 @@
 				type="file"
 				bind:this={fileInput}
 				on:change={handleFileUpload}
-				accept="image/*"
+				accept={isTopbarLogo ? 'image/svg+xml,.svg' : 'image/*'}
 				class="hidden"
 			/>
 		</div>
 		<p class="text-xs text-gray-500 mt-1">
-			Upload a logo (max 2MB, JPG, PNG, GIF, WebP)
+			{isTopbarLogo
+				? 'Upload an SVG (max 15MB). Preview is hidden; we only store the path.'
+				: 'Upload a logo (max 15MB, JPG, PNG, GIF, WebP)'}
 		</p>
+	</div>
 
-		<div class="mt-3">
-			<label for="logo_url" class="block text-xs font-medium text-gray-600 mb-1">
-				Or enter logo URL manually
-			</label>
-			<input
-				type="text"
-				id="logo_url"
-				bind:value={section.content.logo_url}
-				on:input={handleChange}
-				class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
-				placeholder="https://example.com/logo.png"
-			/>
-		</div>
+	<div class="mt-3">
+		<label for="logo_url" class="block text-xs font-medium text-gray-600 mb-1">
+			{isTopbarLogo ? 'SVG URL (required)' : 'Or enter logo URL manually'}
+		</label>
+		<input
+			type="text"
+			id="logo_url"
+			value={section.content.logo_url}
+			on:input={handleLogoUrlInput}
+			class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+			placeholder={isTopbarLogo ? 'https://example.com/logo.svg' : 'https://example.com/logo.png'}
+		/>
+		{#if isTopbarLogo}
+			<p class="text-xs text-gray-500 mt-1">Only SVG URL is allowed for the top bar logo.</p>
+		{/if}
 	</div>
 
 	<div>

@@ -15,11 +15,13 @@ export interface PartnerInquiryPayload {
   company: string;
   phone?: string;
   message: string;
+  contact?: string;
 }
 
 export interface ContactPayload {
   name: string;
   email: string;
+  contact?: string;
   subject: string;
   message: string;
 }
@@ -35,4 +37,3 @@ export async function submitPartnerInquiry(body: PartnerInquiryPayload, fetcher?
 export async function submitContact(body: ContactPayload, fetcher?: typeof fetch) {
   return apiPost('/leads/contact', body, fetcher);
 }
-

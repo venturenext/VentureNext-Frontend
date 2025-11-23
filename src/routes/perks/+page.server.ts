@@ -1,27 +1,31 @@
 import type { PageServerLoad } from './$types';
-import { listPerks } from '$lib/api/perks';
 import { listCategories } from '$lib/api/categories';
 import { listLocations } from '$lib/api/locations';
+import { listPerks } from '$lib/api/perks';
+import { getPageContent } from '$lib/api/pageContent';
 
 export const load: PageServerLoad = async ({ fetch, url }) => {
-  const params: Record<string, string> = {};
-  const allowed = ['page', 'per_page', 'category', 'subcategory', 'location', 'search', 'featured', 'sort'];
-  for (const key of allowed) {
-    const val = url.searchParams.get(key);
-    if (val) params[key] = val;
-  }
+  const page = Number(url.searchParams.get('page') || 1);
+  const category = url.searchParams.get('category') || '';
+  const location = url.searchParams.get('location') || '';
 
-  const [perksRes, catsRes, locationsRes] = await Promise.all([
-    listPerks(params, fetch),
+  const query: any = { page };
+  if (category) query.category = category;
+  if (location) query.location = location;
+
+  const [perksRes, catRes, locRes, sections] = await Promise.all([
+    listPerks(query, fetch),
     listCategories(fetch),
-    listLocations(fetch)
+    listLocations(fetch),
+    getPageContent('perks', fetch).catch(() => [])
   ]);
 
   return {
-    perks: perksRes.data,
-    meta: perksRes.meta,
-    categories: catsRes.data,
-    locations: locationsRes.data,
-    current: params
+    perks: perksRes?.data || [],
+    meta: perksRes?.meta || null,
+    categories: catRes?.data || [],
+    locations: locRes?.data || [],
+    current: { category, location, page },
+    sections: sections || []
   };
 };

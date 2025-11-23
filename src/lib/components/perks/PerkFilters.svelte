@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import type { Category } from '$lib/types/category';
   import type { LocationOption } from '$lib/types/location';
@@ -13,6 +14,7 @@
   let search = current.search || '';
   let sort = (current.sort as string) || 'latest';
   let locationOptions: LocationOption[] = [];
+  let autoSelected = false;
 
   // Keep local state in sync when `current` changes (e.g., after reset)
   $: if (current) {
@@ -21,6 +23,12 @@
     location = current.location || 'all';
     search = current.search || '';
     sort = (current.sort as string) || 'latest';
+  }
+
+  $: if (browser && !autoSelected && !selectedCategory && categories.length) {
+    selectedCategory = categories[0].slug;
+    autoSelected = true;
+    goto(buildUrl(), { replaceState: true, keepFocus: true, noScroll: true });
   }
 
   const fallbackLocations: LocationOption[] = [
@@ -49,26 +57,28 @@
   }
 
   function applyFilters() {
+    if (!browser) return;
     goto(buildUrl(), { replaceState: true, keepFocus: true, noScroll: true });
   }
 
   function setCategory(slug: string) {
     selectedCategory = slug;
     selectedSubcategory = '';
-    goto(buildUrl(), { replaceState: true, keepFocus: true, noScroll: true });
+    applyFilters();
   }
 
   function setSubcategory(slug: string) {
     selectedSubcategory = slug;
-    goto(buildUrl(), { replaceState: true, keepFocus: true, noScroll: true });
+    applyFilters();
   }
 
   function setLocation(loc: string) {
     location = loc;
-    goto(buildUrl(), { replaceState: true, keepFocus: true, noScroll: true });
+    applyFilters();
   }
 
   function resetFilters() {
+    if (!browser) return;
     goto('/perks', { replaceState: true, keepFocus: true, noScroll: true });
   }
 </script>
@@ -77,14 +87,6 @@
   <div>
     <p class="text-xs font-semibold uppercase tracking-wide text-brand-slateGray">Categories</p>
     <div class="mt-2 flex flex-wrap items-center gap-2">
-      <button class="px-3 py-1 rounded-full border text-sm"
-        class:bg-brand-darkGreen={selectedCategory === ''}
-        class:text-white={selectedCategory === ''}
-        class:border-brand-darkGreen={selectedCategory === ''}
-        class:hover\:bg-gray-100={selectedCategory !== ''}
-        on:click={() => setCategory('')}>
-        All
-      </button>
       {#each categories as c}
         <button class="px-3 py-1 rounded-full border text-sm"
           aria-pressed={selectedCategory === c.slug}

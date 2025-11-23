@@ -81,7 +81,7 @@
 			<button
 				type="button"
 				on:click={addFAQ}
-				class="px-3 py-1 bg-purple-600 text-white rounded-md hover:bg-purple-700 text-sm"
+				class="px-3 py-1 bg-brand-darkGreen text-white rounded-md hover:brightness-110 text-sm"
 			>
 				Add FAQ
 			</button>

@@ -1,9 +1,10 @@
 import type { PageServerLoad } from './$types';
 import { listJournal } from '$lib/api/journal';
 import { listPerks } from '$lib/api/perks';
+import { getPageContent } from '$lib/api/pageContent';
 
 export const load: PageServerLoad = async ({ fetch }) => {
-  const out: any = { journal: [], latestPerks: [] };
+  const out: any = { journal: [], latestPerks: [], sections: [] };
   try {
     const res = await listJournal(fetch);
     out.journal = Array.isArray(res?.data) ? res.data.slice(0, 3) : [];
@@ -11,6 +12,9 @@ export const load: PageServerLoad = async ({ fetch }) => {
   try {
     const perks = await listPerks({ per_page: 3, sort: 'latest' }, fetch);
     out.latestPerks = Array.isArray(perks?.data) ? perks.data : [];
+  } catch {}
+  try {
+    out.sections = (await getPageContent('homepage', fetch)) || [];
   } catch {}
   return out;
 };

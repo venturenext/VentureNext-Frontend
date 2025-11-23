@@ -9,6 +9,7 @@
   let name = '';
   let email = '';
   let company = '';
+  let contact = '';
   let offerType: 'SAAS/AI Tools' | 'B2B Services' | 'Lifestyle' | '' = '';
   let agree = false;
   let loading = false;
@@ -35,10 +36,10 @@
     loading = true;
     try {
       const message = `Type of Offer: ${offerType}`;
-      await submitPartnerInquiry({ name, email, company, message });
+      await submitPartnerInquiry({ name, email, company, message, contact });
       success = 'Thanks! We\'ll get back to you shortly.';
       if (onSuccess) onSuccess();
-      name = email = company = '';
+      name = email = company = contact = '';
       offerType = '' as any;
       agree = false;
     } catch (e) {
@@ -108,6 +109,13 @@
         </span>
         <input class="mt-1 block w-full border-0 border-b outline-none focus:border-brand-darkGreen px-0 py-2 bg-transparent" bind:value={company} placeholder="Your company" />
         {#if errors.company}<div class="text-xs text-red-600 mt-1">{errors.company}</div>{/if}
+      </label>
+
+      <label class="block">
+        <span class="flex items-center text-sm text-gray-600 gap-2">
+          <span aria-hidden="true">☎️</span> Contact (optional)
+        </span>
+        <input class="mt-1 block w-full border-0 border-b outline-none focus:border-brand-darkGreen px-0 py-2 bg-transparent" bind:value={contact} placeholder="WhatsApp/Telegram/LinkedIn" />
       </label>
 
       <!-- Offer Type -->

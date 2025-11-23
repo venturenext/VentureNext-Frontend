@@ -16,7 +16,7 @@
     {#each data.categories as c}
       <div class="bg-white rounded-xl shadow-card p-6">
         <div class="flex items-start gap-3">
-          <div class="text-3xl">{c.icon}</div>
+          <div class="text-3xl" aria-hidden="true">{c.icon}</div>
           <div>
             <a href={`/categories/${c.slug}`} class="font-semibold text-brand-richBlack hover:underline">{c.name}</a>
             {#if c.description}<p class="text-sm text-brand-slateGray mt-1">{c.description}</p>{/if}

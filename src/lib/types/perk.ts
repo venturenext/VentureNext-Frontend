@@ -11,7 +11,10 @@ export interface PerkListItem {
   short_description?: string;
   partner_name: string;
   partner_logo?: string;
+  partner_url?: string;
   redeem_type: RedeemType;
+  coupon_code?: string;
+  external_url?: string;
   location: Location;
   location_label?: string;
   valid_from?: string;
@@ -27,8 +30,6 @@ export interface PerkListItem {
 
 export interface PerkDetail extends PerkListItem {
   description?: string;
-  partner_url?: string;
-  coupon_code?: string;
   media?: {
     logo?: string;
     banner?: string;

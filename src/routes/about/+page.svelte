@@ -1,95 +1,111 @@
 <script lang="ts">
   import SEOHead from '$lib/components/seo/SEOHead.svelte';
   import { SITE_NAME, HERO_IMAGE } from '$lib/config';
-  const title = `About ${SITE_NAME}`;
-  const description = "We're on a mission to empower founders, freelancers, and remote workers in Southeast Asia with the best perks and tools to succeed.";
+
+  export let data;
+  const sections = data?.sections || [];
+
+  const getSection = (key: string) => sections.find((s: any) => s.section_key === key && s.is_active !== false);
+
+  const hero = getSection('about_hero');
+  const whatWeDo = getSection('about_what_we_do');
+  const whoWeServe = getSection('about_who_we_serve');
+  const faq = getSection('about_faq');
+
+  const whatWeDoCards = Array.isArray(whatWeDo?.content) ? whatWeDo.content : [];
+  const whoWeServeCards = Array.isArray(whoWeServe?.content) ? whoWeServe.content : [];
+  const faqItems = Array.isArray(faq?.content) ? faq.content : [];
 </script>
 
-<SEOHead title={`About | ${SITE_NAME}`} description={description} />
+<SEOHead title={`About | ${SITE_NAME}`} description={hero?.subtitle || ''} />
 
+{#if hero && hero.title}
 <!-- Hero -->
 <section class="relative">
-  <div class="absolute inset-0 bg-cover bg-center" style={`background-image:url('${HERO_IMAGE}')`} aria-hidden="true"></div>
+  {#if hero.image_url}
+    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{hero.image_url}')" aria-hidden="true"></div>
+  {/if}
   <div class="absolute inset-0 bg-brand-darkGreen/80"></div>
   <div class="relative container-w py-24 text-white">
-    <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">Empowering the Independent Workforce</h1>
-    <p class="mt-4 max-w-3xl text-white/85">{description}</p>
+    <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">{hero.title}</h1>
+    {#if hero.subtitle}
+      <p class="mt-4 max-w-3xl text-white/85">{hero.subtitle}</p>
+    {/if}
   </div>
   <div class="sr-only" aria-hidden="true"></div>
-  
 </section>
+{/if}
 
+{#if whatWeDo && whatWeDoCards.length > 0}
 <!-- What We Do -->
 <section class="container-w py-16">
-  <h2 class="text-2xl sm:text-3xl font-bold text-center text-brand-richBlack">What We Do</h2>
-  <p class="mt-3 max-w-2xl mx-auto text-center text-brand-slateGray">PerkPal is your unfair advantage. We curate exclusive deals and build a supportive community to help you thrive in your independent career.</p>
+  {#if whatWeDo.title}
+    <h2 class="text-2xl sm:text-3xl font-bold text-center text-brand-richBlack">{whatWeDo.title}</h2>
+  {/if}
+  {#if whatWeDo.subtitle}
+    <p class="mt-3 max-w-2xl mx-auto text-center text-brand-slateGray">{whatWeDo.subtitle}</p>
+  {/if}
 
   <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="rounded-xl bg-pink-50 p-6 shadow-card">
-      <div class="w-10 h-10 rounded-md bg-yellow-400 flex items-center justify-center text-brand-richBlack font-semibold" aria-hidden="true">%</div>
-      <div class="mt-4 font-semibold text-brand-richBlack">Exclusive Perks</div>
-      <p class="mt-1 text-sm text-brand-slateGray">Access unbeatable discounts on software, co‑working spaces, lifestyle brands, and more — handpicked for your needs.</p>
-    </div>
-    <div class="rounded-xl bg-yellow-50 p-6 shadow-card">
-      <div class="w-10 h-10 rounded-md bg-yellow-400 flex items-center justify-center text-brand-richBlack font-semibold" aria-hidden="true">👥</div>
-      <div class="mt-4 font-semibold text-brand-richBlack">Community & Events</div>
-      <p class="mt-1 text-sm text-brand-slateGray">Connect with founders and builders, share knowledge, and grow your network through exclusive events and our online platform.</p>
-    </div>
-    <div class="rounded-xl bg-violet-50 p-6 shadow-card">
-      <div class="w-10 h-10 rounded-md bg-yellow-400 flex items-center justify-center text-brand-richBlack font-semibold" aria-hidden="true">💡</div>
-      <div class="mt-4 font-semibold text-brand-richBlack">Valuable Resources</div>
-      <p class="mt-1 text-sm text-brand-slateGray">Gain insights from industry experts, access helpful guides, and get the support you need to navigate your journey.</p>
-    </div>
+    {#each whatWeDoCards as card}
+      <div class="rounded-xl bg-white p-6 shadow-card">
+        {#if card.icon}
+          <div class="text-3xl" aria-hidden="true">{card.icon}</div>
+        {/if}
+        <div class="mt-4 font-semibold text-brand-richBlack">{card.title}</div>
+        <p class="mt-1 text-sm text-brand-slateGray">{card.description}</p>
+      </div>
+    {/each}
   </div>
 </section>
+{/if}
 
+{#if whoWeServe && whoWeServeCards.length > 0}
 <!-- Who We Serve -->
 <section class="py-16 bg-gray-50">
   <div class="container-w">
-    <h2 class="text-2xl sm:text-3xl font-bold text-center text-brand-richBlack">Who We Serve</h2>
-    <p class="mt-3 max-w-3xl mx-auto text-center text-brand-slateGray">We cater to the ambitious and the self‑driven in Malaysia and Singapore. Our platform is built for:</p>
+    {#if whoWeServe.title}
+      <h2 class="text-2xl sm:text-3xl font-bold text-center text-brand-richBlack">{whoWeServe.title}</h2>
+    {/if}
+    {#if whoWeServe.subtitle}
+      <p class="mt-3 max-w-3xl mx-auto text-center text-brand-slateGray">{whoWeServe.subtitle}</p>
+    {/if}
 
     <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-white rounded-xl p-6 shadow-card text-center">
-        <div class="mx-auto w-10 h-10 rounded-md bg-yellow-400 flex items-center justify-center text-brand-richBlack" aria-hidden="true">🚀</div>
-        <div class="mt-3 font-semibold text-brand-richBlack">Founders & Startups</div>
-        <p class="mt-1 text-sm text-brand-slateGray">Get the resources you need to scale your business without breaking the bank.</p>
-      </div>
-      <div class="bg-white rounded-xl p-6 shadow-card text-center">
-        <div class="mx-auto w-10 h-10 rounded-md bg-yellow-400 flex items-center justify-center text-brand-richBlack" aria-hidden="true">✍️</div>
-        <div class="mt-3 font-semibold text-brand-richBlack">Freelancers & Solopreneurs</div>
-        <p class="mt-1 text-sm text-brand-slateGray">Access perks that are usually reserved for large corporations.</p>
-      </div>
-      <div class="bg-white rounded-xl p-6 shadow-card text-center">
-        <div class="mx-auto w-10 h-10 rounded-md bg-yellow-400 flex items-center justify-center text-brand-richBlack" aria-hidden="true">📶</div>
-        <div class="mt-3 font-semibold text-brand-richBlack">Remote Workers</div>
-        <p class="mt-1 text-sm text-brand-slateGray">Enhance your work‑from‑anywhere lifestyle with curated benefits.</p>
-      </div>
+      {#each whoWeServeCards as card}
+        <div class="bg-white rounded-xl p-6 shadow-card text-center">
+          {#if card.icon}
+            <div class="mx-auto w-10 h-10 rounded-md bg-yellow-400 flex items-center justify-center text-brand-richBlack text-xl" aria-hidden="true">{card.icon}</div>
+          {/if}
+          <div class="mt-3 font-semibold text-brand-richBlack">{card.title}</div>
+          <p class="mt-1 text-sm text-brand-slateGray">{card.description}</p>
+        </div>
+      {/each}
     </div>
   </div>
 </section>
+{/if}
 
+{#if faq && faqItems.length > 0}
 <!-- FAQ -->
 <section class="container-w py-16">
-  <h2 class="text-2xl sm:text-3xl font-bold text-center text-brand-richBlack">Frequently Asked Questions</h2>
-  <p class="mt-3 max-w-2xl mx-auto text-center text-brand-slateGray">Have questions? We’ve got answers. Here are some of the most common questions we get.</p>
+  {#if faq.title}
+    <h2 class="text-2xl sm:text-3xl font-bold text-center text-brand-richBlack">{faq.title}</h2>
+  {/if}
+  {#if faq.subtitle}
+    <p class="mt-3 max-w-2xl mx-auto text-center text-brand-slateGray">{faq.subtitle}</p>
+  {/if}
 
   <div class="mt-8 divide-y rounded-xl bg-white shadow-card">
-    {#each [
-      { q: 'Who is eligible to join PerkPal?', a: 'PerkPal is open to founders, freelancers, and remote workers in Southeast Asia.' },
-      { q: 'Is PerkPal free to use?', a: 'Yes — browsing perks is free. Some partner offers may have eligibility or spending requirements.' },
-      { q: 'How are the perks selected?', a: 'We curate offers based on relevance, quality, and value to our community.' },
-      { q: 'Can I suggest a perk?', a: 'Absolutely. Use the “Submit a Perk” button in the header or contact us.' },
-      { q: 'How is PerkPal different from other deal sites?', a: 'We focus on vetted, high‑value perks tailored to builders, not generic coupons.' },
-      { q: 'Do you offer support if I have an issue with a perk?', a: 'Yes. Reach out via our contact page and we’ll help resolve it with the partner.' }
-    ] as item}
+    {#each faqItems as item}
       <details class="group p-4 open:bg-gray-50">
-        <summary class="flex items-center justify-between cursor-pointer list-none">
-          <span class="font-medium text-brand-richBlack">{item.q}</span>
-          <span class="ml-4 text-brand-richBlack group-open:rotate-45 transition-transform" aria-hidden="true" role="presentation">+</span>
+        <summary class="flex items-center justify-between cursor-pointer list-none" aria-label={`${item.question || item.q} - Click to expand`}>
+          <span class="font-medium text-brand-richBlack">{item.question || item.q}</span>
+          <span class="ml-4 text-brand-richBlack group-open:rotate-45 transition-transform" aria-hidden="true">+</span>
         </summary>
-        <p class="mt-2 text-sm text-brand-slateGray">{item.a}</p>
+        <p class="mt-2 text-sm text-brand-slateGray">{item.answer || item.a}</p>
       </details>
     {/each}
   </div>
 </section>
+{/if}

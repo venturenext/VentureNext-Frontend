@@ -9,6 +9,7 @@
   let email = '';
   let company = '';
   let phone = '';
+  let contact = '';
   let message = '';
   let loading = false;
   let success = '';
@@ -26,9 +27,9 @@
     loading = true;
     success = '';
     try {
-      await submitPartnerInquiry({ name, email, company, phone, message });
+      await submitPartnerInquiry({ name, email, company, phone, message, contact });
       success = 'Thanks! We\'ll get back to you shortly.';
-      name = email = company = phone = message = '';
+      name = email = company = phone = message = contact = '';
     } catch (e) {
       errors.form = 'Failed to submit. Please try again later.';
     } finally {
@@ -47,8 +48,8 @@
   <FormInput label="Name" name="name" bind:value={name} required error={errors.name} />
   <FormInput label="Email" name="email" type="email" bind:value={email} required error={errors.email} />
   <FormInput label="Company" name="company" bind:value={company} required error={errors.company} />
-  <FormInput label="Phone" name="phone" bind:value={phone} />
+  <FormInput label="Phone" name="phone" type="number" bind:value={phone} />
+  <FormInput label="Contact (optional)" name="contact" bind:value={contact} placeholder="WhatsApp/Telegram/LinkedIn" />
   <FormTextarea label="Message" name="message" bind:value={message} required error={errors.message} />
   <FormButton {loading} label="Send Inquiry" />
 </form>
-

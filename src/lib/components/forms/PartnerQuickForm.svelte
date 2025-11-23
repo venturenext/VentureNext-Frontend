@@ -9,6 +9,7 @@
   let name = '';
   let email = '';
   let company = '';
+  let contact = '';
   let offerType: 'SAAS/AI Tools' | 'B2B Services' | 'Lifestyle' | '' = '';
   let loading = false;
   let errors: Record<string, string> = {};
@@ -26,10 +27,10 @@
     loading = true;
     try {
       const message = `Type of Offer: ${offerType}`;
-      await submitPartnerInquiry({ name, email, company, message });
+      await submitPartnerInquiry({ name, email, company, message, contact });
       success = 'Thanks! We\'ll get back to you shortly.';
       if (onSuccess) onSuccess();
-      name = email = company = '';
+      name = email = company = contact = '';
       offerType = '' as any;
     } catch (e) {
       errors.form = 'Failed to submit. Please try again later.';
@@ -58,6 +59,7 @@
     <FormInput label="Name" name="name" bind:value={name} required error={errors.name} />
     <FormInput label="Company" name="company" bind:value={company} required error={errors.company} />
     <FormInput label="Email" name="email" type="email" bind:value={email} required error={errors.email} />
+    <FormInput label="Contact (optional)" name="contact" bind:value={contact} placeholder="WhatsApp/Telegram/LinkedIn" />
 
     <label class="block text-sm">
       <span class="text-gray-700">Type of Offer <span class="text-red-500">*</span></span>

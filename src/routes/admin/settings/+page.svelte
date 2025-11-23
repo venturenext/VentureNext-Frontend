@@ -2,12 +2,15 @@
   import { enhance } from '$app/forms';
   import { invalidate } from '$app/navigation';
   export let data;
-  const groupedRaw = data.grouped || {};
-  let counter = 0;
-  const grouped = Object.entries(groupedRaw).map(([group, entries]) => ({
-    group,
-    items: entries.map((item) => ({ ...item, _index: counter++ }))
-  }));
+  let grouped = [];
+  $: if (data) {
+    let counter = 0;
+    const groupedRaw = data.grouped || {};
+    grouped = Object.entries(groupedRaw).map(([group, entries]) => ({
+      group,
+      items: entries.map((item) => ({ ...item, _index: counter++ }))
+    }));
+  }
 
   let message = '';
   let messageType = '';
@@ -77,16 +80,18 @@
               <p class="text-sm font-medium text-admin-muted">{formatLabel(setting.key)}</p>
               {#if setting.type === 'boolean'}
                 <select name={`settings[${setting._index}][value]`}
+                        bind:value={setting.value}
                         class="w-full rounded-lg border border-admin-border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue">
                   {#each booleanOptions as option}
-                    <option value={option.value} selected={String(setting.value) === option.value}>{option.label}</option>
+                    <option value={option.value}>{option.label}</option>
                   {/each}
                 </select>
               {:else if setting.type === 'text'}
                 <textarea name={`settings[${setting._index}][value]`} rows="3"
-                          class="w-full rounded-lg border border-admin-border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue">{setting.value ?? ''}</textarea>
+                          bind:value={setting.value}
+                          class="w-full rounded-lg border border-admin-border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue"></textarea>
               {:else}
-                <input name={`settings[${setting._index}][value]`} value={setting.value ?? ''}
+                <input name={`settings[${setting._index}][value]`} bind:value={setting.value}
                        class="w-full rounded-lg border border-admin-border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue" />
               {/if}
             </div>

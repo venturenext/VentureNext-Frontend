@@ -4,6 +4,21 @@
 	export let section: any;
 
 	const dispatch = createEventDispatcher();
+	const iconOptions = [
+		{ label: 'None', value: '' },
+		{ label: 'Bank', value: 'bank' },
+		{ label: 'Search', value: 'search' },
+		{ label: 'Gift', value: 'gift' },
+		{ label: 'Eye', value: 'eye' },
+		{ label: 'Rocket', value: 'rocket' },
+		{ label: 'Star', value: 'star' },
+		{ label: 'Check', value: 'check' },
+		{ label: 'Mail', value: 'mail' },
+		{ label: 'Chat', value: 'chat' },
+		{ label: 'Shield', value: 'shield' },
+		{ label: 'Chart', value: 'chart' },
+		{ label: 'Calendar', value: 'calendar' }
+	];
 
 	// Ensure content is array
 	if (!Array.isArray(section.content)) {
@@ -81,7 +96,7 @@
 			<button
 				type="button"
 				on:click={addCard}
-				class="px-3 py-1 bg-purple-600 text-white rounded-md hover:bg-purple-700 text-sm"
+				class="px-3 py-1 bg-brand-darkGreen text-white rounded-md hover:brightness-110 text-sm"
 			>
 				Add Card
 			</button>
@@ -128,16 +143,19 @@
 				<div class="space-y-3">
 					<div>
 						<label for="icon-{index}" class="block text-xs font-medium text-gray-600 mb-1">
-							Icon Name
+							Icon
 						</label>
-						<input
-							type="text"
+						<select
 							id="icon-{index}"
 							bind:value={card.icon}
-							on:input={handleChange}
+							on:change={handleChange}
 							class="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500"
-							placeholder="e.g., search, gift, checkmark"
-						/>
+						>
+							{#each iconOptions as opt}
+								<option value={opt.value}>{opt.label}</option>
+							{/each}
+						</select>
+						<p class="text-[11px] text-gray-500 mt-1">Choose an icon name (e.g., bank, search, gift). It will render on the landing page.</p>
 					</div>
 
 					<div>

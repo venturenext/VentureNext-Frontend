@@ -4,18 +4,19 @@
   import Footer from '$lib/components/layout/Footer.svelte';
   import Toast from '$lib/components/ui/Toast.svelte';
   import { page } from '$app/stores';
+  export let data;
   $: hideChrome = !!$page.error || $page.status === 404 || $page.url.pathname.startsWith('/admin');
 </script>
 
 <div class="min-h-screen flex flex-col">
   {#if !hideChrome}
-    <Header />
+    <Header sections={data?.topbarSections} />
   {/if}
   <main class="flex-1">
     <slot />
   </main>
   {#if !hideChrome}
-    <Footer />
+    <Footer sections={data?.footerSections} />
   {/if}
   <Toast />
   </div>
