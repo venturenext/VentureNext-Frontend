@@ -14,6 +14,7 @@
   let isSlugManuallyEdited = !!post?.slug;
   let coverImageFileName = '';
   let authorAvatarFileName = '';
+  let ogImageFileName = '';
 
   let metaTitle = post?.meta_title ?? '';
   let metaDescription = post?.meta_description ?? '';
@@ -52,6 +53,11 @@
   function handleAuthorAvatarChange(e) {
     const file = e.target.files?.[0];
     authorAvatarFileName = file ? file.name : '';
+  }
+
+  function handleOgImageChange(e) {
+    const file = e.target.files?.[0];
+    ogImageFileName = file ? file.name : '';
   }
 </script>
 
@@ -205,15 +211,20 @@
           <label for="og_image" class="cursor-pointer rounded-full bg-admin-blue px-3 py-1 text-white hover:bg-admin-blue/90">
             Choose File
           </label>
-          <input id="og_image" type="file" name="og_image" accept="image/*" class="hidden" />
+          <input id="og_image" type="file" name="og_image" accept="image/*" class="hidden" on:change={handleOgImageChange} />
           <span class="text-admin-muted text-xs">
-            {#if post?.og_image}
+            {#if ogImageFileName}
+              {ogImageFileName}
+            {:else if post?.og_image}
               Current: {post.og_image.split('/').pop()}
             {:else}
               No file chosen
             {/if}
           </span>
         </div>
+        {#if post?.og_image}
+          <img src={withAsset(post.og_image)} alt="OG Image" class="mt-2 max-h-28 w-full rounded-xl border border-admin-border object-cover" />
+        {/if}
       </div>
     </div>
   </div>

@@ -31,7 +31,7 @@
 
 {#if open}
   <div
-    class="fixed inset-0 z-50"
+    class="fixed inset-0 z-50 overflow-y-auto"
     role="dialog"
     aria-modal="true"
     tabindex="-1"
@@ -39,18 +39,20 @@
     on:keydown={(e) => e.key === 'Escape' && close()}
   >
     <div class="absolute inset-0 bg-black/50" role="presentation"></div>
-    <div class={`relative mx-auto mt-16 w-full ${maxW} px-4`} aria-live="polite">
-      <div class="bg-white rounded-2xl shadow-xl ring-1 ring-black/5 overflow-hidden">
-        {#if title}
-          <div class="px-4 py-3 border-b">
-            <div class="flex items-center justify-between">
-              <div class="font-semibold text-brand-richBlack">{title}</div>
-              <button class="text-gray-500 hover:text-brand-richBlack" on:click={close} aria-label="Close" type="button">&times;</button>
+    <div class="flex min-h-full items-center justify-center p-4">
+      <div class={`relative w-full ${maxW}`} aria-live="polite">
+        <div class="bg-white rounded-2xl shadow-xl ring-1 ring-black/5 overflow-hidden max-h-[90vh] flex flex-col">
+          {#if title}
+            <div class="px-4 py-3 border-b flex-shrink-0">
+              <div class="flex items-center justify-between">
+                <div class="font-semibold text-brand-richBlack">{title}</div>
+                <button class="text-gray-500 hover:text-brand-richBlack text-2xl leading-none" on:click={close} aria-label="Close" type="button">&times;</button>
+              </div>
             </div>
+          {/if}
+          <div class="p-5 overflow-y-auto">
+            <slot />
           </div>
-        {/if}
-        <div class="p-5">
-          <slot />
         </div>
       </div>
     </div>

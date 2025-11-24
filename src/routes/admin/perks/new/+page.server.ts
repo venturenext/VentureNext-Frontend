@@ -8,7 +8,7 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
 
   const [categoriesRes, subcategoriesRes, locationsRes] = await Promise.all([
     adminListCategories(token, fetch, { per_page: 200 }),
-    adminListSubcategories(token, fetch),
+    adminListSubcategories(token, fetch, { per_page: 200 }),
     adminListLocations(token, fetch, { per_page: 200 })
   ]);
 

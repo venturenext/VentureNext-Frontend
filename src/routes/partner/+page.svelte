@@ -33,12 +33,14 @@
     <div class="absolute inset-0 bg-center bg-cover" style={`background-image: url('${withAsset(hero.image_url) || HERO_IMAGE}')`} aria-hidden="true"></div>
   {/if}
   <div class="absolute inset-0 bg-brand-darkGreen/80"></div>
-  <div class="container-w py-20 relative">
-    <h1 class="text-4xl sm:text-5xl font-extrabold">{hero.title}</h1>
-    {#if hero.subtitle}
-      <p class="mt-3 max-w-2xl text-white/85">{hero.subtitle}</p>
-    {/if}
-    <button class="mt-6 inline-flex px-5 py-3 rounded-md bg-yellow-400 text-brand-richBlack font-semibold hover:bg-yellow-500" on:click={() => (open = true)}>Get started</button>
+  <div class="relative py-20 min-h-[420px] flex items-center justify-center">
+    <div class="max-w-4xl w-full text-center flex flex-col items-center px-4">
+      <h1 class="text-4xl sm:text-5xl font-extrabold">{hero.title}</h1>
+      {#if hero.subtitle}
+        <p class="mt-3 max-w-2xl text-white/85">{hero.subtitle}</p>
+      {/if}
+      <button class="mt-6 inline-flex px-5 py-3 rounded-md bg-yellow-400 text-brand-richBlack font-semibold hover:bg-yellow-500" on:click={() => (open = true)}>Get started</button>
+    </div>
   </div>
 </section>
 {/if}
@@ -53,22 +55,17 @@
     <p class="mt-2 text-center text-brand-slateGray">{whyPartner.subtitle}</p>
   {/if}
   <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-    {#each whyPartnerCards as card}
-      <div class="rounded-2xl bg-white p-6 shadow-card border border-gray-100">
-        <div class="flex items-start gap-4">
-          {#if card.icon}
-            <div
-              class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 text-brand-richBlack/70 border border-gray-200 shadow-[0_8px_18px_-10px_rgba(0,0,0,0.35)]"
-              aria-hidden="true"
-            >
-              <CMSIcon name={card.icon} size="24" />
-            </div>
-          {/if}
-          <div class="space-y-1">
-            <div class="font-semibold text-brand-richBlack leading-snug">{card.title}</div>
-            <p class="text-sm text-brand-slateGray leading-relaxed">{card.description}</p>
+    {#each whyPartnerCards as card, index}
+      {@const bgColors = ['bg-pink-50', 'bg-yellow-50', 'bg-purple-50']}
+      {@const bgColor = bgColors[index % 3]}
+      <div class="rounded-xl {bgColor} p-8 text-center">
+        {#if card.icon}
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-yellow-400 text-brand-richBlack mb-4" aria-hidden="true">
+            <CMSIcon name={card.icon} size="28" />
           </div>
-        </div>
+        {/if}
+        <div class="mt-2 font-bold text-lg text-brand-richBlack">{card.title}</div>
+        <p class="mt-3 text-sm text-brand-slateGray leading-relaxed">{card.description}</p>
       </div>
     {/each}
   </div>
@@ -82,14 +79,14 @@
   {/if}
   <div class="mt-8 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
     {#each howItWorksCards as card}
-      <div class="bg-white rounded-xl shadow-card p-6 text-center">
+      <div class="bg-white rounded-xl p-8 text-center">
         {#if card.icon}
-          <div class="mx-auto w-12 h-12 rounded-full bg-yellow-400 flex items-center justify-center text-xl" aria-hidden="true">
-            <CMSIcon name={card.icon} size="22" />
+          <div class="mx-auto w-14 h-14 rounded-xl bg-yellow-400 flex items-center justify-center text-brand-richBlack mb-4" aria-hidden="true">
+            <CMSIcon name={card.icon} size="28" />
           </div>
         {/if}
-        <div class="mt-3 font-semibold">{card.title}</div>
-        <p class="mt-1 text-sm text-brand-slateGray">{card.description}</p>
+        <div class="mt-2 font-bold text-lg text-brand-richBlack">{card.title}</div>
+        <p class="mt-3 text-sm text-brand-slateGray leading-relaxed">{card.description}</p>
       </div>
     {/each}
   </div>

@@ -1,10 +1,8 @@
 <script lang="ts">
-  import { SITE_NAME, TWITTER_URL, LINKEDIN_URL } from '$lib/config';
+  import { SITE_NAME } from '$lib/config';
   export let sections: any[] = [];
 
   const siteName = SITE_NAME;
-  const twitter = TWITTER_URL;
-  const linkedin = LINKEDIN_URL;
 
   const navLinks = Array.isArray(sections?.find?.((s) => s.section_key === 'footer_nav_links')?.content)
     ? sections.find((s) => s.section_key === 'footer_nav_links').content
@@ -24,11 +22,7 @@
 
   const socialLinks = Array.isArray(sections?.find?.((s) => s.section_key === 'footer_social_links')?.content)
     ? sections.find((s) => s.section_key === 'footer_social_links').content
-    : [
-        { label: 'Twitter', href: twitter },
-        { label: 'Instagram', href: '#' },
-        { label: 'LinkedIn', href: linkedin }
-      ];
+    : [];
 
   const year = new Date().getFullYear();
 

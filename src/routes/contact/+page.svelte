@@ -16,7 +16,7 @@
 <section class="bg-pink-100">
   <div class="container-w py-16 text-center">
     <h1 class="text-4xl font-extrabold text-brand-richBlack">{title}</h1>
-    <p class="mt-3 max-w-3xl mx-auto text-brand-slateGray">{blurb} <a class="underline text-brand-richBlack" href={mailHref}>{email}</a></p>
+    <p class="mt-3 max-w-3xl mx-auto text-brand-slateGray">{blurb}</p>
   </div>
   <div class="sr-only" aria-hidden="true"></div>
 </section>

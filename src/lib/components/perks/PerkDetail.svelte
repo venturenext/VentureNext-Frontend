@@ -1,13 +1,10 @@
 <script lang="ts">
   import Button from '$lib/components/ui/Button.svelte';
-  import ClaimForm from '$lib/components/forms/ClaimForm.svelte';
   import ShareButtons from './ShareButtons.svelte';
-  import Modal from '$lib/components/ui/Modal.svelte';
   import { toastStore } from '$lib/stores/toast';
   import { PERK_PLACEHOLDER } from '$lib/config';
   import { withAsset } from '$lib/utils/assets';
   export let perk: any;
-  let openClaim = false;
   const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
 
  
@@ -90,13 +87,15 @@
         </div>
       {:else if perk.redeem_type === 'external_link' && perk.external_url}
         <div class="mt-2">
-          <Button href={perk.external_url} variant="primary">Go to Partner</Button>
+          <Button href={perk.external_url} variant="primary" target="_blank">Go to Partner</Button>
+        </div>
+      {:else if perk.redeem_type === 'lead_form' && perk.external_url}
+        <div class="mt-2 text-sm text-brand-slateGray">Click below to claim this perk.</div>
+        <div class="mt-3">
+          <Button href={perk.external_url} variant="secondary" target="_blank">Claim My Spot</Button>
         </div>
       {:else}
-        <div class="mt-2 text-sm text-brand-slateGray">Fill in the claim form to proceed.</div>
-        <div class="mt-3">
-          <Button on:click={() => (openClaim = true)} variant="secondary">Open Claim Form</Button>
-        </div>
+        <div class="mt-2 text-sm text-brand-slateGray">Contact partner to redeem this perk.</div>
       {/if}
     </div>
   </div>
@@ -107,7 +106,3 @@
     </div>
   </div>
 </article>
-
-<Modal bind:open={openClaim} title="Claim Perk" on:close={() => (openClaim = false)}>
-  <ClaimForm perkId={perk.id} />
-</Modal>

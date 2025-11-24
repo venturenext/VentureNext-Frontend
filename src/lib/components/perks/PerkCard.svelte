@@ -55,7 +55,7 @@
   }
 
   function handleClaimAction() {
-    if (redeemType === 'external_link' && externalUrl) {
+    if ((redeemType === 'external_link' || redeemType === 'lead_form') && externalUrl) {
       // Track affiliate click when opening external link
       if (perkId) {
         trackAffiliateClick(perkId);
@@ -149,22 +149,30 @@
       {/if}
     </div>
 
-    {#if redeemType === 'external_link'}
+    {#if redeemType === 'external_link' && externalUrl}
       <div class="space-y-2">
         <button
           type="button"
-          class="w-full rounded-lg bg-brand-darkGreen text-white font-semibold py-2 hover:brightness-110 disabled:opacity-60"
+          class="w-full rounded-lg bg-brand-darkGreen text-white font-semibold py-2 hover:brightness-110"
           on:click={handleClaimAction}
-          disabled={!externalUrl}
         >
           Open Link
         </button>
         <p class="text-xs text-gray-500">
-          {#if externalUrl}
-            You will be redirected to the partner to redeem.
-          {:else}
-            Partner link is not available yet.
-          {/if}
+          You will be redirected to the partner to redeem.
+        </p>
+      </div>
+    {:else if redeemType === 'lead_form' && externalUrl}
+      <div class="space-y-2">
+        <button
+          type="button"
+          class="w-full rounded-lg bg-brand-darkGreen text-white font-semibold py-2 hover:brightness-110"
+          on:click={handleClaimAction}
+        >
+          Claim My Spot
+        </button>
+        <p class="text-xs text-gray-500">
+          You will be redirected to the claim form to redeem.
         </p>
       </div>
     {:else if redeemType === 'coupon_code'}
@@ -186,7 +194,7 @@
         <p class="text-sm text-gray-600">Coupon code will be provided by the partner.</p>
       {/if}
     {:else}
-      <ClaimForm perkId={perkId} />
+      <ClaimForm perkId={perkId} on:success={() => (openClaim = false)} />
     {/if}
   </Modal>
 {/if}

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { createEventDispatcher } from 'svelte';
   import { submitPerkClaim } from '$lib/api/leads';
   import { isEmail, required } from '$lib/utils/validators';
   import { trackFormSubmission } from '$lib/utils/analytics';
@@ -7,6 +8,7 @@
   import FormButton from './FormButton.svelte';
 
   export let perkId: number;
+  const dispatch = createEventDispatcher();
   let name = '';
   let email = '';
   let company = '';
@@ -33,6 +35,11 @@
 
       success = 'Thanks! We\'ve received your claim.';
       name = email = company = phone = message = '';
+
+      // Close modal after 1 second
+      setTimeout(() => {
+        dispatch('success');
+      }, 1000);
     } catch (e) {
       errors.form = 'Failed to submit. Please try again later.';
     } finally {

@@ -37,7 +37,7 @@
       <div class="relative min-h-[220px] md:min-h-[520px]">
         <img src={HERO_IMAGE} alt="Hero" class="absolute inset-0 w-full h-full object-cover" />
         <div class="absolute inset-0 bg-brand-darkGreen/70"></div>
-        <div class="relative h-full p-8 lg:p-10 flex flex-col justify-end text-white">
+        <div class="relative h-full p-8 lg:p-10 flex flex-col items-center justify-center text-center text-white">
          
           <h2 class="text-3xl md:text-4xl leading-tight font-extrabold tracking-tight">
             Your next adventure awaits!
@@ -50,11 +50,11 @@
       </div>
 
     
-      <div class="flex items-center">
-        <div class="w-full p-6 sm:p-10">
+      <div class="flex items-center justify-center">
+        <div class="w-full max-w-md p-6 sm:p-10">
           <div class="mb-6">
-            <div class="text-2xl font-extrabold text-brand-richBlack">Welcome back!</div>
-            <div class="text-sm text-admin-muted mt-1">Please enter your details.</div>
+            <div class="text-2xl font-extrabold text-brand-richBlack text-center">Welcome back!</div>
+            <div class="text-sm text-admin-muted mt-1 text-center">Please enter your details.</div>
           </div>
 
           <form class="space-y-4" on:submit={onSubmit}>

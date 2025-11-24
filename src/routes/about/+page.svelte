@@ -1,5 +1,6 @@
 <script lang="ts">
   import SEOHead from '$lib/components/seo/SEOHead.svelte';
+  import CMSIcon from '$lib/components/CMSIcon.svelte';
   import { SITE_NAME, HERO_IMAGE } from '$lib/config';
   import { withAsset } from '$lib/utils/assets';
 
@@ -27,11 +28,13 @@
     <div class="absolute inset-0 bg-cover bg-center" style={`background-image: url('${withAsset(hero.image_url) || HERO_IMAGE}')`} aria-hidden="true"></div>
   {/if}
   <div class="absolute inset-0 bg-brand-darkGreen/80"></div>
-  <div class="relative container-w py-24 text-white">
-    <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">{hero.title}</h1>
-    {#if hero.subtitle}
-      <p class="mt-4 max-w-3xl text-white/85">{hero.subtitle}</p>
-    {/if}
+  <div class="relative py-20 text-white min-h-[420px] flex items-center justify-center">
+    <div class="max-w-4xl w-full text-center flex flex-col items-center px-4">
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">{hero.title}</h1>
+      {#if hero.subtitle}
+        <p class="mt-4 max-w-3xl text-white/85">{hero.subtitle}</p>
+      {/if}
+    </div>
   </div>
   <div class="sr-only" aria-hidden="true"></div>
 </section>
@@ -48,13 +51,17 @@
   {/if}
 
   <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-    {#each whatWeDoCards as card}
-      <div class="rounded-xl bg-white p-6 shadow-card">
+    {#each whatWeDoCards as card, index}
+      {@const bgColors = ['bg-pink-50', 'bg-yellow-50', 'bg-purple-50']}
+      {@const bgColor = bgColors[index % 3]}
+      <div class="rounded-xl {bgColor} p-8 text-center">
         {#if card.icon}
-          <div class="text-3xl" aria-hidden="true">{card.icon}</div>
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-yellow-400 text-brand-richBlack mb-4" aria-hidden="true">
+            <CMSIcon name={card.icon} size="28" />
+          </div>
         {/if}
-        <div class="mt-4 font-semibold text-brand-richBlack">{card.title}</div>
-        <p class="mt-1 text-sm text-brand-slateGray">{card.description}</p>
+        <div class="mt-2 font-bold text-lg text-brand-richBlack">{card.title}</div>
+        <p class="mt-3 text-sm text-brand-slateGray leading-relaxed">{card.description}</p>
       </div>
     {/each}
   </div>
@@ -74,12 +81,14 @@
 
     <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
       {#each whoWeServeCards as card}
-        <div class="bg-white rounded-xl p-6 shadow-card text-center">
+        <div class="bg-white rounded-xl p-8 text-center">
           {#if card.icon}
-            <div class="mx-auto w-10 h-10 rounded-md bg-yellow-400 flex items-center justify-center text-brand-richBlack text-xl" aria-hidden="true">{card.icon}</div>
+            <div class="mx-auto w-14 h-14 rounded-xl bg-yellow-400 flex items-center justify-center text-brand-richBlack mb-4" aria-hidden="true">
+              <CMSIcon name={card.icon} size="28" />
+            </div>
           {/if}
-          <div class="mt-3 font-semibold text-brand-richBlack">{card.title}</div>
-          <p class="mt-1 text-sm text-brand-slateGray">{card.description}</p>
+          <div class="mt-2 font-bold text-lg text-brand-richBlack">{card.title}</div>
+          <p class="mt-3 text-sm text-brand-slateGray leading-relaxed">{card.description}</p>
         </div>
       {/each}
     </div>

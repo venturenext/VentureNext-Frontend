@@ -12,6 +12,7 @@
   import { TableRow } from '@tiptap/extension-table-row';
   import { TableCell } from '@tiptap/extension-table-cell';
   import { TableHeader } from '@tiptap/extension-table-header';
+  import { Image } from '@tiptap/extension-image';
 
   export let value = '';
   export let name = 'content';
@@ -22,8 +23,12 @@
   let hiddenInput;
   let showLinkModal = false;
   let linkUrl = '';
+  let linkText = '';
   let blockType = 'p';
   let colorValue = '#000000';
+  let showImageModal = false;
+  let imageUrl = '';
+  let imageFile = null;
 
   function refreshBlockType() {
     if (!editor) return;
@@ -70,7 +75,13 @@
         }),
         TableRow,
         TableHeader,
-        TableCell
+        TableCell,
+        Image.configure({
+          inline: true,
+          HTMLAttributes: {
+            class: 'max-w-full h-auto rounded-lg'
+          }
+        })
       ],
       content: value,
       editorProps: {
@@ -156,8 +167,18 @@
   }
 
   function openLinkModal() {
+    const { from, to } = editor.state.selection;
     const previousUrl = editor.getAttributes('link').href;
     linkUrl = previousUrl || '';
+
+    // Get selected text if any
+    if (from !== to) {
+      const selectedText = editor.state.doc.textBetween(from, to, ' ');
+      linkText = selectedText;
+    } else {
+      linkText = '';
+    }
+
     showLinkModal = true;
   }
 
@@ -165,15 +186,36 @@
     if (linkUrl === '') {
       editor.chain().focus().extendMarkRange('link').unsetLink().run();
     } else {
-      editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
+      // Check if there's a selection
+      const { from, to } = editor.state.selection;
+      if (from === to) {
+        // No selection, insert link with text
+        const displayText = linkText || linkUrl;
+        editor
+          .chain()
+          .focus()
+          .insertContent(`<a href="${linkUrl}">${displayText}</a>`)
+          .run();
+      } else {
+        // Has selection, apply link to selected text
+        editor
+          .chain()
+          .focus()
+          .extendMarkRange('link')
+          .setLink({ href: linkUrl })
+          .run();
+      }
     }
     showLinkModal = false;
     linkUrl = '';
+    linkText = '';
   }
 
   function removeLink() {
     editor.chain().focus().unsetLink().run();
     showLinkModal = false;
+    linkUrl = '';
+    linkText = '';
   }
 
   function setColor(color) {
@@ -183,6 +225,40 @@
 
   function insertTable() {
     editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
+  }
+
+  function openImageModal() {
+    imageUrl = '';
+    imageFile = null;
+    showImageModal = true;
+  }
+
+  function handleImageFileChange(e) {
+    const file = e.target.files?.[0];
+    if (file) {
+      imageFile = file;
+      // Create a preview URL
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        imageUrl = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function insertImage() {
+    if (imageUrl) {
+      editor.chain().focus().setImage({ src: imageUrl }).run();
+    }
+    showImageModal = false;
+    imageUrl = '';
+    imageFile = null;
+  }
+
+  function cancelImageModal() {
+    showImageModal = false;
+    imageUrl = '';
+    imageFile = null;
   }
 </script>
 
@@ -212,21 +288,21 @@
     <div class="w-px h-6 bg-admin-border"></div>
 
     <!-- Text formatting -->
-    <button type="button" on:click={toggleBold} class="px-2 py-1 rounded hover:bg-admin-blue/10 font-bold text-sm" title="Bold">B</button>
-    <button type="button" on:click={toggleItalic} class="px-2 py-1 rounded hover:bg-admin-blue/10 italic text-sm" title="Italic">I</button>
-    <button type="button" on:click={toggleUnderline} class="px-2 py-1 rounded hover:bg-admin-blue/10 underline text-sm" title="Underline">U</button>
-    <button type="button" on:click={toggleStrike} class="px-2 py-1 rounded hover:bg-admin-blue/10 line-through text-sm" title="Strikethrough">S</button>
+    <button type="button" on:click={toggleBold} class="px-2 py-1 rounded hover:bg-admin-blue/10 font-bold text-sm {editor?.isActive('bold') ? 'bg-admin-blue text-white' : ''}" title="Bold">B</button>
+    <button type="button" on:click={toggleItalic} class="px-2 py-1 rounded hover:bg-admin-blue/10 italic text-sm {editor?.isActive('italic') ? 'bg-admin-blue text-white' : ''}" title="Italic">I</button>
+    <button type="button" on:click={toggleUnderline} class="px-2 py-1 rounded hover:bg-admin-blue/10 underline text-sm {editor?.isActive('underline') ? 'bg-admin-blue text-white' : ''}" title="Underline">U</button>
+    <button type="button" on:click={toggleStrike} class="px-2 py-1 rounded hover:bg-admin-blue/10 line-through text-sm {editor?.isActive('strike') ? 'bg-admin-blue text-white' : ''}" title="Strikethrough">S</button>
 
     <div class="w-px h-6 bg-admin-border"></div>
 
     <!-- Lists -->
-    <button type="button" on:click={toggleBulletList} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm" title="Bullet List">
+    <button type="button" on:click={toggleBulletList} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm {editor?.isActive('bulletList') ? 'bg-admin-blue text-white' : ''}" title="Bullet List">
       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
         <circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/>
       </svg>
     </button>
-    <button type="button" on:click={toggleOrderedList} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm" title="Numbered List">
+    <button type="button" on:click={toggleOrderedList} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm {editor?.isActive('orderedList') ? 'bg-admin-blue text-white' : ''}" title="Numbered List">
       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/>
         <text x="3" y="8" font-size="8" fill="currentColor">1.</text>
@@ -238,22 +314,22 @@
     <div class="w-px h-6 bg-admin-border"></div>
 
     <!-- Alignment -->
-    <button type="button" on:click={() => setTextAlign('left')} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm" title="Align Left">
+    <button type="button" on:click={() => setTextAlign('left')} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm {editor?.isActive({ textAlign: 'left' }) ? 'bg-admin-blue text-white' : ''}" title="Align Left">
       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/>
       </svg>
     </button>
-    <button type="button" on:click={() => setTextAlign('center')} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm" title="Align Center">
+    <button type="button" on:click={() => setTextAlign('center')} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm {editor?.isActive({ textAlign: 'center' }) ? 'bg-admin-blue text-white' : ''}" title="Align Center">
       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/>
       </svg>
     </button>
-    <button type="button" on:click={() => setTextAlign('right')} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm" title="Align Right">
+    <button type="button" on:click={() => setTextAlign('right')} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm {editor?.isActive({ textAlign: 'right' }) ? 'bg-admin-blue text-white' : ''}" title="Align Right">
       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="3" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="6" y1="18" x2="21" y2="18"/>
       </svg>
     </button>
-    <button type="button" on:click={() => setTextAlign('justify')} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm" title="Justify">
+    <button type="button" on:click={() => setTextAlign('justify')} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm {editor?.isActive({ textAlign: 'justify' }) ? 'bg-admin-blue text-white' : ''}" title="Justify">
       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
       </svg>
@@ -262,28 +338,37 @@
     <div class="w-px h-6 bg-admin-border"></div>
 
     <!-- Link -->
-    <button type="button" on:click={openLinkModal} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm" title="Insert Link">
+    <button type="button" on:click={openLinkModal} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm {editor?.isActive('link') ? 'bg-admin-blue text-white' : ''}" title="Insert Link">
       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+      </svg>
+    </button>
+
+    <!-- Image -->
+    <button type="button" on:click={openImageModal} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm {editor?.isActive('image') ? 'bg-admin-blue text-white' : ''}" title="Insert Image">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
       </svg>
     </button>
 
     <div class="w-px h-6 bg-admin-border"></div>
 
     <!-- Text Color -->
-    <input
-      type="color"
-      bind:value={colorValue}
-      on:input={(e) => setColor(e.target.value)}
-      class="w-8 h-6 border border-admin-border rounded cursor-pointer"
-      title="Text Color"
-    />
+    <div class="relative {editor?.isActive('textStyle') ? 'ring-2 ring-admin-blue rounded' : ''}">
+      <input
+        type="color"
+        bind:value={colorValue}
+        on:input={(e) => setColor(e.target.value)}
+        class="w-8 h-6 border border-admin-border rounded cursor-pointer"
+        title="Text Color"
+      />
+    </div>
 
     <div class="w-px h-6 bg-admin-border"></div>
 
     <!-- Blockquote & Code -->
-    <button type="button" on:click={toggleBlockquote} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm" title="Blockquote">"</button>
-    <button type="button" on:click={toggleCodeBlock} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm font-mono" title="Code Block">&lt;/&gt;</button>
+    <button type="button" on:click={toggleBlockquote} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm {editor?.isActive('blockquote') ? 'bg-admin-blue text-white' : ''}" title="Blockquote">"</button>
+    <button type="button" on:click={toggleCodeBlock} class="px-2 py-1 rounded hover:bg-admin-blue/10 text-sm font-mono {editor?.isActive('codeBlock') ? 'bg-admin-blue text-white' : ''}" title="Code Block">&lt;/&gt;</button>
 
     <div class="w-px h-6 bg-admin-border"></div>
 
@@ -319,16 +404,99 @@
 {#if showLinkModal}
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <!-- svelte-ignore a11y-no-static-element-interactions -->
-  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" role="dialog" aria-modal="true" tabindex="0" on:click={() => (showLinkModal = false)} on:keydown={(e) => handleModalKeydown(e, () => (showLinkModal = false))}>
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" role="dialog" aria-modal="true" tabindex="0" on:click={() => { showLinkModal = false; linkUrl = ''; linkText = ''; }} on:keydown={(e) => handleModalKeydown(e, () => { showLinkModal = false; linkUrl = ''; linkText = ''; })}>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div class="bg-white rounded-lg p-6 w-96 max-w-full" on:click|stopPropagation>
       <h3 class="text-lg font-semibold mb-4">Insert Link</h3>
-      <input type="url" bind:value={linkUrl} placeholder="https://example.com" class="w-full border border-admin-border rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-admin-blue" />
-      <div class="flex gap-2 justify-end">
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-sm text-admin-muted mb-2" for="link-text">Link Text</label>
+          <input
+            id="link-text"
+            type="text"
+            bind:value={linkText}
+            placeholder="Click here"
+            class="w-full border border-admin-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-admin-muted mb-2" for="link-url">URL</label>
+          <input
+            id="link-url"
+            type="url"
+            bind:value={linkUrl}
+            placeholder="https://example.com"
+            class="w-full border border-admin-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue"
+          />
+        </div>
+      </div>
+
+      <div class="flex gap-2 justify-end mt-4">
         <button type="button" on:click={removeLink} class="px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg">Remove</button>
-        <button type="button" on:click={() => (showLinkModal = false)} class="px-4 py-2 text-sm border border-admin-border rounded-lg">Cancel</button>
-        <button type="button" on:click={setLink} class="px-4 py-2 text-sm bg-admin-blue text-white rounded-lg">Insert</button>
+        <button type="button" on:click={() => { showLinkModal = false; linkUrl = ''; linkText = ''; }} class="px-4 py-2 text-sm border border-admin-border rounded-lg">Cancel</button>
+        <button type="button" on:click={setLink} disabled={!linkUrl} class="px-4 py-2 text-sm bg-admin-blue text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">Insert</button>
+      </div>
+    </div>
+  </div>
+{/if}
+
+<!-- Image Modal -->
+{#if showImageModal}
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" role="dialog" aria-modal="true" tabindex="0" on:click={cancelImageModal} on:keydown={(e) => handleModalKeydown(e, cancelImageModal)}>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div class="bg-white rounded-lg p-6 w-96 max-w-full" on:click|stopPropagation>
+      <h3 class="text-lg font-semibold mb-4">Insert Image</h3>
+
+      <div class="space-y-4">
+        <!-- URL Input -->
+        <div>
+          <label class="block text-sm text-admin-muted mb-2" for="image-url">Image URL</label>
+          <input
+            id="image-url"
+            type="url"
+            bind:value={imageUrl}
+            placeholder="https://example.com/image.jpg"
+            class="w-full border border-admin-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue"
+          />
+        </div>
+
+        <!-- OR Divider -->
+        <div class="flex items-center gap-2">
+          <div class="flex-1 border-t border-admin-border"></div>
+          <span class="text-xs text-admin-muted">OR</span>
+          <div class="flex-1 border-t border-admin-border"></div>
+        </div>
+
+        <!-- File Upload -->
+        <div>
+          <label class="block text-sm text-admin-muted mb-2" for="image-file">Upload Image</label>
+          <input
+            id="image-file"
+            type="file"
+            accept="image/*"
+            on:change={handleImageFileChange}
+            class="w-full text-sm text-admin-muted file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-admin-blue file:text-white hover:file:bg-admin-blue/90 file:cursor-pointer"
+          />
+        </div>
+
+        <!-- Image Preview -->
+        {#if imageUrl}
+          <div class="mt-2">
+            <p class="text-xs text-admin-muted mb-2">Preview:</p>
+            <img src={imageUrl} alt="Preview" class="max-w-full max-h-48 rounded-lg border border-admin-border" />
+          </div>
+        {/if}
+      </div>
+
+      <div class="flex gap-2 justify-end mt-6">
+        <button type="button" on:click={cancelImageModal} class="px-4 py-2 text-sm border border-admin-border rounded-lg">Cancel</button>
+        <button type="button" on:click={insertImage} disabled={!imageUrl} class="px-4 py-2 text-sm bg-admin-blue text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">Insert</button>
       </div>
     </div>
   </div>
