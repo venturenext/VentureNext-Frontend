@@ -86,7 +86,7 @@
               <label class="inline-flex items-center gap-2 text-admin-muted">
                 <input type="checkbox" name="remember" bind:checked={remember} class="rounded border-admin-border" /> Remember me
               </label>
-              <a href="/admin/password-reset" class="text-admin-text hover:underline">Forgot password</a>
+              <button type="button" on:click={() => goto('/admin/password-reset')} class="text-admin-text hover:underline">Forgot password</button>
             </div>
 
             {#if errorMsg}

@@ -3,7 +3,8 @@ import { redirect } from '@sveltejs/kit';
 import { apiMe } from '$lib/api/auth';
 
 export const load: LayoutServerLoad = async ({ locals, fetch, url }) => {
-  if (url.pathname === '/admin/login') {
+  // Allow access to login and password reset pages without authentication
+  if (url.pathname === '/admin/login' || url.pathname.startsWith('/admin/password-reset')) {
     return { user: null } as any;
   }
   const token = locals.token;

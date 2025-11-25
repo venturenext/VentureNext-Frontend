@@ -6,7 +6,7 @@
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
 
-  $: isAuthRoute = $page.url.pathname === '/admin/login';
+  $: isAuthRoute = $page.url.pathname === '/admin/login' || $page.url.pathname.startsWith('/admin/password-reset');
   let sidebarOpen = false;
   let pathname = '';
   let prevPathname = '';
@@ -46,7 +46,13 @@
   <div class="min-h-screen bg-admin-sidebar text-admin-text lg:grid lg:grid-cols-[16rem_1fr]">
    
     {#if sidebarOpen}
-      <div class="fixed inset-0 bg-black/50 z-40 lg:hidden" on:click={() => sidebarOpen = false}></div>
+      <div
+        class="fixed inset-0 bg-black/50 z-40 lg:hidden"
+        role="button"
+        tabindex="0"
+        on:click={() => sidebarOpen = false}
+        on:keydown={(e) => e.key === 'Enter' || e.key === ' ' ? sidebarOpen = false : null}
+      ></div>
     {/if}
 
     <div id="mobile-sidebar" class="fixed inset-y-0 left-0 z-50 lg:relative lg:z-auto transform transition-transform duration-300 {sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}">
