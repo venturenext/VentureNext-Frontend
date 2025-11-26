@@ -2,17 +2,16 @@
   import { goto } from '$app/navigation';
   import { SITE_NAME } from '$lib/config';
   import { env } from '$env/dynamic/public';
+  import { toastStore } from '$lib/stores/toast';
   const HERO_IMAGE = env.PUBLIC_HERO_IMAGE || '/images/hero.svg';
 
   let showPassword = false;
   let email = '';
   let password = '';
   let remember = false;
-  let errorMsg: string | null = null;
 
   async function onSubmit(e: Event) {
     e.preventDefault();
-    errorMsg = null;
     try {
       const res = await fetch('/admin/api/login', {
         method: 'POST',
@@ -25,7 +24,8 @@
       }
       await goto('/admin');
     } catch (err: any) {
-      errorMsg = err?.message || 'Invalid email or password';
+      const message = err?.message || 'Invalid email or password';
+      toastStore.push(message, 'error', 4000);
     }
   }
 </script>
@@ -88,10 +88,6 @@
               </label>
               <button type="button" on:click={() => goto('/admin/password-reset')} class="text-admin-text hover:underline">Forgot password</button>
             </div>
-
-            {#if errorMsg}
-              <div class="text-sm text-red-600">{errorMsg}</div>
-            {/if}
 
             <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2.5 rounded-lg bg-brand-darkGreen text-white font-semibold hover:brightness-110">Sign in</button>
           </form>

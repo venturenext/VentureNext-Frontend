@@ -77,76 +77,86 @@
   }
 </script>
 
-<article class="bg-white rounded-2xl shadow-card overflow-hidden ring-1 ring-gray-100 hover:shadow-lg transition" data-location={location}>
+<article
+  class="group relative overflow-hidden rounded-3xl border border-gray-100 bg-gradient-to-b from-white to-brand-offWhite shadow-card transition hover:-translate-y-1 hover:shadow-xl"
+  data-location={location}
+>
   <div class="block focus:outline-none">
-    <div class="relative aspect-[16/9] bg-gray-100">
+    <div class="relative aspect-[16/9] bg-gray-100 overflow-hidden">
       <img
         src={bannerImage}
         alt={title}
-        class="w-full h-full object-cover"
+        class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
         loading="lazy"
         on:error={handleImageError}
       />
-      <div class="absolute top-2 left-2 flex items-center gap-2">
+      <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/0 to-black/30"></div>
+      <div class="absolute top-3 left-3 flex items-center gap-2">
         {#if logo}
-          <div class="w-9 h-9 rounded-full bg-white ring-2 ring-white overflow-hidden flex items-center justify-center">
-            <img src={withAsset(logo)} alt={`${partner} logo`} class="w-8 h-8 object-cover rounded-full" loading="lazy" />
+          <div class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-white ring-2 ring-white/80 shadow-md">
+            <img src={withAsset(logo)} alt={`${partner} logo`} class="h-9 w-9 rounded-full object-cover" loading="lazy" />
           </div>
         {:else}
-          <div class="w-9 h-9 rounded-full bg-white/90 ring-2 ring-white flex items-center justify-center text-sm font-semibold text-brand-richBlack">
+          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 ring-2 ring-white/80 text-sm font-semibold text-brand-richBlack shadow-md">
             {partnerInitial(partner)}
           </div>
         {/if}
-        <span class="px-2 py-1 rounded-full bg-black/40 text-white text-xs backdrop-blur-sm">
+        <span class="rounded-full bg-black/50 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm ring-1 ring-white/40">
           {partner}
         </span>
       </div>
-      {#if validUntil}
-        <div class="absolute bottom-2 right-2 px-2 py-1 rounded bg-black/50 text-white text-xs backdrop-blur-sm">
-          Valid until {validUntil}
+      <div class="absolute bottom-3 right-3 text-xs text-white/90">
+        <div class="rounded-lg bg-black/35 px-3 py-1 backdrop-blur-sm ring-1 ring-white/25">
+          {location.toUpperCase()}{#if validUntil} · Valid until {validUntil}{/if}
         </div>
-      {/if}
+      </div>
     </div>
-    <div class="p-5 space-y-2">
-      <h3 class="text-lg font-semibold text-brand-richBlack">{title}</h3>
+    <div class="space-y-3 px-5 py-4">
+      <h3 class="text-lg font-semibold leading-snug text-brand-richBlack">{title}</h3>
       {#if description}
-        <p class="text-sm text-brand-slateGray">{description}</p>
+        <p class="text-sm leading-relaxed text-brand-slateGray">{description}</p>
       {/if}
     </div>
   </div>
   <div class="px-5 pb-5">
     <button
       type="button"
-      class="block w-full rounded-lg bg-yellow-400 hover:bg-yellow-500 text-brand-richBlack font-semibold py-2 transition text-center"
+      class="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand-darkGreen to-emerald-600 px-4 py-3 text-center text-sm font-semibold text-white shadow-lg shadow-emerald-900/15 transition hover:translate-y-px hover:shadow-xl"
       aria-label={cta}
       on:click={handleCta}
     >
       {cta}
+      <span aria-hidden="true">→</span>
     </button>
   </div>
 </article>
 
 {#if perkId}
   <Modal bind:open={openClaim} title="Claim Perk" on:close={() => (openClaim = false)}>
-    <div class="space-y-3 text-sm text-gray-700 mb-4">
-      <div class="flex items-center justify-between">
-        <span class="font-semibold">Perk</span>
-        <span class="text-gray-600">{title}</span>
-      </div>
-      <div class="flex items-center justify-between">
-        <span class="font-semibold">Company</span>
-        <span class="text-gray-600">{partner}</span>
-      </div>
-      <div class="flex items-center justify-between">
-        <span class="font-semibold">Location</span>
-        <span class="text-gray-600 uppercase">{location}</span>
-      </div>
-      {#if validUntil}
-        <div class="flex items-center justify-between">
-          <span class="font-semibold">Valid until</span>
-          <span class="text-gray-600">{validUntil}</span>
+    <div class="mb-5 rounded-2xl border border-gray-100 bg-gradient-to-r from-brand-offWhite to-white p-4 shadow-inner">
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p class="text-xs uppercase tracking-[0.12em] text-gray-500">Perk</p>
+          <p class="text-base font-semibold text-brand-richBlack">{title}</p>
         </div>
-      {/if}
+        <span class="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase text-brand-darkGreen ring-1 ring-brand-darkGreen/15">
+          {location}
+        </span>
+      </div>
+
+      <div class="mt-4 grid grid-cols-1 gap-3 text-sm text-brand-slateGray md:grid-cols-2">
+        <div class="rounded-xl bg-white px-3 py-2 shadow-sm ring-1 ring-gray-100">
+          <p class="text-xs uppercase tracking-[0.08em] text-gray-500">Company</p>
+          <p class="font-semibold text-brand-richBlack">{partner}</p>
+        </div>
+        {#if validUntil}
+          <div class="rounded-xl bg-white px-3 py-2 shadow-sm ring-1 ring-gray-100">
+            <p class="text-xs uppercase tracking-[0.08em] text-gray-500">Valid until</p>
+            <p class="font-semibold text-brand-richBlack">{validUntil}</p>
+          </div>
+        {/if}
+      </div>
+
     </div>
 
     {#if redeemType === 'external_link' && externalUrl}

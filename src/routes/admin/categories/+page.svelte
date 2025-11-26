@@ -167,40 +167,80 @@
   </div>
 {/if}
 
-  <div class="bg-white rounded-2xl shadow-card border border-admin-border">
-    <div class="overflow-x-auto">
-      <table class="min-w-full text-sm">
-      <thead class="bg-admin-sidebar/80 text-admin-muted uppercase text-xs">
-        <tr>
-          <th class="text-left px-4 py-3">Name</th>
-          <th class="text-left px-4 py-3">Slug</th>
-          <th class="text-right px-4 py-3">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each items as it}
-          <tr class="border-t border-admin-border hover:bg-admin-sidebar/50">
-            <td class="px-4 py-3 text-brand-richBlack font-medium">{it.name}</td>
-            <td class="px-4 py-3">{it.slug}</td>
-            <td class="px-4 py-3 text-right whitespace-nowrap">
-              <button class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-admin-border bg-white hover:bg-gray-50 mr-1" title="Edit" on:click={() => openEditModal(it)}>
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+<div class="rounded-2xl border border-admin-border/80 bg-white/80 shadow-card">
+  {#if items.length === 0}
+    <div class="grid place-items-center py-10 text-center text-admin-muted text-sm">
+      No categories found. Try adjusting your search or create one.
+    </div>
+  {:else}
+    <div class="hidden lg:block">
+      <div class="overflow-hidden rounded-2xl">
+        <table class="min-w-full text-sm">
+          <thead class="bg-admin-sidebar text-xs uppercase text-admin-muted">
+            <tr>
+              <th class="px-4 py-3 text-left">Category</th>
+              <th class="px-4 py-3 text-left">Slug</th>
+              <th class="px-4 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-admin-border/80">
+            {#each items as it}
+              <tr class="transition hover:bg-admin-sidebar/60">
+                <td class="px-4 py-3">
+                  <div class="font-semibold text-brand-richBlack">{it.name}</div>
+                  <div class="text-xs text-admin-muted">Primary category</div>
+                </td>
+                <td class="px-4 py-3 text-admin-muted">{it.slug}</td>
+                <td class="px-4 py-3 text-right whitespace-nowrap">
+                  <div class="inline-flex items-center gap-2">
+                    <button class="inline-flex items-center gap-1 rounded-lg bg-brand-darkGreen px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:brightness-110" title="Edit" on:click={() => openEditModal(it)}>
+                      Edit
+                    </button>
+                    {#if isSuper}
+                      <button
+                        type="button"
+                        class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-admin-border bg-white text-red-600 transition hover:bg-red-50"
+                        title="Delete"
+                        on:click={() => openDeleteModal(it)}>
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+                      </button>
+                    {/if}
+                  </div>
+                </td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid gap-3 lg:hidden">
+      {#each items as it}
+        <article class="rounded-2xl border border-admin-border bg-white px-4 py-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-start justify-between gap-3">
+            <div class="space-y-1">
+              <div class="text-[11px] uppercase tracking-[0.14em] text-admin-muted">Slug: {it.slug}</div>
+              <div class="text-base font-semibold text-brand-richBlack">{it.name}</div>
+            </div>
+            <div class="inline-flex items-center gap-2">
+              <button class="inline-flex items-center gap-1 rounded-lg bg-brand-darkGreen px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:brightness-110" title="Edit" on:click={() => openEditModal(it)}>
+                Edit
               </button>
               {#if isSuper}
                 <button
                   type="button"
-                  class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-admin-border bg-white text-red-600 hover:bg-red-50"
+                  class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-admin-border bg-white text-red-600 transition hover:bg-red-50"
                   title="Delete"
                   on:click={() => openDeleteModal(it)}>
                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
                 </button>
               {/if}
-            </td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
+            </div>
+          </div>
+        </article>
+      {/each}
+    </div>
+  {/if}
 </div>
 <div class="mt-4">
   <Pagination meta={data.meta} current={data.query} basePath="/admin/categories" />

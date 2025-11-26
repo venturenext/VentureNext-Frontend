@@ -6,7 +6,7 @@ export const load: PageServerLoad = async ({ locals, fetch, url }) => {
   const token = locals.token;
   if (!token) throw redirect(302, '/admin/login');
   const page = Number(url.searchParams.get('page') || 1);
-  const per_page = Number(url.searchParams.get('per_page') || 20);
+  const per_page = Number(url.searchParams.get('per_page') || 10);
   const search = url.searchParams.get('search') || '';
   const res = await adminListLeads(token, fetch, { page, per_page, search });
   return { items: res.data, meta: res.meta, query: { page, per_page, search } };

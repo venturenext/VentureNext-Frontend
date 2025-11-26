@@ -7,9 +7,18 @@
   export let required = false;
 </script>
 
-<label class="block text-sm">
-  <span class="text-gray-700">{label}{#if required}<span class="text-red-500">*</span>{/if}</span>
-  <textarea {name} bind:value rows="4" class="mt-1 block w-full rounded border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-darkGreen" {placeholder}></textarea>
-  {#if error}<div class="text-xs text-red-600 mt-1">{error}</div>{/if}
+<label class="block space-y-2 text-sm text-brand-richBlack">
+  <div class="flex items-center justify-between">
+    <span class="font-medium">{label}{#if required}<span class="text-red-500">*</span>{/if}</span>
+    {#if error}<span class="text-xs text-red-600">{error}</span>{/if}
+  </div>
+  <textarea
+    {name}
+    bind:value
+    rows="4"
+    class="block w-full rounded-xl border border-gray-200 bg-white/80 px-4 py-3 text-[15px] shadow-sm transition focus:border-brand-darkGreen focus:ring-4 focus:ring-brand-darkGreen/15"
+    {placeholder}
+    aria-invalid={!!error}
+    aria-required={required}
+  ></textarea>
 </label>
-

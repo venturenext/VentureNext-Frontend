@@ -1,4 +1,4 @@
-<script>
+﻿<script>
   import Modal from '$lib/components/ui/Modal.svelte';
   import Pagination from '$lib/components/ui/Pagination.svelte';
   import { enhance } from '$app/forms';
@@ -147,48 +147,82 @@
     {/if}
   </section>
 
-  <section class="rounded-2xl border border-admin-border bg-white">
+  <section class="rounded-2xl border border-admin-border/80 bg-white/80 shadow-card">
     {#if items.length === 0}
       <div class="p-10 text-center text-sm text-admin-muted">No locations yet. Create one to get started.</div>
     {:else}
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-admin-border text-sm">
-          <thead>
-            <tr class="bg-admin-sidebar text-xs uppercase tracking-wide text-admin-muted">
-              <th class="px-4 py-3 text-left font-medium">Name</th>
-              <th class="px-4 py-3 text-left font-medium">Slug</th>
-              <th class="px-4 py-3 text-center font-medium">Status</th>
-              <th class="px-4 py-3 text-right font-medium">Actions</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-admin-border">
-            {#each items as item}
-              <tr class="hover:bg-admin-sidebar/40">
-                <td class="px-4 py-3 font-medium text-brand-richBlack">{item.name}</td>
-                <td class="px-4 py-3 text-admin-muted">{item.slug}</td>
-                <td class="px-4 py-3 text-center">
-                  <span class={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${item.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'}`}>
-                    {item.is_active ? 'Active' : 'Inactive'}
-                  </span>
-                </td>
-                <td class="px-4 py-3 text-right whitespace-nowrap">
-                  <button type="button" class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-admin-border bg-white hover:bg-gray-50 mr-1" title="Edit" on:click={() => openEditModal(item)}>
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
-                  </button>
-                  {#if isSuper}
-                    <button
-                      type="button"
-                      class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-admin-border bg-white text-red-600 hover:bg-red-50"
-                      title="Delete"
-                      on:click={() => openDeleteModal(item)}>
-                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
-                    </button>
-                  {/if}
-                </td>
+      <div class="hidden lg:block">
+        <div class="overflow-hidden rounded-2xl">
+          <table class="min-w-full divide-y divide-admin-border text-sm">
+            <thead>
+              <tr class="bg-admin-sidebar text-xs uppercase tracking-wide text-admin-muted">
+                <th class="px-4 py-3 text-left font-medium">Location</th>
+                <th class="px-4 py-3 text-left font-medium">Slug</th>
+                <th class="px-4 py-3 text-center font-medium">Status</th>
+                <th class="px-4 py-3 text-right font-medium">Actions</th>
               </tr>
-            {/each}
-          </tbody>
-        </table>
+            </thead>
+            <tbody class="divide-y divide-admin-border/80">
+              {#each items as item}
+                <tr class="transition hover:bg-admin-sidebar/60">
+                  <td class="px-4 py-3 font-medium text-brand-richBlack">{item.name}</td>
+                  <td class="px-4 py-3 text-admin-muted">{item.slug}</td>
+                  <td class="px-4 py-3 text-center">
+                    <span class={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${item.is_active ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200' : 'bg-gray-50 text-admin-muted ring-1 ring-gray-200'}`}>
+                      {item.is_active ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap">
+                    <div class="inline-flex items-center gap-2">
+                      <button type="button" class="inline-flex items-center gap-1 rounded-lg bg-brand-darkGreen px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:brightness-110" title="Edit" on:click={() => openEditModal(item)}>
+                        Edit
+                      </button>
+                      {#if isSuper}
+                        <button
+                          type="button"
+                          class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-admin-border bg-white text-red-600 transition hover:bg-red-50"
+                          title="Delete"
+                          on:click={() => openDeleteModal(item)}>
+                          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                      {/if}
+                    </div>
+                  </td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid gap-3 lg:hidden">
+        {#each items as item}
+          <article class="rounded-2xl border border-admin-border bg-white px-4 py-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            <div class="flex items-start justify-between gap-3">
+              <div class="space-y-1">
+                <div class="text-base font-semibold text-brand-richBlack">{item.name}</div>
+                <div class="text-sm text-admin-muted">Slug: {item.slug}</div>
+              </div>
+              <span class={`rounded-full px-3 py-1 text-xs font-semibold uppercase ring-1 ${item.is_active ? 'bg-emerald-50 text-emerald-700 ring-emerald-200' : 'bg-gray-50 text-admin-muted ring-gray-200'}`}>
+                {item.is_active ? 'Active' : 'Inactive'}
+              </span>
+            </div>
+            <div class="mt-3 flex items-center justify-end gap-2">
+              <button type="button" class="inline-flex items-center gap-1 rounded-lg bg-brand-darkGreen px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:brightness-110" title="Edit" on:click={() => openEditModal(item)}>
+                Edit
+              </button>
+              {#if isSuper}
+                <button
+                  type="button"
+                  class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-admin-border bg-white text-red-600 transition hover:bg-red-50"
+                  title="Delete"
+                  on:click={() => openDeleteModal(item)}>
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              {/if}
+            </div>
+          </article>
+        {/each}
       </div>
     {/if}
   </section>

@@ -1,4 +1,4 @@
-<script>
+﻿<script>
   import { enhance } from '$app/forms';
   import { invalidateAll } from '$app/navigation';
   import { onMount } from 'svelte';
@@ -69,20 +69,24 @@
 </script>
 
 <!-- Header row with search and create button -->
-<div class="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+<div class="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
   <h1 class="text-xl font-semibold text-brand-richBlack">Perks</h1>
-  <div class="flex items-center gap-3 w-full md:w-auto">
+  <div class="flex w-full items-center gap-3 md:w-auto">
     <form method="GET" class="flex-1 md:w-80">
       <label class="relative block">
         <span class="sr-only">Search</span>
-        <span class="absolute inset-y-0 left-3 mt-3 my-auto text-gray-400">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+        <span class="absolute inset-y-0 left-3 my-auto mt-3 text-gray-400">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
         </span>
-        <input name="search" placeholder="Search by title or partner" value={data?.query?.search}
-               class="w-full pl-10 pr-3 py-2 rounded-lg border border-admin-border bg-white focus:outline-none focus:ring-2 focus:ring-admin-blue" />
+        <input
+          name="search"
+          placeholder="Search by title or partner"
+          value={data?.query?.search}
+          class="w-full rounded-lg border border-admin-border bg-white py-2 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-admin-blue"
+        />
       </label>
     </form>
-    <a href="/admin/perks/new" class="px-4 py-2 rounded-lg bg-admin-blue text-white text-center">Create Perk</a>
+    <a href="/admin/perks/new" class="rounded-lg bg-admin-blue px-4 py-2 text-center text-white">Create Perk</a>
   </div>
 </div>
 
@@ -100,52 +104,124 @@
   </div>
 {/if}
 
-  <div class="bg-white rounded-2xl shadow-card border border-admin-border overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="min-w-full text-sm">
-      <thead class="bg-admin-sidebar/80 text-admin-muted uppercase text-xs">
-        <tr>
-          <th class="text-left px-4 py-3">Name</th>
-          <th class="text-left px-4 py-3">Partner</th>
-          <th class="text-left px-4 py-3">Location</th>
-          <th class="text-left px-4 py-3">Status</th>
-          <th class="text-right px-4 py-3">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each items as it}
-          <tr class="border-t border-admin-border hover:bg-admin-sidebar/50">
-            <td class="px-4 py-3 text-brand-richBlack font-medium">{it.title}</td>
-            <td class="px-4 py-3">{it.partner_name}</td>
-            <td class="px-4 py-3 capitalize">{it.location_label ?? it.location}</td>
-            <td class="px-4 py-3">
-              {#if it.status === 'published'}
-                <span class="inline-flex items-center gap-1 text-green-700 font-medium">Published</span>
-              {:else if it.status === 'archived'}
-                <span class="inline-flex items-center gap-1 text-orange-700 font-medium">Archived</span>
-              {:else}
-                <span class="inline-flex items-center gap-1 text-admin-muted">Draft</span>
-              {/if}
-            </td>
-            <td class="px-4 py-3 text-right whitespace-nowrap">
-              <a href={`/admin/perks/${it.id}`} class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-admin-border bg-white hover:bg-gray-50 mr-1" title="Edit">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
-              </a>
-              {#if isSuper}
-                <button
-                  type="button"
-                  class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-admin-border bg-white text-red-600 hover:bg-red-50"
-                  title="Delete"
-                  on:click={() => openDeleteModal(it)}>
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
-                </button>
-              {/if}
-            </td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
+<div class="rounded-2xl border border-admin-border/80 bg-white/80 shadow-card">
+  {#if items.length === 0}
+    <div class="grid place-items-center py-10 text-center text-admin-muted text-sm">
+      No perks found. Try adjusting your search or create a new perk.
+    </div>
+  {:else}
+    <!-- Desktop table -->
+    <div class="hidden lg:block">
+      <div class="overflow-hidden rounded-2xl">
+        <table class="min-w-full text-sm">
+          <thead class="bg-admin-sidebar text-xs uppercase text-admin-muted">
+            <tr>
+              <th class="px-4 py-3 text-left">Perk</th>
+              <th class="px-4 py-3 text-left">Partner</th>
+              <th class="px-4 py-3 text-left">Location</th>
+              <th class="px-4 py-3 text-left">Redeem</th>
+              <th class="px-4 py-3 text-left">Status</th>
+              <th class="px-4 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-admin-border/80">
+            {#each items as it}
+              <tr class="transition hover:bg-admin-sidebar/60">
+                <td class="px-4 py-3">
+                  <div class="font-semibold text-brand-richBlack">{it.title}</div>
+                  <div class="text-xs text-admin-muted line-clamp-2">{it.subtitle || it.description || '—'}</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm font-medium text-brand-richBlack">{it.partner_name}</div>
+                  <div class="text-[11px] uppercase tracking-[0.12em] text-admin-muted">ID #{it.id}</div>
+                </td>
+                <td class="px-4 py-3 capitalize">{it.location_label ?? it.location}</td>
+                <td class="px-4 py-3">
+                  {#if it.redeem_type}
+                    <span class="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 ring-1 ring-admin-border/70 text-[11px] font-semibold uppercase text-brand-richBlack">
+                      {it.redeem_type.replace('_', ' ')}
+                    </span>
+                  {:else}
+                    <span class="text-xs text-admin-muted">—</span>
+                  {/if}
+                </td>
+                <td class="px-4 py-3">
+                  <span class="rounded-full px-3 py-1 text-xs font-semibold uppercase ring-1
+                    {it.status === 'published' ? 'bg-emerald-50 text-emerald-700 ring-emerald-200' :
+                    it.status === 'archived' ? 'bg-orange-50 text-orange-700 ring-orange-200' :
+                    'bg-gray-50 text-admin-muted ring-gray-200'}">
+                    {it.status}
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-right">
+                  <div class="inline-flex items-center gap-2">
+                    <a href={`/admin/perks/${it.id}`} class="inline-flex items-center gap-1 rounded-lg bg-brand-darkGreen px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:brightness-110">
+                      Edit
+                    </a>
+                    {#if isSuper}
+                      <button
+                        type="button"
+                        class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-admin-border bg-white text-red-600 transition hover:bg-red-50"
+                        title="Delete"
+                        on:click={() => openDeleteModal(it)}>
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+                      </button>
+                    {/if}
+                  </div>
+                </td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Mobile stacked cards -->
+    <div class="grid gap-3 lg:hidden">
+      {#each items as it}
+        <article class="rounded-2xl border border-admin-border bg-white px-4 py-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-start justify-between gap-3">
+            <div class="space-y-1">
+              <div class="text-[11px] uppercase tracking-[0.14em] text-admin-muted">#{it.id} - {it.partner_name}</div>
+              <div class="text-base font-semibold text-brand-richBlack">{it.title}</div>
+              <p class="text-sm text-brand-slateGray line-clamp-2">{it.subtitle || it.description || '—'}</p>
+            </div>
+            <span class="rounded-full px-3 py-1 text-xs font-semibold uppercase ring-1
+              {it.status === 'published' ? 'bg-emerald-50 text-emerald-700 ring-emerald-200' :
+              it.status === 'archived' ? 'bg-orange-50 text-orange-700 ring-orange-200' :
+              'bg-gray-50 text-admin-muted ring-gray-200'}">
+              {it.status}
+            </span>
+          </div>
+          <div class="mt-3 flex flex-wrap items-center gap-2 text-xs text-admin-muted">
+            <span class="inline-flex items-center gap-2 rounded-full bg-admin-sidebar px-3 py-1 capitalize ring-1 ring-admin-border/70">
+              <svg class="h-4 w-4 text-admin-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 12-9 12S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              {it.location_label ?? it.location}
+            </span>
+            {#if it.redeem_type}
+              <span class="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 ring-1 ring-admin-border/70 text-[11px] font-semibold uppercase text-brand-richBlack">
+                {it.redeem_type.replace('_', ' ')}
+              </span>
+            {/if}
+          </div>
+          <div class="mt-3 flex items-center justify-end gap-2">
+            <a href={`/admin/perks/${it.id}`} class="inline-flex items-center gap-1 rounded-lg bg-brand-darkGreen px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:brightness-110">
+              Edit
+            </a>
+            {#if isSuper}
+              <button
+                type="button"
+                class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-admin-border bg-white text-red-600 transition hover:bg-red-50"
+                title="Delete"
+                on:click={() => openDeleteModal(it)}>
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            {/if}
+          </div>
+        </article>
+      {/each}
+    </div>
+  {/if}
 </div>
 <div class="mt-4">
   <Pagination meta={data.meta} current={data.query} basePath="/admin/perks" />
@@ -170,3 +246,6 @@
     </form>
   {/if}
 </Modal>
+
+
+
