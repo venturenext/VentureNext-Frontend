@@ -1,3 +1,7 @@
+<svelte:head>
+  <title>Settings - Admin Dashboard</title>
+</svelte:head>
+
 <script>
   import { enhance } from '$app/forms';
   import { invalidate } from '$app/navigation';
