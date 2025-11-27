@@ -1,7 +1,3 @@
-<svelte:head>
-  <title>Content Management - Admin</title>
-</svelte:head>
-
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
 	import { toastStore } from '$lib/stores/toast';
