@@ -79,15 +79,7 @@
 
   <FormTextarea label="Message" name="message" bind:value={message} placeholder="Anything else we should know?" />
 
-  <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-    <div class="flex flex-wrap gap-2 text-xs text-gray-500">
-      <span class="inline-flex items-center gap-1 rounded-full bg-brand-offWhite px-3 py-1 text-brand-richBlack ring-1 ring-gray-200">
-        <span class="h-2 w-2 rounded-full bg-emerald-500"></span> Response within 1 business day
-      </span>
-      <span class="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-brand-slateGray ring-1 ring-gray-200">
-        Private & secure
-      </span>
-    </div>
+  <div class="flex justify-end">
     <FormButton {loading} label="Submit Claim" />
   </div>
 </form>

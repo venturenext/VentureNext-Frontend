@@ -1,3 +1,7 @@
+<svelte:head>
+  <title>New Perk - Admin</title>
+</svelte:head>
+
 <script lang="ts">
   import { enhance } from '$app/forms';
   import { goto, invalidateAll } from '$app/navigation';

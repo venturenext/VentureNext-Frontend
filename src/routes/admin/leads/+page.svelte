@@ -1,3 +1,7 @@
+<svelte:head>
+  <title>Leads - Admin</title>
+</svelte:head>
+
 <script>
   import { enhance } from '$app/forms';
   import { page } from '$app/stores';

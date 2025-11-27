@@ -1,3 +1,7 @@
+<svelte:head>
+  <title>Login - Admin</title>
+</svelte:head>
+
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { SITE_NAME } from '$lib/config';

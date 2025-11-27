@@ -1,4 +1,8 @@
-﻿<script>
+﻿<svelte:head>
+  <title>Contacts - Admin</title>
+</svelte:head>
+
+<script>
   import { enhance } from '$app/forms';
   import { page } from '$app/stores';
   import Modal from '$lib/components/ui/Modal.svelte';

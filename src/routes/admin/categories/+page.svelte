@@ -1,3 +1,7 @@
+<svelte:head>
+  <title>Categories - Admin</title>
+</svelte:head>
+
 <script>
   import Modal from '$lib/components/ui/Modal.svelte';
   import Pagination from '$lib/components/ui/Pagination.svelte';

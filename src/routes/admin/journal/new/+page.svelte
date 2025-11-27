@@ -1,3 +1,7 @@
+<svelte:head>
+  <title>New Journal Post - Admin</title>
+</svelte:head>
+
 <script>
   import { enhance } from '$app/forms';
   import { goto, invalidateAll } from '$app/navigation';

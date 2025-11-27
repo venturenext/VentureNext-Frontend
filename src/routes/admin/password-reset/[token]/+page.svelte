@@ -1,3 +1,7 @@
+<svelte:head>
+  <title>Reset Password - Admin</title>
+</svelte:head>
+
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { env } from '$env/dynamic/public';

@@ -1,3 +1,7 @@
+<svelte:head>
+  <title>Dashboard - Admin</title>
+</svelte:head>
+
 <script>
   import ActivityFeed from '$lib/components/admin/ActivityFeed.svelte';
   import DashboardStats from '$lib/components/admin/DashboardStats.svelte';

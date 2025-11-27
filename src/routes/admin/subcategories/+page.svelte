@@ -1,4 +1,8 @@
-﻿<script>
+﻿<svelte:head>
+  <title>Subcategories - Admin</title>
+</svelte:head>
+
+<script>
   import Modal from '$lib/components/ui/Modal.svelte';
   import Pagination from '$lib/components/ui/Pagination.svelte';
   import { enhance } from '$app/forms';

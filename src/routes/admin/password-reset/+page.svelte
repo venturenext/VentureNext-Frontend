@@ -1,3 +1,7 @@
+<svelte:head>
+  <title>Forgot Password - Admin</title>
+</svelte:head>
+
 <script lang="ts">
   import { env } from '$env/dynamic/public';
   const HERO_IMAGE = env.PUBLIC_HERO_IMAGE || '/images/hero.svg';

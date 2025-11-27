@@ -1,4 +1,8 @@
-﻿<script>
+﻿<svelte:head>
+  <title>Perks - Admin</title>
+</svelte:head>
+
+<script>
   import { enhance } from '$app/forms';
   import { invalidateAll } from '$app/navigation';
   import { onMount } from 'svelte';
