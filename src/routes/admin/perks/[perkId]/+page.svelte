@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { enhance } from '$app/forms';
   import { goto, invalidateAll } from '$app/navigation';
   import PerkFormFields from '$lib/components/admin/PerkFormFields.svelte';
@@ -16,6 +16,21 @@
   let successTitle = '';
   let successDescription = '';
   let successStatus = 'updated';
+  let errorModalOpen = false;
+  let errorMessage = '';
+
+  function formatErrors(payload: any) {
+    if (!payload) return 'Failed to update perk. Please check the form and try again.';
+    if (typeof payload === 'string') return payload;
+    if (payload.error && typeof payload.error === 'string') return payload.error;
+    if (payload.errors && typeof payload.errors === 'object') {
+      const parts = Object.entries(payload.errors).map(
+        ([field, messages]) => `${field}: ${(messages as string[]).join(', ')}`
+      );
+      if (parts.length) return parts.join(' | ');
+    }
+    return 'Failed to update perk. Please check the form and try again.';
+  }
 
   const successCopy = {
     save: {
@@ -33,6 +48,11 @@
     await goto(`/admin/perks?status=${successStatus}&refresh=${Date.now()}`, { replaceState: true });
   };
 
+  $: if (formError) {
+    errorMessage = formatErrors(formError);
+    errorModalOpen = true;
+  }
+
   const enhancePerkForm = ({ formData }) => {
     const intent = String(formData.get('intent') || 'save') === 'publish' ? 'publish' : 'save';
     return async ({ result, update }) => {
@@ -43,6 +63,9 @@
         successStatus = intent === 'publish' ? 'published' : 'updated';
         successModalOpen = true;
         await invalidateAll();
+      } else if (result.type === 'failure') {
+        errorMessage = formatErrors(result.data);
+        errorModalOpen = true;
       }
     };
   };
@@ -55,18 +78,20 @@
     <p class="text-sm text-admin-muted">Partner: {perk.partner_name} · Status: {perk.status} · Published: {publishedInfo}</p>
   </section>
 
-  {#if formError}
-    <div class="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-      {formError}
-    </div>
-  {/if}
-
   <form method="POST" enctype="multipart/form-data" use:enhance={enhancePerkForm} class="space-y-6 rounded-2xl border border-admin-border bg-white p-6">
     <PerkFormFields {categories} {subcategories} {locations} {perk} bind:isFormValid />
     <div class="flex flex-wrap justify-end gap-3">
       <a href="/admin/perks" class="rounded-lg border border-admin-border px-5 py-2 text-sm font-semibold text-admin-muted">
         Cancel
       </a>
+      <button
+        type="submit"
+        name="intent"
+        value="save"
+        disabled={!isFormValid}
+        class="rounded-lg border border-admin-border bg-white px-5 py-2 text-sm font-semibold text-admin-muted hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
+        Save as Draft
+      </button>
       <button
         type="submit"
         name="intent"
@@ -94,6 +119,27 @@
       class="rounded-lg bg-admin-blue px-4 py-2 text-sm font-semibold text-white"
       on:click={handleSuccessRedirect}>
       Back to listing
+    </button>
+  </div>
+</Modal>
+
+<Modal bind:open={errorModalOpen} title="Submission failed" size="sm" on:close={() => (errorModalOpen = false)}>
+  <div class="flex items-start gap-3">
+    <div class="mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-red-100 text-red-600">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="13" />
+        <circle cx="12" cy="16" r="1" />
+      </svg>
+    </div>
+    <p class="text-sm text-brand-slateGray">{errorMessage || 'We could not save this perk. Please try again.'}</p>
+  </div>
+  <div class="mt-6 flex justify-end">
+    <button
+      type="button"
+      class="rounded-lg bg-admin-blue px-4 py-2 text-sm font-semibold text-white"
+      on:click={() => (errorModalOpen = false)}>
+      Got it
     </button>
   </div>
 </Modal>
