@@ -3,13 +3,70 @@
 </svelte:head>
 
 <script>
-  import { enhance } from '$app/forms';
   import { page } from '$app/stores';
+  import { goto, invalidateAll } from '$app/navigation';
+  import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
   import Pagination from '$lib/components/ui/Pagination.svelte';
+
   export let data;
-  const items = data.items || [];
+  $: items = data.items || [];
   const norm = (r) => (r || '').toLowerCase().replace(/\s+/g, '').replace(/-/g, '').replace(/_/g, '');
   $: isSuper = norm($page.data?.user?.role) === 'superadmin';
+
+  let showDeleteConfirm = false;
+  let leadToDelete = null;
+  let isDeleting = false;
+
+  function confirmDelete(lead) {
+    leadToDelete = lead;
+    showDeleteConfirm = true;
+  }
+
+  async function handleConfirmedDelete() {
+    if (!leadToDelete) return;
+
+    isDeleting = true;
+    const formData = new FormData();
+    formData.append('id', String(leadToDelete.id));
+
+    try {
+      const response = await fetch('?/delete', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'x-sveltekit-action': 'true'
+        }
+      });
+
+      console.log('Delete response status:', response.status);
+
+      if (response.ok) {
+        // Close modal first
+        showDeleteConfirm = false;
+        leadToDelete = null;
+
+        // Force page reload with invalidateAll
+        await invalidateAll();
+
+        // Or use goto to navigate to same page (this forces a refresh)
+        await goto('/admin/leads', { invalidateAll: true });
+      } else if (response.redirected || response.status === 303) {
+        // Handle redirect
+        showDeleteConfirm = false;
+        leadToDelete = null;
+        await goto('/admin/leads', { invalidateAll: true });
+      } else {
+        const result = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('Delete failed:', result);
+        alert('Failed to delete lead: ' + (result.error || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('An error occurred while deleting the lead.');
+    } finally {
+      isDeleting = false;
+    }
+  }
 </script>
 
 <div class="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
@@ -57,12 +114,14 @@
                 <td class="px-4 py-3 text-right whitespace-nowrap">
                   <div class="inline-flex items-center gap-2">
                     {#if isSuper}
-                      <form method="POST" action="?/delete" use:enhance class="inline-block">
-                        <input type="hidden" name="id" value={it.id} />
-                        <button class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-admin-border bg-white text-red-600 transition hover:bg-red-50" title="Delete">
-                          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
-                        </button>
-                      </form>
+                      <button
+                        type="button"
+                        on:click={() => confirmDelete(it)}
+                        class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-admin-border bg-white text-red-600 transition hover:bg-red-50"
+                        title="Delete"
+                      >
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+                      </button>
                     {/if}
                   </div>
                 </td>
@@ -85,12 +144,16 @@
             <div class="text-xs text-admin-muted">{it.created_at?.slice(0, 19).replace('T', ' ') || '—'}</div>
           </div>
           {#if isSuper}
-            <form method="POST" action="?/delete" use:enhance class="mt-3 flex justify-end">
-              <input type="hidden" name="id" value={it.id} />
-              <button class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-admin-border bg-white text-red-600 transition hover:bg-red-50" title="Delete">
+            <div class="mt-3 flex justify-end">
+              <button
+                type="button"
+                on:click={() => confirmDelete(it)}
+                class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-admin-border bg-white text-red-600 transition hover:bg-red-50"
+                title="Delete"
+              >
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
               </button>
-            </form>
+            </div>
           {/if}
         </article>
       {/each}
@@ -98,3 +161,14 @@
   {/if}
 </div>
 <Pagination meta={data.meta} current={data.query} basePath="/admin/leads" />
+
+<ConfirmDialog
+  bind:open={showDeleteConfirm}
+  title="Delete Lead"
+  message="Are you sure you want to delete this lead? This action cannot be undone."
+  confirmText={isDeleting ? 'Deleting...' : 'Delete'}
+  cancelText="Cancel"
+  variant="danger"
+  on:confirm={handleConfirmedDelete}
+  on:cancel={() => { leadToDelete = null; }}
+/>

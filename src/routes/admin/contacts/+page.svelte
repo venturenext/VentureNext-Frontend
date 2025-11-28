@@ -3,22 +3,77 @@
 </svelte:head>
 
 <script>
-  import { enhance } from '$app/forms';
   import { page } from '$app/stores';
+  import { goto, invalidateAll } from '$app/navigation';
   import Modal from '$lib/components/ui/Modal.svelte';
+  import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
   import Pagination from '$lib/components/ui/Pagination.svelte';
 
   export let data;
-  const items = data.items || [];
+  $: items = data.items || [];
   const norm = (r) => (r || '').toLowerCase().replace(/\s+/g, '').replace(/-/g, '').replace(/_/g, '');
   $: isSuper = norm($page.data?.user?.role) === 'superadmin';
 
   let showDetailModal = false;
   let selectedContact = null;
+  let showDeleteConfirm = false;
+  let contactToDelete = null;
+  let isDeleting = false;
 
   function viewDetails(contact) {
     selectedContact = contact;
     showDetailModal = true;
+  }
+
+  function confirmDelete(contact) {
+    contactToDelete = contact;
+    showDeleteConfirm = true;
+  }
+
+  async function handleConfirmedDelete() {
+    if (!contactToDelete) return;
+
+    isDeleting = true;
+    const formData = new FormData();
+    formData.append('id', String(contactToDelete.id));
+
+    try {
+      const response = await fetch('?/delete', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'x-sveltekit-action': 'true'
+        }
+      });
+
+      console.log('Delete response status:', response.status);
+
+      if (response.ok) {
+        // Close modal first
+        showDeleteConfirm = false;
+        contactToDelete = null;
+
+        // Force page reload with invalidateAll
+        await invalidateAll();
+
+        // Or use goto to navigate to same page (this forces a refresh)
+        await goto('/admin/contacts', { invalidateAll: true });
+      } else if (response.redirected || response.status === 303) {
+        // Handle redirect
+        showDeleteConfirm = false;
+        contactToDelete = null;
+        await goto('/admin/contacts', { invalidateAll: true });
+      } else {
+        const result = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('Delete failed:', result);
+        alert('Failed to delete message: ' + (result.error || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('An error occurred while deleting the message.');
+    } finally {
+      isDeleting = false;
+    }
   }
 </script>
 
@@ -93,18 +148,17 @@
                       </svg>
                     </button>
                     {#if isSuper}
-                      <form method="POST" action="?/delete" use:enhance class="inline-block">
-                        <input type="hidden" name="id" value={contact.id} />
-                        <button
-                          class="inline-flex items-center justify-center h-8 w-8 rounded-lg border border-admin-border bg-white text-red-600 transition hover:bg-red-50"
-                          title="Delete"
-                        >
-                          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                            <path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
-                          </svg>
-                        </button>
-                      </form>
+                      <button
+                        type="button"
+                        on:click={() => confirmDelete(contact)}
+                        class="inline-flex items-center justify-center h-8 w-8 rounded-lg border border-admin-border bg-white text-red-600 transition hover:bg-red-50"
+                        title="Delete"
+                      >
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                          <path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                      </button>
                     {/if}
                   </div>
                 </td>
@@ -142,9 +196,10 @@
           </div>
           <div class="mt-2 text-sm text-brand-slateGray line-clamp-3">{contact.message || '—'}</div>
           {#if isSuper}
-            <form method="POST" action="?/delete" use:enhance class="mt-3 flex justify-end">
-              <input type="hidden" name="id" value={contact.id} />
+            <div class="mt-3 flex justify-end">
               <button
+                type="button"
+                on:click={() => confirmDelete(contact)}
                 class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-admin-border bg-white text-red-600 transition hover:bg-red-50"
                 title="Delete"
               >
@@ -153,7 +208,7 @@
                   <path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
                 </svg>
               </button>
-            </form>
+            </div>
           {/if}
         </article>
       {/each}
@@ -199,13 +254,7 @@
         </p>
       </div>
 
-      <div class="flex justify-end gap-2 pt-4 border-t border-admin-border">
-        <a
-          href={`mailto:${selectedContact.email}?subject=Re: ${selectedContact.subject || 'Your message'}`}
-          class="px-4 py-2 rounded-lg bg-admin-blue text-white hover:bg-admin-blue/90"
-        >
-          Reply via Email
-        </a>
+      <div class="flex justify-end pt-4 border-t border-admin-border">
         <button
           type="button"
           on:click={() => (showDetailModal = false)}
@@ -217,3 +266,14 @@
     </div>
   </Modal>
 {/if}
+
+<ConfirmDialog
+  bind:open={showDeleteConfirm}
+  title="Delete Message"
+  message="Are you sure you want to delete this message? This action cannot be undone."
+  confirmText={isDeleting ? 'Deleting...' : 'Delete'}
+  cancelText="Cancel"
+  variant="danger"
+  on:confirm={handleConfirmedDelete}
+  on:cancel={() => { contactToDelete = null; }}
+/>
