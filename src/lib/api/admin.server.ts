@@ -191,9 +191,9 @@ export async function adminCreateJournalPost(token: string, body: FormData | Rec
 export async function adminUpdateJournalPost(token: string, id: number | string, body: FormData | Record<string, any>, fetcher = fetch) {
   const isFormData = body instanceof FormData;
 
- 
+
   if (isFormData) {
-    
+
     const res = await fetcher(`${API_BASE}/admin/journal/${id}`, {
       method: 'POST',
       headers: bearerHeaders(token),
@@ -209,7 +209,7 @@ export async function adminUpdateJournalPost(token: string, id: number | string,
     return res.json() as Promise<ApiItemResponse<any>>;
   }
 
- 
+
   const res = await fetcher(`${API_BASE}/admin/journal/${id}`, {
     method: 'PUT',
     headers: jsonHeaders(token),

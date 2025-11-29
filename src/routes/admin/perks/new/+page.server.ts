@@ -54,14 +54,24 @@ export const actions: Actions = {
     } catch (error) {
       console.error('Error creating perk:', error);
 
-   
+
       let errorMessage = 'Failed to save perk. Please review the inputs before proceeding.';
+      let statusCode = 400;
+      let errorDetails = null;
+
       if (error instanceof Error) {
+        const status = (error as any).status;
         const details = (error as any).details;
+
+        if (status) {
+          statusCode = status;
+        }
+
         if (details) {
           console.error('Error details:', details);
+          errorDetails = details;
 
-         
+
           if (details.errors) {
             const validationErrors = Object.entries(details.errors)
               .map(([field, messages]) => `${field}: ${(messages as string[]).join(', ')}`)
@@ -74,7 +84,7 @@ export const actions: Actions = {
         errorMessage = error.message || errorMessage;
       }
 
-      return fail(400, { error: errorMessage });
+      return fail(statusCode, { error: errorMessage, status: statusCode, errors: errorDetails?.errors });
     }
   }
 };

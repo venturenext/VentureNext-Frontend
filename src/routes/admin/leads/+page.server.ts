@@ -1,9 +1,9 @@
 import type { Actions, PageServerLoad } from './$types';
-import { adminListLeads, adminDeleteLead } from '$lib/api/admin';
+import { adminListLeads, adminDeleteLead } from '$lib/api/admin.server';
 import { fail, redirect } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ locals, fetch, url }) => {
-  const token = locals.token;
+export const load: PageServerLoad = async ({ parent, fetch, url }) => {
+  const { token } = await parent();
   if (!token) throw redirect(302, '/admin/login');
   const page = Number(url.searchParams.get('page') || 1);
   const per_page = Number(url.searchParams.get('per_page') || 10);

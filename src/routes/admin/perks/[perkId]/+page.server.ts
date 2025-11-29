@@ -42,7 +42,39 @@ export const actions: Actions = {
         perk: updated?.data ?? null
       };
     } catch (error) {
-      return fail(400, { error: 'Failed to update perk. Please review the inputs and try again.' });
+      console.error('Error updating perk:', error);
+
+
+      let errorMessage = 'Failed to update perk. Please review the inputs and try again.';
+      let statusCode = 400;
+      let errorDetails = null;
+
+      if (error instanceof Error) {
+        const status = (error as any).status;
+        const details = (error as any).details;
+
+        if (status) {
+          statusCode = status;
+        }
+
+        if (details) {
+          console.error('Error details:', details);
+          errorDetails = details;
+
+
+          if (details.errors) {
+            const validationErrors = Object.entries(details.errors)
+              .map(([field, messages]) => `${field}: ${(messages as string[]).join(', ')}`)
+              .join(' | ');
+            errorMessage = `Validation errors: ${validationErrors}`;
+          } else if (details.message) {
+            errorMessage = details.message;
+          }
+        }
+        errorMessage = error.message || errorMessage;
+      }
+
+      return fail(statusCode, { error: errorMessage, status: statusCode, errors: errorDetails?.errors });
     }
   }
 };

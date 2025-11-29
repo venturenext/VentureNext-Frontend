@@ -23,6 +23,12 @@
 
   function formatErrors(payload: any) {
     if (!payload) return 'Failed to save perk. Please check the form and try again.';
+
+    // Handle 413 Request Entity Too Large
+    if (payload.status === 413) {
+      return 'Upload too large. Please reduce image file sizes (max 2MB per file recommended) or upload fewer images at once.';
+    }
+
     if (typeof payload === 'string') return payload;
     if (payload.error && typeof payload.error === 'string') return payload.error;
     if (payload.errors && typeof payload.errors === 'object') {

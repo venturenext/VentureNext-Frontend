@@ -7,6 +7,7 @@
   import { goto, invalidateAll } from '$app/navigation';
   import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
   import Pagination from '$lib/components/ui/Pagination.svelte';
+  import * as XLSX from 'xlsx';
 
   export let data;
   $: items = data.items || [];
@@ -16,6 +17,7 @@
   let showDeleteConfirm = false;
   let leadToDelete = null;
   let isDeleting = false;
+  let isExporting = false;
 
   function confirmDelete(lead) {
     leadToDelete = lead;
@@ -67,20 +69,94 @@
       isDeleting = false;
     }
   }
+
+  async function handleExportExcel() {
+    if (!$page.data?.user) {
+      alert('Authentication required');
+      return;
+    }
+
+    isExporting = true;
+    try {
+      const search = data?.query?.search || '';
+      const params = new URLSearchParams();
+      if (search) {
+        params.set('search', search);
+      }
+
+      // Call the server endpoint instead of API function
+      const response = await fetch(`/admin/leads/export${params.toString() ? `?${params}` : ''}`);
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ error: 'Failed to export leads' }));
+        throw new Error(error.error || 'Failed to export leads');
+      }
+
+      const result = await response.json();
+      const exportRows = result?.data || [];
+
+      if (exportRows.length === 0) {
+        alert('No data to export');
+        return;
+      }
+
+      // Convert to worksheet
+      const worksheet = XLSX.utils.aoa_to_sheet(exportRows);
+
+      // Create workbook
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Leads');
+
+      // Generate filename with timestamp
+      const timestamp = new Date().toISOString().slice(0, 10);
+      const filename = `leads_export_${timestamp}.xlsx`;
+
+      // Download file
+      XLSX.writeFile(workbook, filename);
+    } catch (error) {
+      console.error('Export error:', error);
+      alert('Failed to export leads: ' + error.message);
+    } finally {
+      isExporting = false;
+    }
+  }
 </script>
 
 <div class="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
   <h1 class="text-xl font-semibold text-brand-richBlack">Leads</h1>
-  <form method="GET" class="flex-1 md:w-96">
-    <label class="relative block">
-      <span class="sr-only">Search</span>
-      <span class="absolute inset-y-0 left-3 my-auto mt-3 text-gray-400">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
-      </span>
-      <input name="search" placeholder="Search leads" value={data?.query?.search}
-             class="w-full pl-10 pr-3 py-2 rounded-lg border border-admin-border bg-white focus:outline-none focus:ring-2 focus:ring-admin-blue" />
-    </label>
-  </form>
+  <div class="flex flex-col sm:flex-row gap-3 flex-1 md:max-w-2xl">
+    <form method="GET" class="flex-1">
+      <label class="relative block">
+        <span class="sr-only">Search</span>
+        <span class="absolute inset-y-0 left-3 my-auto mt-3 text-gray-400">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+        </span>
+        <input name="search" placeholder="Search leads" value={data?.query?.search}
+               class="w-full pl-10 pr-3 py-2 rounded-lg border border-admin-border bg-white focus:outline-none focus:ring-2 focus:ring-admin-blue" />
+      </label>
+    </form>
+    <button
+      type="button"
+      on:click={handleExportExcel}
+      disabled={isExporting}
+      class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-admin-border bg-white text-admin-blue font-medium transition hover:bg-admin-blue hover:text-white disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+      title="Download Excel"
+    >
+      {#if isExporting}
+        <svg class="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+        </svg>
+        <span>Exporting...</span>
+      {:else}
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        <span>Download Excel</span>
+      {/if}
+    </button>
+  </div>
 </div>
 
 <div class="rounded-2xl border border-admin-border/80 bg-white/80 shadow-card">
