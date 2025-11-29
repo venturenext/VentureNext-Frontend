@@ -9,6 +9,10 @@
   const desc = p?.meta_description || p?.excerpt || '';
   function initial(name) { return (name || '?').trim().charAt(0).toUpperCase(); }
   const url = typeof window !== 'undefined' ? window.location.href : undefined;
+  const displayDate = (post) => {
+    const date = post?.published_at || post?.created_at;
+    return date ? date.slice(0, 10) : '';
+  };
 </script>
 
 <SEOHead title={`${title} | ${SITE_NAME}`} description={desc} url={url} image={withAsset(p?.og_image)} />
@@ -17,7 +21,7 @@
   <div class="max-w-3xl mx-auto">
     <div class="text-sm text-yellow-700 font-semibold mb-2">Article</div>
     <h1 class="text-3xl sm:text-4xl font-extrabold text-brand-richBlack">{p.title}</h1>
-    <div class="mt-2 text-sm text-gray-500">{p.created_at?.slice(0,10)} • {p.reading_time || 5} min read</div>
+    <div class="mt-2 text-sm text-gray-500">{displayDate(p)} • {p.reading_time || 5} min read</div>
 
     {#if p.author?.name}
       <div class="mt-4 flex items-center gap-3">

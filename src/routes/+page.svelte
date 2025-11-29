@@ -28,6 +28,11 @@
   const latestPerksSubtitle = latestPerksSection?.subtitle || '';
   const journalTitle = journalSection?.title || '';
   const journalSubtitle = journalSection?.subtitle || '';
+
+  const displayDate = (post) => {
+    const date = post?.published_at || post?.created_at;
+    return date ? date.slice(0, 10) : '';
+  };
 </script>
 
 <SEOHead title={`${SITE_NAME} — Exclusive Perks`} description={heroSubtitle} />
@@ -153,7 +158,7 @@
           </div>
           <div class="p-6">
             <h3 class="font-semibold text-brand-richBlack text-lg">{p.title}</h3>
-            <div class="mt-1 text-xs text-gray-500">{p.created_at?.slice(0,10)} • {p.reading_time || 5} min read</div>
+            <div class="mt-1 text-xs text-gray-500">{displayDate(p)} • {p.reading_time || 5} min read</div>
             {#if p.excerpt}
               <p class="mt-2 text-sm text-brand-slateGray">{p.excerpt}</p>
             {/if}

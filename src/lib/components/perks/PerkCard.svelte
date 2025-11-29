@@ -47,10 +47,22 @@
   let copied = false;
 
   function handleCta() {
+    const isDirectLink = (redeemType === 'external_link' || redeemType === 'lead_form') && externalUrl;
+
     // Track click when user clicks CTA button
     if (perkId) {
       trackClick(perkId);
     }
+
+    if (isDirectLink && externalUrl) {
+      // For direct links, skip modal and go straight to partner/form
+      if (perkId) {
+        trackAffiliateClick(perkId);
+      }
+      window.open(externalUrl, '_blank', 'noopener');
+      return;
+    }
+
     openClaim = true;
   }
 
@@ -121,7 +133,7 @@
   <div class="px-5 pb-5">
     <button
       type="button"
-      class="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand-darkGreen to-emerald-600 px-4 py-3 text-center text-sm font-semibold text-white shadow-lg shadow-emerald-900/15 transition hover:translate-y-px hover:shadow-xl"
+      class="flex w-full items-center justify-center gap-2 rounded-2xl bg-brand-yellow px-4 py-3 text-center text-sm font-semibold text-brand-richBlack shadow-lg transition hover:translate-y-px hover:shadow-xl"
       aria-label={cta}
       on:click={handleCta}
     >

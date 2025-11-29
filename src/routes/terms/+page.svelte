@@ -69,14 +69,9 @@
     aria-hidden="true"
   ></div>
   <div class="absolute inset-0 bg-brand-darkGreen/85"></div>
-  <div class="relative container-w py-20">
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 ring-1 ring-white/20 w-max">
-      <span class="w-2 h-2 rounded-full bg-yellow-400"></span>
-      <span class="text-sm">Legal</span>
-    </div>
+  <div class="relative container-w py-20 text-center">
     <h1 class="mt-3 text-4xl sm:text-5xl font-extrabold tracking-tight">{heroTitle}</h1>
-    <p class="mt-3 max-w-2xl text-white/85">{heroSubtitle}</p>
-    <div class="mt-4 text-sm text-white/70">Last updated: {lastUpdated}</div>
+    <p class="mt-3 mx-auto max-w-2xl text-white/85">{heroSubtitle}</p>
   </div>
 </section>
 

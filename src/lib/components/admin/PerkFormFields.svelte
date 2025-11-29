@@ -283,12 +283,13 @@
                class="mt-1 w-full rounded-lg border border-admin-border bg-admin-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue" />
       </div>
       <div class="lg:col-span-2">
-        <label class="text-sm font-medium text-admin-muted" for="short_description">Short Description</label>
+        <label class="text-sm font-medium text-admin-muted" for="short_description">Short Description <span class="text-red-500">*</span></label>
         <textarea
           id="short_description"
           name="short_description"
           rows="3"
           bind:value={shortDescription}
+          required
           class="mt-1 w-full rounded-lg border border-admin-border bg-admin-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue"
         ></textarea>
         <input type="hidden" name="description" value={shortDescription} />
@@ -370,7 +371,7 @@
   <section class="space-y-6 rounded-2xl border border-admin-border bg-white p-6 shadow-sm">
     <div>
       <p class="text-xs font-semibold uppercase tracking-[0.2em] text-admin-muted">Location & Validity</p>
-      <h3 class="mt-2 text-base font-semibold text-brand-richBlack">Location</h3>
+      <h3 class="mt-2 text-base font-semibold text-brand-richBlack">Location <span class="text-red-500">*</span></h3>
     </div>
     <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
       {#each locationOptions as option (option.slug)}
@@ -396,7 +397,7 @@
     </div>
 
     <div>
-      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-admin-muted">Redemption</p>
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-admin-muted">Redemption <span class="text-red-500">*</span></p>
       <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
         {#each redemptionOptions as option}
           <label

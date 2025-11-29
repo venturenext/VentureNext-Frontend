@@ -12,6 +12,11 @@
   const hero = sections.find((s) => s.section_key === 'journal_hero');
   $: currentCategory = current?.category ?? '';
 
+  const displayDate = (post) => {
+    const date = post?.published_at || post?.created_at;
+    return date ? date.slice(0, 10) : '';
+  };
+
   function setCategory(c) {
     const qs = new URLSearchParams();
     if (c) qs.set('category', c);
@@ -66,7 +71,7 @@
             <div class="p-6 md:p-8 flex flex-col justify-center">
               <div class="inline-flex px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-semibold w-max">Featured</div>
               <h2 class="mt-2 text-2xl md:text-4xl font-extrabold text-brand-richBlack leading-tight">{posts[0].title}</h2>
-              <div class="mt-2 text-sm text-gray-500">{posts[0].created_at?.slice(0,10)} • {posts[0].reading_time || 5} min read</div>
+              <div class="mt-2 text-sm text-gray-500">{displayDate(posts[0])} • {posts[0].reading_time || 5} min read</div>
               {#if posts[0].excerpt}
                 <p class="mt-4 text-brand-slateGray">{posts[0].excerpt}</p>
               {/if}
@@ -86,7 +91,7 @@
             </div>
             <div class="p-6">
               <h3 class="font-semibold text-brand-richBlack text-lg">{p.title}</h3>
-              <div class="mt-1 text-xs text-gray-500">{p.created_at?.slice(0,10)} • {p.reading_time || 5} min read</div>
+              <div class="mt-1 text-xs text-gray-500">{displayDate(p)} • {p.reading_time || 5} min read</div>
               {#if p.excerpt}
                 <p class="mt-2 text-sm text-brand-slateGray">{p.excerpt}</p>
               {/if}

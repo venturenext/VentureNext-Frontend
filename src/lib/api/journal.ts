@@ -10,6 +10,7 @@ export interface JournalItem {
   meta_title?: string;
   meta_description?: string;
   og_image?: string;
+  published_at?: string;
   created_at?: string;
   reading_time?: number;
   category?: string | null;

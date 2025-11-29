@@ -7,10 +7,12 @@ import { getPageContent } from '$lib/api/pageContent';
 export const load: PageServerLoad = async ({ fetch, url }) => {
   const page = Number(url.searchParams.get('page') || 1);
   const category = url.searchParams.get('category') || '';
+  const subcategory = url.searchParams.get('subcategory') || '';
   const location = url.searchParams.get('location') || '';
 
   const query: any = { page };
   if (category) query.category = category;
+  if (subcategory) query.subcategory = subcategory;
   if (location) query.location = location;
 
   const [perksRes, catRes, locRes, sections] = await Promise.all([
@@ -25,7 +27,7 @@ export const load: PageServerLoad = async ({ fetch, url }) => {
     meta: perksRes?.meta || null,
     categories: catRes?.data || [],
     locations: locRes?.data || [],
-    current: { category, location, page },
+    current: { category, subcategory, location, page },
     sections: sections || []
   };
 };

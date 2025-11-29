@@ -51,7 +51,13 @@
       <div class="flex items-center gap-4">
         {#each socialLinks as link}
           {#if iconPath(link.icon || link.label)}
-            <a href={link.href} class="hover:text-white transition-colors" aria-label={link.label}>
+            <a
+              href={link.href}
+              class="hover:text-white transition-colors"
+              aria-label={link.label}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
                 <path d={iconPath(link.icon || link.label)} />
               </svg>
@@ -61,6 +67,8 @@
               href={link.href}
               class="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-xs font-semibold uppercase tracking-wide hover:text-white hover:bg-white/20 transition-colors"
               aria-label={link.label}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               {(link.label || '?').charAt(0)}
             </a>

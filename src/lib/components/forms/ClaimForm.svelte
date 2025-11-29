@@ -46,6 +46,37 @@
       loading = false;
     }
   }
+
+  function formatPhoneInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input) return;
+
+    const digitsOnly = input.value.replace(/\D/g, '');
+    if (!digitsOnly) {
+      phone = '';
+      return;
+    }
+
+    // Split into country code (anything beyond 10 digits) and a 10-digit local number.
+    let country = '';
+    let local = digitsOnly;
+    if (digitsOnly.length > 10) {
+      country = digitsOnly.slice(0, digitsOnly.length - 10);
+      local = digitsOnly.slice(-10);
+    }
+
+    const part1 = local.slice(0, 3);
+    const part2 = local.slice(3, 6);
+    const part3 = local.slice(6, 10);
+
+    let formatted = country ? `+${country} ` : '';
+    if (part1) formatted += `(${part1}`;
+    if (part1.length === 3) formatted += ')';
+    if (part2) formatted += ` ${part2}`;
+    if (part3) formatted += `-${part3}`;
+
+    phone = formatted.trim();
+  }
 </script>
 
 <form
@@ -74,7 +105,14 @@
     <FormInput label="Name" name="name" bind:value={name} required error={errors.name} />
     <FormInput label="Email" name="email" type="email" bind:value={email} required error={errors.email} />
     <FormInput label="Company" name="company" bind:value={company} placeholder="Your company or team name" />
-    <FormInput label="Phone" name="phone" type="tel" bind:value={phone} placeholder="+62 812 xxxx xxxx" />
+    <FormInput
+      label="Phone"
+      name="phone"
+      type="tel"
+      bind:value={phone}
+      placeholder="+1 (372) 177-5207"
+      on:input={formatPhoneInput}
+    />
   </div>
 
   <FormTextarea label="Message" name="message" bind:value={message} placeholder="Anything else we should know?" />

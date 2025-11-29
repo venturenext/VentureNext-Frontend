@@ -4,7 +4,7 @@ import { getCategorySubcategory, listCategories } from '$lib/api/categories';
 export const load: PageServerLoad = async ({ fetch, params, url }) => {
   const categorySlug = params.slug as string;
   const subSlug = params.subcategory as string;
-  const allowed = ['page', 'per_page', 'location', 'search', 'sort'];
+  const allowed = ['page', 'per_page', 'location', 'search', 'sort', 'subcategory'];
   const query: Record<string, string> = {};
   for (const k of allowed) {
     const v = url.searchParams.get(k);
@@ -27,4 +27,3 @@ export const load: PageServerLoad = async ({ fetch, params, url }) => {
     current: { category: categorySlug, subcategory: subSlug, ...query },
   };
 };
-
