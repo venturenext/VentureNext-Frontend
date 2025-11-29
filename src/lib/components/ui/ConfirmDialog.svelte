@@ -34,6 +34,7 @@
     class="fixed inset-0 z-50 overflow-y-auto"
     role="dialog"
     aria-modal="true"
+    tabindex="-1"
     on:click={onBackdrop}
     on:keydown={(e) => e.key === 'Escape' && cancel()}
   >

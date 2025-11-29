@@ -85,7 +85,7 @@
       }
 
       // Call the server endpoint instead of API function
-      const response = await fetch(`/admin/leads/export${params.toString() ? `?${params}` : ''}`);
+      const response = await fetch(`/api/admin/leads/export${params.toString() ? `?${params}` : ''}`);
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({ error: 'Failed to export leads' }));
