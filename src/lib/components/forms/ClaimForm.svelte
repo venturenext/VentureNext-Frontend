@@ -118,6 +118,6 @@
   <FormTextarea label="Message" name="message" bind:value={message} placeholder="Anything else we should know?" />
 
   <div class="flex justify-end">
-    <FormButton {loading} label="Submit Claim" />
+    <FormButton {loading} label="Unlock My Perk" variant="yellow" />
   </div>
 </form>

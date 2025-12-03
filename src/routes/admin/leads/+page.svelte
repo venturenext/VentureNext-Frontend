@@ -5,6 +5,7 @@
 <script>
   import { page } from '$app/stores';
   import { goto, invalidateAll } from '$app/navigation';
+  import Modal from '$lib/components/ui/Modal.svelte';
   import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
   import Pagination from '$lib/components/ui/Pagination.svelte';
   import * as XLSX from 'xlsx';
@@ -13,15 +14,50 @@
   $: items = data.items || [];
   const norm = (r) => (r || '').toLowerCase().replace(/\s+/g, '').replace(/-/g, '').replace(/_/g, '');
   $: isSuper = norm($page.data?.user?.role) === 'superadmin';
+  const getLeadNumber = (lead) => lead.phone || lead.metadata?.contact || '—';
+  const getLeadMessage = (lead) => lead.message || '—';
+  const getLeadMessagePreview = (lead, limit = 90) => {
+    const text = lead.message?.trim();
+    if (!text) return '—';
+    return text.length <= limit ? text : `${text.slice(0, limit).trimEnd()}...`;
+  };
+  const getLeadPerkTitle = (lead) => lead.perk?.title || lead.perk_title || '—';
+  const formatDateTime = (value) => {
+    if (!value) return '—';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString();
+  };
+  const getMetadataEntries = (lead) => {
+    if (!lead?.metadata || typeof lead.metadata !== 'object' || Array.isArray(lead.metadata)) return [];
+    return Object.entries(lead.metadata)
+      .filter(([_, value]) => value !== undefined && value !== null && value !== '')
+      .sort(([a], [b]) => a.localeCompare(b));
+  };
+  const formatMetadataKey = (key) =>
+    key.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
 
   let showDeleteConfirm = false;
   let leadToDelete = null;
   let isDeleting = false;
   let isExporting = false;
+  let showLeadDetailModal = false;
+  let selectedLead = null;
+  let leadMetadata = [];
+  $: leadMetadata = selectedLead ? getMetadataEntries(selectedLead) : [];
 
   function confirmDelete(lead) {
     leadToDelete = lead;
     showDeleteConfirm = true;
+  }
+
+  function viewLeadDetails(lead) {
+    selectedLead = lead;
+    showLeadDetailModal = true;
+  }
+
+  function closeLeadDetails() {
+    showLeadDetailModal = false;
+    selectedLead = null;
   }
 
   async function handleConfirmedDelete() {
@@ -171,7 +207,9 @@
             <tr>
               <th class="text-left px-4 py-3">Name</th>
               <th class="text-left px-4 py-3">Email</th>
+              <th class="text-left px-4 py-3">Number</th>
               <th class="text-left px-4 py-3">Type</th>
+              <th class="text-left px-4 py-3">Message</th>
               <th class="text-left px-4 py-3">Perk</th>
               <th class="text-left px-4 py-3">Created</th>
               <th class="text-right px-4 py-3">Actions</th>
@@ -184,11 +222,26 @@
                 <td class="px-4 py-3">
                   <a href={`mailto:${it.email}`} class="text-admin-blue hover:underline">{it.email}</a>
                 </td>
+                <td class="px-4 py-3 text-admin-muted">{getLeadNumber(it)}</td>
                 <td class="px-4 py-3 capitalize text-admin-muted">{it.lead_type || '—'}</td>
+                <td class="px-4 py-3 text-sm text-admin-muted max-w-[240px] overflow-hidden text-ellipsis whitespace-nowrap">
+                  {getLeadMessagePreview(it)}
+                </td>
                 <td class="px-4 py-3 text-admin-muted">{it.perk?.title || it.perk_title || '—'}</td>
                 <td class="px-4 py-3 text-admin-muted">{it.created_at?.slice(0, 19).replace('T', ' ') || '—'}</td>
                 <td class="px-4 py-3 text-right whitespace-nowrap">
                   <div class="inline-flex items-center gap-2">
+                    <button
+                      type="button"
+                      on:click={() => viewLeadDetails(it)}
+                      class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-admin-border bg-white text-brand-richBlack transition hover:bg-gray-50"
+                      title="View Details"
+                    >
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    </button>
                     {#if isSuper}
                       <button
                         type="button"
@@ -211,15 +264,30 @@
     <!-- Mobile stacked cards -->
     <div class="grid gap-3 lg:hidden">
       {#each items as it}
-        <article class="rounded-2xl border border-admin-border bg-white px-4 py-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-          <div class="space-y-1">
-            <div class="text-base font-semibold text-brand-richBlack">{it.name}</div>
-            <a href={`mailto:${it.email}`} class="text-sm text-admin-blue hover:underline">{it.email}</a>
-            <div class="text-xs text-admin-muted capitalize">{it.lead_type || '—'}</div>
-            <div class="text-sm text-admin-muted">{it.perk?.title || it.perk_title || '—'}</div>
-            <div class="text-xs text-admin-muted">{it.created_at?.slice(0, 19).replace('T', ' ') || '—'}</div>
-          </div>
-          {#if isSuper}
+          <article class="rounded-2xl border border-admin-border bg-white px-4 py-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            <div class="flex items-start justify-between gap-3">
+              <div class="space-y-1">
+                <div class="text-base font-semibold text-brand-richBlack">{it.name}</div>
+                <a href={`mailto:${it.email}`} class="text-sm text-admin-blue hover:underline">{it.email}</a>
+                <div class="text-xs text-admin-muted capitalize">{it.lead_type || '—'}</div>
+                <div class="text-xs text-admin-muted">Number: {getLeadNumber(it)}</div>
+                <div class="text-sm text-admin-muted">{it.perk?.title || it.perk_title || '—'}</div>
+                <div class="text-xs text-admin-muted">{it.created_at?.slice(0, 19).replace('T', ' ') || '—'}</div>
+                <div class="mt-2 text-sm text-admin-muted">{getLeadMessagePreview(it, 140)}</div>
+              </div>
+              <button
+                type="button"
+                on:click={() => viewLeadDetails(it)}
+                class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-admin-border bg-white text-brand-richBlack transition hover:bg-gray-50"
+                title="View Details"
+              >
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+            {#if isSuper}
             <div class="mt-3 flex justify-end">
               <button
                 type="button"
@@ -237,6 +305,81 @@
   {/if}
 </div>
 <Pagination meta={data.meta} current={data.query} basePath="/admin/leads" />
+
+{#if showLeadDetailModal && selectedLead}
+  <Modal bind:open={showLeadDetailModal} title="Lead Details" on:close={closeLeadDetails}>
+    <div class="space-y-4">
+      <div>
+        <div class="block text-sm font-medium text-admin-muted">Name</div>
+        <p class="mt-1 text-brand-richBlack">{selectedLead.name || '—'}</p>
+      </div>
+
+      <div>
+        <div class="block text-sm font-medium text-admin-muted">Email</div>
+        <p class="mt-1">
+          {#if selectedLead.email}
+            <a href={`mailto:${selectedLead.email}`} class="text-admin-blue hover:underline">
+              {selectedLead.email}
+            </a>
+          {:else}
+            <span class="text-brand-richBlack">—</span>
+          {/if}
+        </p>
+      </div>
+
+      <div>
+        <div class="block text-sm font-medium text-admin-muted">Contact Number</div>
+        <p class="mt-1 text-brand-richBlack">{getLeadNumber(selectedLead)}</p>
+      </div>
+
+      <div>
+        <div class="block text-sm font-medium text-admin-muted">Lead Type</div>
+        <p class="mt-1 text-brand-richBlack">{selectedLead.lead_type ? selectedLead.lead_type.replace(/_/g, ' ') : '—'}</p>
+      </div>
+
+      <div>
+        <div class="block text-sm font-medium text-admin-muted">Perk</div>
+        <p class="mt-1 text-brand-richBlack">{getLeadPerkTitle(selectedLead)}</p>
+      </div>
+
+      <div>
+        <div class="block text-sm font-medium text-admin-muted">Message</div>
+        <div class="mt-1 p-4 bg-gray-50 rounded-lg text-brand-richBlack whitespace-pre-wrap">
+          {selectedLead.message || '—'}
+        </div>
+      </div>
+
+      <div>
+        <div class="block text-sm font-medium text-admin-muted">Submitted</div>
+        <p class="mt-1 text-admin-muted">{formatDateTime(selectedLead.created_at)}</p>
+      </div>
+
+      {#if leadMetadata.length}
+        <div>
+          <div class="block text-sm font-medium text-admin-muted">Metadata</div>
+          <div class="mt-2 space-y-2 rounded-lg border border-admin-border/80 bg-gray-50/80 p-3 text-sm">
+            {#each leadMetadata as [key, value]}
+              <div class="flex justify-between gap-3">
+                <span class="text-admin-muted">{formatMetadataKey(key)}</span>
+                <span class="text-brand-richBlack text-right break-words">{value}</span>
+              </div>
+            {/each}
+          </div>
+        </div>
+      {/if}
+
+      <div class="flex justify-end pt-4 border-t border-admin-border">
+        <button
+          type="button"
+          on:click={closeLeadDetails}
+          class="px-4 py-2 rounded-lg border border-admin-border hover:bg-gray-50"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </Modal>
+{/if}
 
 <ConfirmDialog
   bind:open={showDeleteConfirm}

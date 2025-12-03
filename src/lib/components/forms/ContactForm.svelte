@@ -49,5 +49,5 @@
   <FormInput label="Contact (optional)" name="contact" bind:value={contact} placeholder="WhatsApp/Telegram/LinkedIn" />
   <FormInput label="Subject" name="subject" bind:value={subject} required error={errors.subject} />
   <FormTextarea label="Message" name="message" bind:value={message} required error={errors.message} />
-  <FormButton {loading} label="Send Message" />
+  <FormButton {loading} label="Send Message" variant="yellow" />
 </form>
